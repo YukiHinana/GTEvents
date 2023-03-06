@@ -6,6 +6,7 @@ import com.example.gt_events.entity.Account;
 import com.example.gt_events.entity.Post;
 import com.example.gt_events.entity.Token;
 import com.example.gt_events.exception.InvalidRequestException;
+import com.example.gt_events.model.DeletePostRequest;
 import com.example.gt_events.model.EditPostRequest;
 import com.example.gt_events.model.PostRequest;
 import com.example.gt_events.repo.AccountRepository;
@@ -71,5 +72,19 @@ public class PostController {
         post.setTitle(request.getTitle());
         post.setBody(request.getBody());
         return new ResponseWrapper<>(postRepository.save(post));
+    }
+
+    @DeleteMapping("/delete")
+    @RequireAuth(requireOrganizer = true)
+    public ResponseWrapper<?> deletePost(@RequestBody @Valid DeletePostRequest request, Account a) {
+        Optional<Post> result = postRepository.findById(request.getPostId());
+        if (result.isEmpty()) {
+            throw new InvalidRequestException("can't find the post");
+        }
+        if (!a.getUsername().equals(result.get().getAuthor().getUsername())) {
+            throw new InvalidRequestException("can't delete the post");
+        }
+        postRepository.delete(result.get());
+        return new ResponseWrapper<>("success");
     }
 }

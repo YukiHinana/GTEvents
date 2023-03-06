@@ -29,11 +29,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             curAccount.remove();
             RequireAuth a = handlerMethod.getMethodAnnotation(RequireAuth.class);
             if (a != null) {
-                System.out.println("RequireAuth");
                 if (token != null && !token.isEmpty()) {
                     Optional<Token> result = tokenRepository.findByUuid(token);
+
                     if (result.isPresent()) {
                         curAccount.set(result.get().getAccount());
+                        System.out.println(result.get());
                         if (!a.requireOrganizer() || curAccount.get().isOrganizer()) {
                             return true;
                         }
