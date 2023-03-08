@@ -17,7 +17,7 @@ class _MyPostPageState extends State<MyPostPage> {
 
   Future<http.Response> getAllPostRequest() async {
     var response = await http.get(
-      Uri.parse('http://localhost:8080/post/'),
+      Uri.parse('http://3.145.83.83:8080/post/'),
       headers: {"Content-Type": "application/json"},
     );
     return response;

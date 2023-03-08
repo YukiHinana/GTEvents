@@ -26,7 +26,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         }
     );
     var response = await http.post(
-        Uri.parse('http://localhost:8080/account/login'),
+        Uri.parse('http://3.145.83.83:8080/account/login'),
         headers: {"Content-Type": "application/json"},
         body: loginData
     );
@@ -48,7 +48,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         }
     );
     var response = await http.post(
-        Uri.parse('http://localhost:8080/account/login'),
+        Uri.parse('http://3.145.83.83:8080/account/login'),
         headers: {"Content-Type": "application/json"},
         body: loginData
     );

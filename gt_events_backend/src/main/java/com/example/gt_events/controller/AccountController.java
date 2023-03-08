@@ -12,6 +12,7 @@ import com.example.gt_events.model.CreateAccountRequest;
 import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.TokenRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class AccountController {
 
     private TokenRepository tokenRepository;
 
+    @Autowired
     public AccountController(AccountRepository accountRepository, TokenRepository tokenRepository) {
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;

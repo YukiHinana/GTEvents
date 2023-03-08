@@ -43,7 +43,7 @@ class _NewPostPageState extends State<NewPostPage> {
         }
     );
     var response = await http.post(
-        Uri.parse('http://localhost:8080/post/create'),
+        Uri.parse('http://3.145.83.83:8080/post/create'),
         headers: {"Content-Type": "application/json", "Authorization": token},
         body: postData
     );

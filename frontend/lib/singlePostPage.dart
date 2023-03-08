@@ -22,7 +22,7 @@ class _SinglePostPageState extends State<SinglePostPage> {
 
   Future<http.Response> getSinglePostRequest() async {
     var response = await http.get(
-      Uri.parse('http://localhost:8080/post/${widget.postId}'),
+      Uri.parse('http://3.145.83.83:8080/post/${widget.postId}'),
       headers: {"Content-Type": "application/json"},
     );
     return response;
