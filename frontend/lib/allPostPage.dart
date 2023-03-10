@@ -28,6 +28,7 @@ class _MyPostPageState extends State<MyPostPage> {
   Future<List<Post>> getPosts() async {
     List<Post> postList = [];
     http.Response re = await getAllPostRequest();
+
     if (re.statusCode == 200) {
       for (var info in jsonDecode(re.body)['data'] as List<dynamic>) {
         postList.add(Post.fromJson(info));
@@ -89,7 +90,7 @@ class _MyPostPageState extends State<MyPostPage> {
                     context: context,
                     builder: (BuildContext context) =>
                         SimpleDialog(
-                          title: const Text('Alert'),
+                          title: const Text('Delete'),
                           children: <Widget>[
                             SimpleDialogOption(
                               onPressed: () {Navigator.pop(context, true);},
