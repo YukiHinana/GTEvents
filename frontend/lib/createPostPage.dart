@@ -16,6 +16,7 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
   late TextEditingController _postTitleController;
   late TextEditingController _postBodyController;
+  // TODO: replace with redux
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Post post = Post(0, "", "", "");

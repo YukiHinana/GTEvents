@@ -1,9 +1,9 @@
 package com.example.gt_events.model;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class DeletePostRequest {
-    @NotBlank
+    @NotNull
     private Long postId;
 
     public DeletePostRequest() {
