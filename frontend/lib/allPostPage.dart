@@ -91,6 +91,8 @@ class _MyPostPageState extends State<MyPostPage> {
                     builder: (BuildContext context) =>
                         SimpleDialog(
                           title: const Text('Delete'),
+                          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red
+                          ),
                           children: <Widget>[
                             SimpleDialogOption(
                               onPressed: () {Navigator.pop(context, true);},
