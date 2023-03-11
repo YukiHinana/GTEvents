@@ -9,7 +9,7 @@
 3. Open the project in the editor of your choice and run
 4. In this sprint, we will skip the login page. Click "Skip" to proceed.
 5. Click "+" to add an event. Slide to the left or right to delete an event.
-
+6. We only target mobile platform, while it runs on web / desktop. We only test and validate for mobile
 
 # Backend
 Run `./gradlew bootRun`
