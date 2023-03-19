@@ -39,7 +39,7 @@ public class Event {
     private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account author;
 

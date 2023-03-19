@@ -3,6 +3,7 @@ package com.example.gt_events.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,10 +22,13 @@ public class Account {
     @Column(nullable = false)
     private boolean isOrganizer;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id")
-    private List<Event> savedEvents;
+    @OneToMany(mappedBy = "author")
+    private List<Event> createdEvents = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = {@JoinColumn(name = "account_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_id")})
+    private List<Event> savedEvents = new ArrayList<>();
 
     public Account() {
     }
@@ -61,11 +65,21 @@ public class Account {
         this.password = password;
     }
 
-    public boolean isOrganizer() {
-        return isOrganizer;
+
+
+    public List<Event> getCreatedEvents() {
+        return createdEvents;
     }
 
-    public void setIsOrganizer(boolean isOrganizer) {
-        isOrganizer = isOrganizer;
+    public void setCreatedEvents(List<Event> createdEvents) {
+        this.createdEvents = createdEvents;
+    }
+
+    public List<Event> getSavedEvents() {
+        return savedEvents;
+    }
+
+    public void setSavedEvents(List<Event> savedEvents) {
+        this.savedEvents = savedEvents;
     }
 }

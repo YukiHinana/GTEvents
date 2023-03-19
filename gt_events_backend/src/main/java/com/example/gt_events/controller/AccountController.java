@@ -3,6 +3,7 @@ package com.example.gt_events.controller;
 import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
 import com.example.gt_events.entity.Account;
+import com.example.gt_events.entity.Event;
 import com.example.gt_events.entity.Token;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.AccountChangePasswordRequest;
@@ -10,6 +11,7 @@ import com.example.gt_events.model.AccountLogoutRequest;
 import com.example.gt_events.model.DeleteAccountRequest;
 import com.example.gt_events.model.CreateAccountRequest;
 import com.example.gt_events.repo.AccountRepository;
+import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TokenRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +26,17 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-    private AccountRepository accountRepository;
-
-    private TokenRepository tokenRepository;
+    private final AccountRepository accountRepository;
+    private final TokenRepository tokenRepository;
+    private final EventRepository eventRepository;
 
     @Autowired
-    public AccountController(AccountRepository accountRepository, TokenRepository tokenRepository) {
+    public AccountController(AccountRepository accountRepository,
+                             TokenRepository tokenRepository,
+                             EventRepository eventRepository) {
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
+        this.eventRepository = eventRepository;
     }
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -122,6 +127,19 @@ public class AccountController {
         } else {
             tokenRepository.delete(token.get());
         }
+        return new ResponseWrapper<>("Account logged out");
+    }
+
+    @PostMapping("/save/events/{eventId}")
+    @RequireAuth
+    public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
+        List<Event> savedEventList = a.getSavedEvents();
+        if (savedEventList.contains(event)) {
+            throw new InvalidRequestException("event already in the list");
+        }
+        savedEventList.add(event);
         return new ResponseWrapper<>("Account logged out");
     }
 }
