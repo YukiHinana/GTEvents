@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -135,11 +136,8 @@ public class AccountController {
     public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new InvalidRequestException("can't find this event"));
-        List<Event> savedEventList = a.getSavedEvents();
-        if (savedEventList.contains(event)) {
-            throw new InvalidRequestException("event already in the list");
-        }
-        savedEventList.add(event);
-        return new ResponseWrapper<>("Account logged out");
+        a.getSavedEvents().add(event);
+        accountRepository.save(a);
+        return new ResponseWrapper<>(a.getSavedEvents());
     }
 }

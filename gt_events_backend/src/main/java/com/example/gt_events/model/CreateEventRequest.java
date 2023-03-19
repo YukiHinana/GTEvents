@@ -3,7 +3,7 @@ package com.example.gt_events.model;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 public class CreateEventRequest {
     @NotBlank
@@ -21,13 +21,13 @@ public class CreateEventRequest {
 
     private int fee;
 
-    private List<Long> tagIds;
+    private LinkedHashSet<Long> tagIds;
 
     public CreateEventRequest() {
     }
 
     public CreateEventRequest(String title, String location, String description, Date eventDate,
-                              int capacity, int fee, List<Long> tagIds) {
+                              int capacity, int fee, LinkedHashSet<Long> tagIds) {
         this.title = title;
         this.location = location;
         this.description = description;
@@ -93,11 +93,11 @@ public class CreateEventRequest {
         this.eventDate = eventDate;
     }
 
-    public List<Long> getTagIds() {
+    public LinkedHashSet<Long> getTagIds() {
         return tagIds;
     }
 
-    public void setTagIds(List<Long> tagIds) {
+    public void setTagIds(LinkedHashSet<Long> tagIds) {
         this.tagIds = tagIds;
     }
 }

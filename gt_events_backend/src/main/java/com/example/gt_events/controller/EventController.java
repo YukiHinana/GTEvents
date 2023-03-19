@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +56,8 @@ public class EventController {
     @PostMapping("/create")
     @RequireAuth(requireOrganizer = true)
     public ResponseWrapper<?> createEvent(@RequestBody @Valid CreateEventRequest request, Account a) {
-        List<Long> tagIds = request.getTagIds();
-        List<Tag> tagList = new ArrayList<>();
+        LinkedHashSet<Long> tagIds = request.getTagIds();
+        LinkedHashSet<Tag> tagList = new LinkedHashSet<>();
         for (Long id : tagIds) {
             Optional<Tag> result = tagRepository.findById(id);
             if (result.isEmpty()) {
@@ -80,8 +81,8 @@ public class EventController {
         if (!a.getUsername().equals(event.getAuthor().getUsername())) {
             throw new InvalidRequestException("can't edit the event");
         }
-        List<Long> tagIds = request.getTagIds();
-        List<Tag> tagList = new ArrayList<>();
+        LinkedHashSet<Long> tagIds = request.getTagIds();
+        LinkedHashSet<Tag> tagList = new LinkedHashSet<>();
         for (Long id : tagIds) {
             Optional<Tag> result = tagRepository.findById(id);
             if (result.isEmpty()) {

@@ -3,8 +3,7 @@ package com.example.gt_events.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 @Entity
 public class Account {
@@ -23,12 +22,12 @@ public class Account {
     private boolean isOrganizer;
 
     @OneToMany(mappedBy = "author")
-    private List<Event> createdEvents = new ArrayList<>();
+    private LinkedHashSet<Event> createdEvents = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(joinColumns = {@JoinColumn(name = "account_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")})
-    private List<Event> savedEvents = new ArrayList<>();
+    private LinkedHashSet<Event> savedEvents = new LinkedHashSet<>();
 
     public Account() {
     }
@@ -65,21 +64,27 @@ public class Account {
         this.password = password;
     }
 
+    public boolean isOrganizer() {
+        return isOrganizer;
+    }
 
+    public void setOrganizer(boolean organizer) {
+        isOrganizer = organizer;
+    }
 
-    public List<Event> getCreatedEvents() {
+    public LinkedHashSet<Event> getCreatedEvents() {
         return createdEvents;
     }
 
-    public void setCreatedEvents(List<Event> createdEvents) {
+    public void setCreatedEvents(LinkedHashSet<Event> createdEvents) {
         this.createdEvents = createdEvents;
     }
 
-    public List<Event> getSavedEvents() {
+    public LinkedHashSet<Event> getSavedEvents() {
         return savedEvents;
     }
 
-    public void setSavedEvents(List<Event> savedEvents) {
+    public void setSavedEvents(LinkedHashSet<Event> savedEvents) {
         this.savedEvents = savedEvents;
     }
 }
