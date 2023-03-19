@@ -1,9 +1,9 @@
 package com.example.gt_events.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Account {
@@ -11,16 +11,23 @@ public class Account {
     @GeneratedValue
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false)
     private boolean isOrganizer;
 
-    public Account() {}
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private List<Event> savedEvents;
+
+    public Account() {
+    }
 
     public Account(String username, String password) {
         this.username = username;
@@ -32,6 +39,10 @@ public class Account {
         this.username = username;
         this.password = password;
         this.isOrganizer = isOrganizer;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -54,7 +65,7 @@ public class Account {
         return isOrganizer;
     }
 
-    public void setOrganizer(boolean organizer) {
-        isOrganizer = organizer;
+    public void setIsOrganizer(boolean isOrganizer) {
+        isOrganizer = isOrganizer;
     }
 }

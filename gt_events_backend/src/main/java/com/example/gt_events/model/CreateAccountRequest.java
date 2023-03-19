@@ -45,7 +45,7 @@ public class CreateAccountRequest {
         return isOrganizer;
     }
 
-    public void setOrganizer(boolean organizer) {
-        isOrganizer = organizer;
+    public void setOrganizer(boolean isOrganizer) {
+        isOrganizer = isOrganizer;
     }
 }

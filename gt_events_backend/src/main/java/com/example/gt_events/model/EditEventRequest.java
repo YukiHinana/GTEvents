@@ -2,17 +2,21 @@ package com.example.gt_events.model;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class PostRequest {
+public class EditEventRequest {
+    @NotBlank
+    private Long eventId;
+
     @NotBlank
     private String title;
 
     @NotBlank
     private String body;
 
-    public PostRequest() {
+    public EditEventRequest() {
     }
 
-    public PostRequest(String title, String body) {
+    public EditEventRequest(Long eventId, String title, String body) {
+        this.eventId = eventId;
         this.title = title;
         this.body = body;
     }
@@ -31,5 +35,13 @@ public class PostRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 }

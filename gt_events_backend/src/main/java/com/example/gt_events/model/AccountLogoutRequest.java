@@ -1,6 +1,9 @@
 package com.example.gt_events.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class AccountLogoutRequest {
+    @NotBlank
     private String token;
 
     public AccountLogoutRequest() {

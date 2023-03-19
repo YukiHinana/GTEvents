@@ -31,10 +31,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (a != null) {
                 if (token != null && !token.isEmpty()) {
                     Optional<Token> result = tokenRepository.findByUuid(token);
-
                     if (result.isPresent()) {
-                        curAccount.set(result.get().getAccount());
-                        System.out.println(result.get());
+                        curAccount.set(result.get().getOwner());
                         if (!a.requireOrganizer() || curAccount.get().isOrganizer()) {
                             return true;
                         }

@@ -7,7 +7,7 @@ import com.example.gt_events.entity.Token;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.AccountChangePasswordRequest;
 import com.example.gt_events.model.AccountLogoutRequest;
-import com.example.gt_events.model.AccountRequest;
+import com.example.gt_events.model.DeleteAccountRequest;
 import com.example.gt_events.model.CreateAccountRequest;
 import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.TokenRepository;
@@ -42,8 +42,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseWrapper<?> getAccountById(@PathVariable Long id)
-            throws InvalidRequestException {
+    public ResponseWrapper<?> getAccountById(@PathVariable Long id) throws InvalidRequestException {
         Optional<Account> result = accountRepository.findById(id);
         if (result.isEmpty()) {
             throw new InvalidRequestException("Account not found");
@@ -58,22 +57,13 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseWrapper<String> deleteAccountById(@RequestBody AccountRequest request) {
-        if (request.getUsername() == null || request.getUsername().isEmpty()
-                || request.getPassword() == null || request.getPassword().isEmpty()) {
+    @RequireAuth
+    public ResponseWrapper<String> deleteAccountById(Account a) {
+        if (accountRepository.findById(a.getId()).isEmpty()) {
             throw new InvalidRequestException("Failed. Account not found.");
-        }
-        Optional<Account> result = accountRepository.findByUsername(request.getUsername());
-        if (result.isEmpty()) {
-            throw new InvalidRequestException("Failed. Account not found.");
-        }
-        Account targetAccount = result.get();
-        if (!bCryptPasswordEncoder.matches(request.getPassword(), targetAccount.getPassword())) {
-            throw new InvalidRequestException("Failed. Incorrect password.");
         } else {
-            accountRepository.delete(targetAccount);
-            tokenRepository.deleteTokensByAccount(targetAccount);
-            return new ResponseWrapper<>("Account " + request.getUsername() + " successfully deleted");
+            accountRepository.delete(a);
+            return new ResponseWrapper<>("Account " + a.getUsername() + " successfully deleted");
         }
     }
 
@@ -86,13 +76,13 @@ public class AccountController {
         // TODO: change isOrganizer later
         Account newAccount = new Account(request.getUsername(),
                 bCryptPasswordEncoder.encode(request.getPassword()),
-                true);
+                false);
         accountRepository.save(newAccount);
         return new ResponseWrapper<>("Sign up success");
     }
 
     @PostMapping("/login")
-    public ResponseWrapper<?> login(@RequestBody @Valid AccountRequest request) {
+    public ResponseWrapper<?> login(@RequestBody @Valid DeleteAccountRequest request) {
         String username = request.getUsername();
         Optional<Account> account = accountRepository.findByUsername(username);
         if (account.isPresent()) {
@@ -105,32 +95,27 @@ public class AccountController {
         throw new InvalidRequestException("Incorrect username or password");
     }
 
-    @PutMapping("/replace")
+    @PutMapping("/reset")
     @Transactional
-    public ResponseWrapper<?> changePassword(@RequestBody AccountChangePasswordRequest request) {
-        if (request.getUsername() == null || request.getUsername().isEmpty()
-                || request.getOldPassword() == null || request.getOldPassword().isEmpty()
-                || request.getNewPassword() == null || request.getNewPassword().isEmpty()) {
-            throw new InvalidRequestException("Username and password required1");
-        }
+    public ResponseWrapper<?> changePassword(@RequestBody @Valid AccountChangePasswordRequest request) {
         if (request.getOldPassword().equals(request.getNewPassword())) {
             throw new InvalidRequestException("The new password cannot be the same as the old one");
         }
-
         Optional<Account> account = accountRepository.findByUsername(request.getUsername());
         if (account.isPresent()) {
             if (bCryptPasswordEncoder.matches(request.getOldPassword(), account.get().getPassword())) {
                 Account a = account.get();
-                tokenRepository.deleteTokensByAccount(a);
+                tokenRepository.deleteTokensByOwner(a);
                 a.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
-                return new ResponseWrapper<>(accountRepository.save(a));
+                accountRepository.save(a);
+                return new ResponseWrapper<>("Success");
             }
         }
-        throw new InvalidRequestException("Incorrect username or password2");
+        throw new InvalidRequestException("Incorrect username or password");
     }
 
     @PostMapping("/logout")
-    public ResponseWrapper<?> logout(@RequestBody AccountLogoutRequest request) {
+    public ResponseWrapper<?> logout(@RequestBody @Valid AccountLogoutRequest request) {
         Optional<Token> token = tokenRepository.findByUuid(request.getToken());
         if (token.isEmpty()) {
             throw new InvalidRequestException("Invalid token");

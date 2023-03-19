@@ -1,9 +1,8 @@
 package com.example.gt_events.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 @Entity
@@ -15,14 +14,16 @@ public class Token {
     private String uuid;
 
     @ManyToOne
-    private Account account;
+    @JoinColumn(name = "account_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Account owner;
 
     public Token() {
     }
 
-    public Token(String uuid, Account account) {
+    public Token(String uuid, Account owner) {
         this.uuid = uuid;
-        this.account = account;
+        this.owner = owner;
     }
 
     public String getUuid() {
@@ -33,11 +34,11 @@ public class Token {
         this.uuid = uuid;
     }
 
-    public Account getAccount() {
-        return account;
+    public Account getOwner() {
+        return owner;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setOwner(Account owner) {
+        this.owner = owner;
     }
 }

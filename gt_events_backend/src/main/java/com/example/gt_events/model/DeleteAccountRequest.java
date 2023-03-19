@@ -2,17 +2,17 @@ package com.example.gt_events.model;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class AccountRequest {
+public class DeleteAccountRequest {
     @NotBlank
     private String username;
 
     @NotBlank
     private String password;
 
-    public AccountRequest() {
+    public DeleteAccountRequest() {
     }
 
-    public AccountRequest(String username, String password) {
+    public DeleteAccountRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }

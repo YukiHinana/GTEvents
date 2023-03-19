@@ -1,8 +1,15 @@
 package com.example.gt_events.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class AccountChangePasswordRequest {
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String oldPassword;
+
+    @NotBlank
     private String newPassword;
 
     public AccountChangePasswordRequest() {
