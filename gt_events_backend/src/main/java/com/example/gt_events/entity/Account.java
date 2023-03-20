@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 public class Account {
@@ -19,24 +20,27 @@ public class Account {
     private String password;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean isOrganizer;
 
     @OneToMany(mappedBy = "author")
-    private LinkedHashSet<Event> createdEvents = new LinkedHashSet<>();
+    @JsonIgnore
+    private Set<Event> createdEvents = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(joinColumns = {@JoinColumn(name = "account_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")})
-    private LinkedHashSet<Event> savedEvents = new LinkedHashSet<>();
+    @JsonIgnore
+    private Set<Event> savedEvents = new LinkedHashSet<>();
 
     public Account() {
     }
 
-    public Account(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.isOrganizer = true;
-    }
+//    public Account(String username, String password) {
+//        this.username = username;
+//        this.password = password;
+//        this.isOrganizer = true;
+//    }
 
     public Account(String username, String password, boolean isOrganizer) {
         this.username = username;
@@ -64,27 +68,27 @@ public class Account {
         this.password = password;
     }
 
-    public boolean isOrganizer() {
+    public boolean getIsOrganizer() {
         return isOrganizer;
     }
 
-    public void setOrganizer(boolean organizer) {
-        isOrganizer = organizer;
+    public void setIsOrganizer(boolean isOrganizer) {
+        this.isOrganizer = isOrganizer;
     }
 
-    public LinkedHashSet<Event> getCreatedEvents() {
+    public Set<Event> getCreatedEvents() {
         return createdEvents;
     }
 
-    public void setCreatedEvents(LinkedHashSet<Event> createdEvents) {
+    public void setCreatedEvents(Set<Event> createdEvents) {
         this.createdEvents = createdEvents;
     }
 
-    public LinkedHashSet<Event> getSavedEvents() {
+    public Set<Event> getSavedEvents() {
         return savedEvents;
     }
 
-    public void setSavedEvents(LinkedHashSet<Event> savedEvents) {
+    public void setSavedEvents(Set<Event> savedEvents) {
         this.savedEvents = savedEvents;
     }
 }

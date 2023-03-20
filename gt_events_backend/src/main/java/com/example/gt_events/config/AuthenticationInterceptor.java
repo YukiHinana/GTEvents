@@ -33,7 +33,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     Optional<Token> result = tokenRepository.findByUuid(token);
                     if (result.isPresent()) {
                         curAccount.set(result.get().getOwner());
-                        if (!a.requireOrganizer() || curAccount.get().isOrganizer()) {
+                        if (!a.requireOrganizer() || curAccount.get().getIsOrganizer()) {
                             return true;
                         }
                     }

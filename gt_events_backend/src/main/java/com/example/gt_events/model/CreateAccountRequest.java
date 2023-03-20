@@ -14,10 +14,10 @@ public class CreateAccountRequest {
     public CreateAccountRequest() {
     }
 
-    public CreateAccountRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+//    public CreateAccountRequest(String username, String password) {
+//        this.username = username;
+//        this.password = password;
+//    }
 
     public CreateAccountRequest(String username, String password, boolean isOrganizer) {
         this.username = username;
@@ -41,11 +41,11 @@ public class CreateAccountRequest {
         this.password = password;
     }
 
-    public boolean isOrganizer() {
+    public boolean getIsOrganizer() {
         return isOrganizer;
     }
 
-    public void setOrganizer(boolean isOrganizer) {
-        isOrganizer = isOrganizer;
+    public void setIsOrganizer(boolean isOrganizer) {
+        this.isOrganizer = isOrganizer;
     }
 }

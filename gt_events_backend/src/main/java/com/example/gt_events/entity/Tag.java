@@ -2,9 +2,6 @@ package com.example.gt_events.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 public class Tag {
     @Id

@@ -36,7 +36,7 @@ public class Event {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(joinColumns = {@JoinColumn(name = "event_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-    private LinkedHashSet<Tag> tags = new LinkedHashSet<>();
+    private Set<Tag> tags = new LinkedHashSet<>();
 
     @ManyToOne
     @JoinColumn
@@ -46,7 +46,7 @@ public class Event {
     public Event() {}
 
     public Event(String title, String location, String description, Date eventDate,
-                 int capacity, int fee, LinkedHashSet<Tag> tags, Account author) {
+                 int capacity, int fee, Set<Tag> tags, Account author) {
         this.title = title;
         this.location = location;
         this.description = description;
@@ -138,11 +138,11 @@ public class Event {
         this.fee = fee;
     }
 
-    public LinkedHashSet<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(LinkedHashSet<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 }

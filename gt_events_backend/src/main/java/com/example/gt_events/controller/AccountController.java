@@ -75,6 +75,7 @@ public class AccountController {
 
     @PostMapping("/register")
     public ResponseWrapper<?> register(@RequestBody @Valid CreateAccountRequest request) {
+        System.out.println(request.getIsOrganizer());
         Optional<Account> findAccount = accountRepository.findByUsername(request.getUsername());
         if (findAccount.isPresent()) {
             throw new InvalidRequestException("Username already exists!");
@@ -82,7 +83,7 @@ public class AccountController {
         // TODO: change isOrganizer later
         Account newAccount = new Account(request.getUsername(),
                 bCryptPasswordEncoder.encode(request.getPassword()),
-                false);
+                request.getIsOrganizer());
         accountRepository.save(newAccount);
         return new ResponseWrapper<>("Sign up success");
     }
@@ -138,6 +139,20 @@ public class AccountController {
                 .orElseThrow(() -> new InvalidRequestException("can't find this event"));
         a.getSavedEvents().add(event);
         accountRepository.save(a);
+        return new ResponseWrapper<>("success");
+    }
+
+//    @DeleteMapping("")
+
+    @GetMapping("/view/events/saved")
+    @RequireAuth
+    public ResponseWrapper<?> getSavedEvents(Account a) {
         return new ResponseWrapper<>(a.getSavedEvents());
+    }
+
+    @GetMapping("/view/events/created")
+    @RequireAuth
+    public ResponseWrapper<?> getCreatedEvents(Account a) {
+        return new ResponseWrapper<>(a.getCreatedEvents());
     }
 }
