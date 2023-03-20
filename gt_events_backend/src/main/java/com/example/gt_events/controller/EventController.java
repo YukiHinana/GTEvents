@@ -39,21 +39,12 @@ public class EventController {
         this.tagRepository = tagRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/events")
     public ResponseWrapper<List<Event>> getEvents() {
         return new ResponseWrapper<>(eventRepository.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseWrapper<?> getEvent(@PathVariable Long id) {
-        Optional<Event> event = eventRepository.findById(id);
-        if (event.isEmpty()) {
-            throw new InvalidRequestException("Event does not exist");
-        }
-        return new ResponseWrapper<>(event.get());
-    }
-
-    @PostMapping("/create")
+    @PostMapping("/events")
     @RequireAuth(requireOrganizer = true)
     public ResponseWrapper<?> createEvent(@RequestBody @Valid CreateEventRequest request, Account a) {
         LinkedHashSet<Long> tagIds = request.getTagIds();
@@ -70,9 +61,18 @@ public class EventController {
         return new ResponseWrapper<>(eventRepository.save(event));
     }
 
-    @PutMapping("/{eventId}")
+    @GetMapping("/events/{eventId}")
+    public ResponseWrapper<?> getEvent(@PathVariable Long eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (event.isEmpty()) {
+            throw new InvalidRequestException("Event does not exist");
+        }
+        return new ResponseWrapper<>(event.get());
+    }
+
+    @PutMapping("/events/{eventId}")
     @RequireAuth(requireOrganizer = true)
-    public ResponseWrapper<?> addTag(@PathVariable Long eventId, @RequestBody @Valid CreateEventRequest request, Account a) {
+    public ResponseWrapper<?> editEvent(@PathVariable Long eventId, @RequestBody @Valid CreateEventRequest request, Account a) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new InvalidRequestException("can't find the event");
@@ -100,19 +100,10 @@ public class EventController {
         return new ResponseWrapper<>(eventRepository.save(event));
     }
 
-    @GetMapping("/{eventId}/tags")
-    public ResponseWrapper<?> getTagsByEvent(@PathVariable Long eventId) {
-        Optional<Event> result = eventRepository.findById(eventId);
-        if (result.isEmpty()) {
-            throw new InvalidRequestException("can't find the event");
-        }
-        return new ResponseWrapper<>(result.get().getTags());
-    }
-
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/events/{eventId}")
     @RequireAuth(requireOrganizer = true)
-    public ResponseWrapper<?> deleteEvent(@PathVariable Long id, Account a) {
-        Optional<Event> result = eventRepository.findById(id);
+    public ResponseWrapper<?> deleteEvent(@PathVariable Long eventId, Account a) {
+        Optional<Event> result = eventRepository.findById(eventId);
         if (result.isEmpty()) {
             throw new InvalidRequestException("can't find the event");
         }
@@ -121,5 +112,46 @@ public class EventController {
         }
         eventRepository.delete(result.get());
         return new ResponseWrapper<>("successfully delete the event");
+    }
+
+    @GetMapping("/events/{eventId}/tags")
+    public ResponseWrapper<?> getTagsByEvent(@PathVariable Long eventId) {
+        Optional<Event> result = eventRepository.findById(eventId);
+        if (result.isEmpty()) {
+            throw new InvalidRequestException("can't find the event");
+        }
+        return new ResponseWrapper<>(result.get().getTags());
+    }
+
+    @PostMapping("/saved/{eventId}")
+    @RequireAuth
+    public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
+        a.getSavedEvents().add(event);
+        accountRepository.save(a);
+        return new ResponseWrapper<>("success");
+    }
+
+    @DeleteMapping("/saved/{eventId}")
+    @RequireAuth
+    public ResponseWrapper<?> deleteSavedEvent(@PathVariable Long eventId, Account a) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
+        a.getSavedEvents().remove(event);
+        accountRepository.save(a);
+        return new ResponseWrapper<>("success");
+    }
+
+    @GetMapping("/saved")
+    @RequireAuth
+    public ResponseWrapper<?> getSavedEvents(Account a) {
+        return new ResponseWrapper<>(a.getSavedEvents());
+    }
+
+    @GetMapping("/created")
+    @RequireAuth
+    public ResponseWrapper<?> getCreatedEvents(Account a) {
+        return new ResponseWrapper<>(a.getCreatedEvents());
     }
 }

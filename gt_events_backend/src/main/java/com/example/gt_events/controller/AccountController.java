@@ -42,6 +42,7 @@ public class AccountController {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+    // for test
     @GetMapping("/")
     public ResponseWrapper<List<Account>> getAllAccounts() {
         return new ResponseWrapper<>(accountRepository.findAll());
@@ -56,6 +57,7 @@ public class AccountController {
         return new ResponseWrapper<>(result.get());
     }
 
+    // for test
     @GetMapping("/find")
     @RequireAuth
     public ResponseWrapper<?> getAccountByToken(Account a) {
@@ -75,7 +77,6 @@ public class AccountController {
 
     @PostMapping("/register")
     public ResponseWrapper<?> register(@RequestBody @Valid CreateAccountRequest request) {
-        System.out.println(request.getIsOrganizer());
         Optional<Account> findAccount = accountRepository.findByUsername(request.getUsername());
         if (findAccount.isPresent()) {
             throw new InvalidRequestException("Username already exists!");
@@ -90,8 +91,7 @@ public class AccountController {
 
     @PostMapping("/login")
     public ResponseWrapper<?> login(@RequestBody @Valid DeleteAccountRequest request) {
-        String username = request.getUsername();
-        Optional<Account> account = accountRepository.findByUsername(username);
+        Optional<Account> account = accountRepository.findByUsername(request.getUsername());
         if (account.isPresent()) {
             if (bCryptPasswordEncoder.matches(request.getPassword(), account.get().getPassword())) {
                 String uuid = UUID.randomUUID().toString();
@@ -123,36 +123,33 @@ public class AccountController {
 
     @PostMapping("/logout")
     public ResponseWrapper<?> logout(@RequestBody @Valid AccountLogoutRequest request) {
-        Optional<Token> token = tokenRepository.findByUuid(request.getToken());
-        if (token.isEmpty()) {
-            throw new InvalidRequestException("Invalid token");
-        } else {
-            tokenRepository.delete(token.get());
-        }
+        Token token = tokenRepository.findByUuid(request.getToken())
+                .orElseThrow(() -> new InvalidRequestException("Invalid token"));
+        tokenRepository.delete(token);
         return new ResponseWrapper<>("Account logged out");
     }
 
-    @PostMapping("/save/events/{eventId}")
-    @RequireAuth
-    public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
-        a.getSavedEvents().add(event);
-        accountRepository.save(a);
-        return new ResponseWrapper<>("success");
-    }
+//    @PostMapping("/save/events/{eventId}")
+//    @RequireAuth
+//    public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
+//        Event event = eventRepository.findById(eventId)
+//                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
+//        a.getSavedEvents().add(event);
+//        accountRepository.save(a);
+//        return new ResponseWrapper<>("success");
+//    }
 
 //    @DeleteMapping("")
 
-    @GetMapping("/view/events/saved")
-    @RequireAuth
-    public ResponseWrapper<?> getSavedEvents(Account a) {
-        return new ResponseWrapper<>(a.getSavedEvents());
-    }
-
-    @GetMapping("/view/events/created")
-    @RequireAuth
-    public ResponseWrapper<?> getCreatedEvents(Account a) {
-        return new ResponseWrapper<>(a.getCreatedEvents());
-    }
+//    @GetMapping("/view/events/saved")
+//    @RequireAuth
+//    public ResponseWrapper<?> getSavedEvents(Account a) {
+//        return new ResponseWrapper<>(a.getSavedEvents());
+//    }
+//
+//    @GetMapping("/view/events/created")
+//    @RequireAuth
+//    public ResponseWrapper<?> getCreatedEvents(Account a) {
+//        return new ResponseWrapper<>(a.getCreatedEvents());
+//    }
 }
