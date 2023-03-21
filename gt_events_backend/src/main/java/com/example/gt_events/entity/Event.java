@@ -1,9 +1,11 @@
 package com.example.gt_events.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Entity
@@ -17,9 +19,11 @@ public class Event {
     private String location;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date eventDate;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER, pattern = "s")
+    private Timestamp eventDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date eventCreateDate;
 
     private String description;
@@ -45,12 +49,13 @@ public class Event {
 
     public Event() {}
 
-    public Event(String title, String location, String description, Date eventDate,
+    public Event(String title, String location, String description, Timestamp eventDate,
                  int capacity, int fee, Set<Tag> tags, Account author) {
         this.title = title;
         this.location = location;
         this.description = description;
         this.eventDate = eventDate;
+        this.eventCreateDate = new Date();
         this.participantNum = 0;
         this.capacity = capacity;
         this.fee = fee;
@@ -82,11 +87,11 @@ public class Event {
         this.author = author;
     }
 
-    public Date getEventDate() {
+    public Timestamp getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date eventDate) {
+    public void setEventDate(Timestamp eventDate) {
         this.eventDate = eventDate;
     }
 
