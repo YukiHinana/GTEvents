@@ -11,17 +11,20 @@ import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
 import com.example.gt_events.repo.TokenRepository;
+import com.example.gt_events.service.FileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @RestController
@@ -31,14 +34,16 @@ public class EventController {
     private final AccountRepository accountRepository;
     private final TokenRepository tokenRepository;
     private final TagRepository tagRepository;
+    private final FileService fileService;
 
     @Autowired
     public EventController(EventRepository eventRepository, AccountRepository accountRepository,
-                           TokenRepository tokenRepository, TagRepository tagRepository) {
+                           TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService) {
         this.eventRepository = eventRepository;
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
         this.tagRepository = tagRepository;
+        this.fileService = fileService;
     }
 
     @GetMapping("/events")
@@ -56,10 +61,18 @@ public class EventController {
 
     @GetMapping("/events/find/event-creation-date-between")
     public ResponseWrapper<?> getEventsByCreationDateRange(@RequestParam int pageNumber, @RequestParam int pageSize,
-                                                   @RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+                                                   @RequestParam Date startDate, @RequestParam Date endDate) {
         Pageable aa = PageRequest.of(pageNumber, pageSize);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        return new ResponseWrapper<>(eventRepository.findByEventCreateDateBetween(formatter.parse(startDate), formatter.parse(endDate), aa));
+        return new ResponseWrapper<>(eventRepository.findByEventCreationDateBetween(startDate, endDate, aa));
+    }
+
+    @PostMapping("/events/file-upload")
+//    @RequireAuth
+    public ResponseWrapper<?> handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+//        eventRepository
+        String key = UUID.randomUUID().toString();
+        fileService.uploadStream(key, file.getInputStream());
+        return new ResponseWrapper<>(key);
     }
 
     @PostMapping("/events")

@@ -36,12 +36,6 @@ public class Account {
     public Account() {
     }
 
-//    public Account(String username, String password) {
-//        this.username = username;
-//        this.password = password;
-//        this.isOrganizer = true;
-//    }
-
     public Account(String username, String password, boolean isOrganizer) {
         this.username = username;
         this.password = password;

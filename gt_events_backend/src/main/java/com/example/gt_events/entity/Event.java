@@ -20,11 +20,13 @@ public class Event {
     private Date eventDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date eventCreateDate;
+    private Date eventCreationDate;
 
     private String description;
 
     // TODO: create a field for uploading pictures
+    @ElementCollection
+    private List<String> imagesKeys;
 
     // RSVP
     private int participantNum;
@@ -51,12 +53,13 @@ public class Event {
         this.location = location;
         this.description = description;
         this.eventDate = eventDate;
-        this.eventCreateDate = new Date();
+        this.eventCreationDate = new Date();
         this.participantNum = 0;
         this.capacity = capacity;
         this.fee = fee;
         this.tags = tags;
         this.author = author;
+        this.imagesKeys = new ArrayList<>();
     }
 
     public Long getId() {
@@ -115,12 +118,8 @@ public class Event {
         this.location = location;
     }
 
-    public Date getEventCreateDate() {
-        return eventCreateDate;
-    }
-
-    public void setEventCreateDate(Date eventCreateDate) {
-        this.eventCreateDate = eventCreateDate;
+    public Date getEventCreationDate() {
+        return eventCreationDate;
     }
 
     public int getCapacity() {
