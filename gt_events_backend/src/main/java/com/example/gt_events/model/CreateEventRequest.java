@@ -1,9 +1,7 @@
 package com.example.gt_events.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
@@ -17,8 +15,7 @@ public class CreateEventRequest {
     @NotBlank
     private String description;
 
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER, pattern = "s")
-    private Timestamp eventDate;
+    private Date eventDate;
 
     private int capacity;
 
@@ -29,7 +26,7 @@ public class CreateEventRequest {
     public CreateEventRequest() {
     }
 
-    public CreateEventRequest(String title, String location, String description, Timestamp eventDate,
+    public CreateEventRequest(String title, String location, String description, Date eventDate,
                               int capacity, int fee, LinkedHashSet<Long> tagIds) {
         this.title = title;
         this.location = location;
@@ -80,11 +77,11 @@ public class CreateEventRequest {
         this.fee = fee;
     }
 
-    public Timestamp getEventDate() {
+    public Date getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Timestamp eventDate) {
+    public void setEventDate(Date eventDate) {
         this.eventDate = eventDate;
     }
 

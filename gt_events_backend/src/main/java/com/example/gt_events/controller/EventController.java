@@ -8,17 +8,19 @@ import com.example.gt_events.entity.Tag;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
 import com.example.gt_events.repo.AccountRepository;
-
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
 import com.example.gt_events.repo.TokenRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -40,8 +42,24 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseWrapper<List<Event>> getEvents() {
-        return new ResponseWrapper<>(eventRepository.findAll());
+    public ResponseWrapper<?> getEvents(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        Pageable aa = PageRequest.of(pageNumber, pageSize);
+        return new ResponseWrapper<>(eventRepository.findAll(aa));
+    }
+
+    @GetMapping("/events/find/event-date-between")
+    public ResponseWrapper<?> getEventsByDateRange(@RequestParam int pageNumber, @RequestParam int pageSize,
+                                                   @RequestParam Date startDate, @RequestParam Date endDate) {
+        Pageable aa = PageRequest.of(pageNumber, pageSize);
+        return new ResponseWrapper<>(eventRepository.findByEventDateBetween(startDate, endDate, aa));
+    }
+
+    @GetMapping("/events/find/event-creation-date-between")
+    public ResponseWrapper<?> getEventsByCreationDateRange(@RequestParam int pageNumber, @RequestParam int pageSize,
+                                                   @RequestParam String startDate, @RequestParam String endDate) throws ParseException {
+        Pageable aa = PageRequest.of(pageNumber, pageSize);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        return new ResponseWrapper<>(eventRepository.findByEventCreateDateBetween(formatter.parse(startDate), formatter.parse(endDate), aa));
     }
 
     @PostMapping("/events")
