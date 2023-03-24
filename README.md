@@ -12,4 +12,5 @@
 6. We only target mobile platform, while it runs on web / desktop. We only test and validate for mobile
 
 # Backend
-Run `./gradlew bootRun`
+Run `./gradlew -DDB_PASSWORD={yourDatabasePassword} -DDB_USERNAME={yourDatabaseUsername} 
+-DDB_NAME={yourDatabaseName} -DIAM_KEY={yourIAMKey} -DIAM_KEY_SECRET={yourIAMKeySecret} bootRun`
