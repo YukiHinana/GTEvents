@@ -1,5 +1,6 @@
 package com.example.gt_events.controller;
 
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
 import com.example.gt_events.entity.Account;
@@ -12,7 +13,9 @@ import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
 import com.example.gt_events.repo.TokenRepository;
 import com.example.gt_events.service.FileService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 @RestController
@@ -66,13 +66,26 @@ public class EventController {
         return new ResponseWrapper<>(eventRepository.findByEventCreationDateBetween(startDate, endDate, aa));
     }
 
-    @PostMapping("/events/file-upload")
+    @PostMapping("/events/{eventId}/file")
 //    @RequireAuth
-    public ResponseWrapper<?> handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
-//        eventRepository
+    public ResponseWrapper<?> handleFileUpload(@PathVariable Long eventId, @RequestParam("file") MultipartFile file)
+            throws IOException {
         String key = UUID.randomUUID().toString();
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new InvalidRequestException("no such event"));
+        event.getImagesKeys().add(key);
+        eventRepository.save(event);
         fileService.uploadStream(key, file.getInputStream());
         return new ResponseWrapper<>(key);
+    }
+
+    @GetMapping("/events/{eventId}/file/{fileKey}")
+//    @RequireAuth
+    public void handleFileDownload(@PathVariable Long eventId, @PathVariable String fileKey, HttpServletResponse response) throws IOException {
+        S3ObjectInputStream inputStream = fileService.downloadStream(fileKey);
+        IOUtils.copy(inputStream, response.getOutputStream());
+        inputStream.close();
+        response.flushBuffer();
     }
 
     @PostMapping("/events")

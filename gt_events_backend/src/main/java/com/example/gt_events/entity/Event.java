@@ -145,4 +145,12 @@ public class Event {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    public List<String> getImagesKeys() {
+        return imagesKeys;
+    }
+
+    public void setImagesKeys(List<String> imagesKeys) {
+        this.imagesKeys = imagesKeys;
+    }
 }
