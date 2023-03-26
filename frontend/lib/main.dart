@@ -44,13 +44,6 @@ class MyApp extends StatelessWidget {
 final GoRouter _router = GoRouter(
   initialLocation: '/events',
   routes: <RouteBase>[
-    // GoRoute(
-    //     name: "home",
-    //     path: '/home',
-    //     builder: (BuildContext context, GoRouterState state) {
-    //       return const HomePage();
-    //     }
-    // ),
     GoRoute(
       name: "login",
       path: '/login',
@@ -58,13 +51,6 @@ final GoRouter _router = GoRouter(
         return const MyLoginPage();
       }
     ),
-    // GoRoute(
-    //     name: "createdEvents",
-    //     path: '/events/created',
-    //     builder: (BuildContext context, GoRouterState state) {
-    //       return const CreatedEventsPage();
-    //     }
-    // ),
     // GoRoute(
     //   path: '/signup',
     //   builder: (BuildContext context, GoRouterState state) {

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:GTEvents/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -73,6 +76,52 @@ class UserSideBar extends StatefulWidget {
 }
 
 class _UserSideBar extends State<UserSideBar> {
+  String username = "unko";
+
+  @override
+  void initState() {
+    super.initState();
+    // handleFindAccountByTokenRequest().then((value) {
+    //   setState(() {
+    //     username = value;
+    //   });
+    // });
+  }
+
+  Future<http.Response> handleLogoutRequest() async {
+    var logoutRequest = json.encode(
+        {
+          'token': StoreProvider.of<AppState>(context).state.token,
+        });
+    var response = await http.post(
+        Uri.parse('${Config.baseURL}/account/logout'),
+        headers: {"Content-Type": "application/json"},
+        body: logoutRequest
+    );
+    return response;
+  }
+
+  Future<String> handleFindAccountByTokenRequest() async {
+    var token = StoreProvider.of<AppState>(context).state.token;
+    if (token != null) {
+      var response = await http.get(
+          Uri.parse('${Config.baseURL}/account/find'),
+          headers: {"Content-Type": "application/json", "Authorization": token},
+      );
+      return jsonDecode(response.body)['data']['username'];
+    }
+    return "??";
+  }
+
+  Widget getUsername() {
+    handleFindAccountByTokenRequest().then((value) {
+      setState(() {
+        username = value;
+      });
+    });
+    return Text(username);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -82,11 +131,11 @@ class _UserSideBar extends State<UserSideBar> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const DrawerHeader(
-                    decoration: BoxDecoration(
+                DrawerHeader(
+                    decoration: const BoxDecoration(
                       color: Colors.blueAccent,
                     ),
-                    child: Text('username???')
+                    child: getUsername(),
                 ),
                 ListTile(
                   title: appState.token == null ? const Text('Login') : const Text('View Profile'),
@@ -99,6 +148,7 @@ class _UserSideBar extends State<UserSideBar> {
                 ListTile(
                   title: const Text('Created Events'),
                   onTap: () {
+                    handleFindAccountByTokenRequest();
                     context.pop();
                     context.push('/events/created');
                   },
@@ -108,6 +158,19 @@ class _UserSideBar extends State<UserSideBar> {
                   onTap: () {
                     context.pop();
                     context.push('/events/saved');
+                  },
+                ),
+                ListTile(
+                  title: appState.token == null ? const Text('') : const Text('Logout'),
+                  onTap: () {
+                    if (appState.token != null) {
+                      Future<http.Response> re = handleLogoutRequest();
+                      re.then((value) {
+                        if (value.statusCode == 200) {
+                          StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
+                        }
+                      });
+                    }
                   },
                 ),
               ],
