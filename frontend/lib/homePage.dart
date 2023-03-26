@@ -1,6 +1,7 @@
 import 'package:GTEvents/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,50 +26,64 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GTEvents')),
-      body: Column(
-        children: [
-          StoreConnector<AppState, VoidCallback>(
-              converter: (store) {
-                return () => store.dispatch(SetTokenAction("1"));
-              },
-            builder: (context, callback) {
-                return ElevatedButton(onPressed: callback, child: Text('1'));
-            },
-          ),
-          // Text(StoreProvider.of<AppState>(context).state.token??""),
-          StoreConnector<AppState, String>(
-              converter: (store) => store.state.token??"null",
-              builder: (context, token) => Text(token))
-        ],
+      appBar: AppBar(title: const Text('GTEvents')),
+      body: StoreConnector<AppState, AppState>(
+        converter: (store) {
+          return store.state;
+        },
+        builder: (context, appState) {
+          // TODO: test only, change this to events page
+          return Column(
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetTokenAction("1"));
+                  },
+                  child: Text('1')
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetTokenAction(null));
+                  },
+                  child: Text('0')
+              ),
+            ],
+          );
+        },
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                ),
-                child: Text('username???')
-            ),
-            ListTile(
-              title: Text('aa'),
-              onTap: () async {
-                final SharedPreferences prefs = await _prefs;
-                if (prefs.getString('token') != null) {
-
-                }
-              },
-            ),
-            ListTile(
-              title: Text('Created Events'),
-            ),
-            ListTile(
-              title: Text('Saved Events'),
-            ),
-          ],
-        ),
+      drawer: StoreConnector<AppState, AppState>(
+          converter: (store) => store.state,
+          builder: (context, appState) {
+            return Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                      ),
+                      child: Text('username???')
+                  ),
+                  ListTile(
+                    title: appState.token == null ? const Text('Login') : const Text('View Profile'),
+                    onTap: () {
+                      if (appState.token == null) {
+                        context.push('/login');
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Created Events'),
+                  ),
+                  ListTile(
+                    title: Text('Saved Events'),
+                  ),
+                ],
+              ),
+            );
+          }
       ),
     );
   }

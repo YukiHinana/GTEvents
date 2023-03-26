@@ -29,52 +29,60 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: const MaterialApp(
+      child: MaterialApp.router(
         title: 'hello',
-        home: HomePage(),
+        // home: HomePage(),
+        routerConfig: _router,
       ),
     );
   }
 }
 
-//
-// final GoRouter _router = GoRouter(
-//   initialLocation: '/login',
-//   routes: <RouteBase>[
-//     GoRoute(
-//       name: "home",
-//       path: '/login',
-//       builder: (BuildContext context, GoRouterState state) {
-//         return const MyLoginPage();
-//       }
-//     ),
-//     // GoRoute(
-//     //   path: '/signup',
-//     //   builder: (BuildContext context, GoRouterState state) {
-//     //     return const MySignupPage();
-//     //   }
-//     // ),
-//     GoRoute(
-//       path: '/posts',
-//       builder: (BuildContext context, GoRouterState state) {
-//         return const MyPostPage();
-//       },
-//       routes: <RouteBase>[
-//         GoRoute(
-//             name: "createPost",
-//             path: 'create',
-//             builder: (BuildContext context, GoRouterState state) {
-//               return const NewPostPage();
-//             }
-//         ),
-//         GoRoute(
-//           path: 'view/:id',
-//           builder: (context, state) => SinglePostPage(postId: int.parse(state.params['id']!)),
-//         ),
-//       ],
-//     ),
-//   ],
-// );
+
+final GoRouter _router = GoRouter(
+  initialLocation: '/home',
+  routes: <RouteBase>[
+    GoRoute(
+        name: "home",
+        path: '/home',
+        builder: (BuildContext context, GoRouterState state) {
+          return const HomePage();
+        }
+    ),
+    GoRoute(
+      name: "login",
+      path: '/login',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MyLoginPage();
+      }
+    ),
+    // GoRoute(
+    //   path: '/signup',
+    //   builder: (BuildContext context, GoRouterState state) {
+    //     return const MySignupPage();
+    //   }
+    // ),
+    // GoRoute(
+    //   path: '/posts',
+    //   builder: (BuildContext context, GoRouterState state) {
+    //     return const MyPostPage();
+    //   },
+    //   routes: <RouteBase>[
+    //     GoRoute(
+    //         name: "createPost",
+    //         path: 'create',
+    //         builder: (BuildContext context, GoRouterState state) {
+    //           return const NewPostPage();
+    //         }
+    //     ),
+    //     GoRoute(
+    //       path: 'view/:id',
+    //       builder: (context, state) => SinglePostPage(postId: int.parse(state.params['id']!)),
+    //     ),
+    //   ],
+    // ),
+  ],
+);
 //
 // class MyApp extends StatelessWidget {
 //   const MyApp({super.key});
