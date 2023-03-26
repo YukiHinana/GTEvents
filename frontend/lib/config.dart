@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:redux/redux.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Config {
-  static const baseURL = "http://3.145.83.83:8080/";
+  // static const baseURL = "http://3.145.83.83:8080";
+  static const baseURL = "http://localhost:8080";
 }
 
 @immutable

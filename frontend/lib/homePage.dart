@@ -26,7 +26,14 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('GTEvents')),
+      appBar: AppBar(
+        title: const Text('GTEvents'),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () => context.go('/events'),
+              icon: const Icon(Icons.search))
+        ],
+      ),
       body: StoreConnector<AppState, AppState>(
         converter: (store) {
           return store.state;
@@ -53,38 +60,60 @@ class HomePageState extends State<HomePage> {
           );
         },
       ),
-      drawer: StoreConnector<AppState, AppState>(
-          converter: (store) => store.state,
-          builder: (context, appState) {
-            return Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  const DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                      ),
-                      child: Text('username???')
-                  ),
-                  ListTile(
-                    title: appState.token == null ? const Text('Login') : const Text('View Profile'),
-                    onTap: () {
-                      if (appState.token == null) {
-                        context.push('/login');
-                      }
-                    },
-                  ),
-                  ListTile(
-                    title: Text('Created Events'),
-                  ),
-                  ListTile(
-                    title: Text('Saved Events'),
-                  ),
-                ],
-              ),
-            );
-          }
-      ),
+      drawer: const UserSideBar(),
+    );
+  }
+}
+
+class UserSideBar extends StatefulWidget {
+  const UserSideBar({super.key});
+
+  @override
+  State<UserSideBar> createState() => _UserSideBar();
+}
+
+class _UserSideBar extends State<UserSideBar> {
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, AppState>(
+        converter: (store) => store.state,
+        builder: (context, appState) {
+          return Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                    ),
+                    child: Text('username???')
+                ),
+                ListTile(
+                  title: appState.token == null ? const Text('Login') : const Text('View Profile'),
+                  onTap: () {
+                    if (appState.token == null) {
+                      context.push('/login');
+                    }
+                  },
+                ),
+                ListTile(
+                  title: const Text('Created Events'),
+                  onTap: () {
+                    context.pop();
+                    context.push('/events/created');
+                  },
+                ),
+                ListTile(
+                  title: const Text('Saved Events'),
+                  onTap: () {
+                    context.pop();
+                    context.push('/events/saved');
+                  },
+                ),
+              ],
+            ),
+          );
+        }
     );
   }
 }

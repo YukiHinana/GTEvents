@@ -1,4 +1,6 @@
+import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/homePage.dart';
+import 'package:GTEvents/savedEventsPage.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -40,15 +42,15 @@ class MyApp extends StatelessWidget {
 
 
 final GoRouter _router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/events',
   routes: <RouteBase>[
-    GoRoute(
-        name: "home",
-        path: '/home',
-        builder: (BuildContext context, GoRouterState state) {
-          return const HomePage();
-        }
-    ),
+    // GoRoute(
+    //     name: "home",
+    //     path: '/home',
+    //     builder: (BuildContext context, GoRouterState state) {
+    //       return const HomePage();
+    //     }
+    // ),
     GoRoute(
       name: "login",
       path: '/login',
@@ -57,30 +59,51 @@ final GoRouter _router = GoRouter(
       }
     ),
     // GoRoute(
+    //     name: "createdEvents",
+    //     path: '/events/created',
+    //     builder: (BuildContext context, GoRouterState state) {
+    //       return const CreatedEventsPage();
+    //     }
+    // ),
+    // GoRoute(
     //   path: '/signup',
     //   builder: (BuildContext context, GoRouterState state) {
     //     return const MySignupPage();
     //   }
     // ),
-    // GoRoute(
-    //   path: '/posts',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     return const MyPostPage();
-    //   },
-    //   routes: <RouteBase>[
-    //     GoRoute(
-    //         name: "createPost",
-    //         path: 'create',
-    //         builder: (BuildContext context, GoRouterState state) {
-    //           return const NewPostPage();
-    //         }
-    //     ),
-    //     GoRoute(
-    //       path: 'view/:id',
-    //       builder: (context, state) => SinglePostPage(postId: int.parse(state.params['id']!)),
-    //     ),
-    //   ],
-    // ),
+    GoRoute(
+      path: '/events',
+      builder: (BuildContext context, GoRouterState state) {
+        return const HomePage();
+      },
+      routes: <RouteBase>[
+        GoRoute(
+            name: "createdEvents",
+            path: 'created',
+            builder: (BuildContext context, GoRouterState state) {
+              return const CreatedEventsPage();
+            }
+        ),
+        GoRoute(
+            name: "savedEvents",
+            path: 'saved',
+            builder: (BuildContext context, GoRouterState state) {
+              return const SavedEventsPage();
+            }
+        ),
+        // GoRoute(
+        //     name: "createEvent",
+        //     path: '/create',
+        //     builder: (BuildContext context, GoRouterState state) {
+        //       return const NewPostPage();
+        //     }
+        // ),
+        // GoRoute(
+        //   path: 'view/:id',
+        //   builder: (context, state) => SinglePostPage(postId: int.parse(state.params['id']!)),
+        // ),
+      ],
+    ),
   ],
 );
 //
