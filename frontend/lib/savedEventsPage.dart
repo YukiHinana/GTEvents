@@ -1,7 +1,7 @@
+import 'package:GTEvents/component/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'homePage.dart';
 
 class SavedEventsPage extends StatefulWidget {
   const SavedEventsPage({super.key});
@@ -22,7 +22,7 @@ class _SavedEventsPage extends State<SavedEventsPage> {
               icon: const Icon(Icons.home))
         ],
       ),
-      drawer: UserSideBar(),
+      drawer: const UserSideBar(),
     );
   }
 }

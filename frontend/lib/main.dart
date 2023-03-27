@@ -1,5 +1,5 @@
 import 'package:GTEvents/createdEventsPage.dart';
-import 'package:GTEvents/homePage.dart';
+import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp.router(
         title: 'hello',
-        // home: HomePage(),
         routerConfig: _router,
       ),
     );
@@ -67,7 +66,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/events',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomePage();
+        return const HomeScreen();
       },
       routes: <RouteBase>[
         GoRoute(

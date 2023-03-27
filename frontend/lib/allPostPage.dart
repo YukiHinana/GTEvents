@@ -1,6 +1,6 @@
 // import 'dart:convert';
 // import 'dart:math' as math;
-// import 'package:GTEvents/post.dart';
+// import 'package:GTEvents/event.dart';
 // import 'package:flutter/material.dart';
 // import 'package:go_router/go_router.dart';
 // import 'package:http/http.dart' as http;
@@ -25,13 +25,13 @@
 //     return response;
 //   }
 //
-//   Future<List<Post>> getPosts() async {
-//     List<Post> postList = [];
+//   Future<List<Event>> getPosts() async {
+//     List<Event> postList = [];
 //     http.Response re = await getAllPostRequest();
 //
 //     if (re.statusCode == 200) {
 //       for (var info in jsonDecode(re.body)['data'] as List<dynamic>) {
-//         postList.add(Post.fromJson(info));
+//         postList.add(Event.fromJson(info));
 //       }
 //     }
 //     return postList;
@@ -52,7 +52,7 @@
 //     return response.statusCode == 200;
 //   }
 //
-//   List<Post> posts = [];
+//   List<Event> posts = [];
 //
 //   @override
 //   void initState() {
@@ -78,9 +78,9 @@
 //           itemBuilder: (BuildContext context, int index) {
 //             final item = posts[index];
 //             return Dismissible(
-//               key: Key(item.postId.toString()),
+//               key: Key(item.eventId.toString()),
 //               onDismissed: (direction) {
-//                 deletePostRequest(item.postId);
+//                 deletePostRequest(item.eventId);
 //                 setState(() {
 //                   posts.removeAt(index);
 //                 });
@@ -122,7 +122,7 @@
 //                     Text("Author: ${posts[index].author}"),
 //                     ElevatedButton(
 //                       onPressed: () {
-//                         return context.push('/posts/view/${posts[index].postId}');
+//                         return context.push('/posts/view/${posts[index].eventId}');
 //                       },
 //                       child: const Text("Details"),
 //                     ),
