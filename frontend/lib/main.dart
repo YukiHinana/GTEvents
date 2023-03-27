@@ -58,6 +58,13 @@ final GoRouter _router = GoRouter(
     //   }
     // ),
     GoRoute(
+        name: "search",
+        path: '/search',
+        builder: (BuildContext context, GoRouterState state) {
+          return const MyLoginPage();
+        }
+    ),
+    GoRoute(
       path: '/events',
       builder: (BuildContext context, GoRouterState state) {
         return const HomePage();

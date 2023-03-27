@@ -11,18 +11,19 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  HomePageState createState() => HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
     _prefs.then((value) {
-      StoreProvider.of<AppState>(context)
-          .dispatch(SetTokenAction(value.getString('token')));
+      var result = value.getString('token');
+      var tokenVal = result == "" || result == null ? null : result;
+      StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
     });
   }
 
@@ -33,7 +34,7 @@ class HomePageState extends State<HomePage> {
         title: const Text('GTEvents'),
         actions: <Widget>[
           IconButton(
-              onPressed: () => context.go('/events'),
+              onPressed: () => context.go('/search'),
               icon: const Icon(Icons.search))
         ],
       ),
@@ -45,20 +46,7 @@ class HomePageState extends State<HomePage> {
           // TODO: test only, change this to events page
           return Column(
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    StoreProvider.of<AppState>(context).dispatch(
-                        SetTokenAction("1"));
-                  },
-                  child: Text('1')
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    StoreProvider.of<AppState>(context).dispatch(
-                        SetTokenAction(null));
-                  },
-                  child: Text('0')
-              ),
+
             ],
           );
         },
@@ -76,16 +64,9 @@ class UserSideBar extends StatefulWidget {
 }
 
 class _UserSideBar extends State<UserSideBar> {
-  String username = "unko";
-
   @override
   void initState() {
     super.initState();
-    // handleFindAccountByTokenRequest().then((value) {
-    //   setState(() {
-    //     username = value;
-    //   });
-    // });
   }
 
   Future<http.Response> handleLogoutRequest() async {
@@ -101,27 +82,6 @@ class _UserSideBar extends State<UserSideBar> {
     return response;
   }
 
-  Future<String> handleFindAccountByTokenRequest() async {
-    var token = StoreProvider.of<AppState>(context).state.token;
-    if (token != null) {
-      var response = await http.get(
-          Uri.parse('${Config.baseURL}/account/find'),
-          headers: {"Content-Type": "application/json", "Authorization": token},
-      );
-      return jsonDecode(response.body)['data']['username'];
-    }
-    return "??";
-  }
-
-  Widget getUsername() {
-    handleFindAccountByTokenRequest().then((value) {
-      setState(() {
-        username = value;
-      });
-    });
-    return Text(username);
-  }
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -130,12 +90,12 @@ class _UserSideBar extends State<UserSideBar> {
           return Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
-              children: [
+              children: <Widget>[
                 DrawerHeader(
-                    decoration: const BoxDecoration(
-                      color: Colors.blueAccent,
-                    ),
-                    child: getUsername(),
+                  decoration: const BoxDecoration(
+                    color: Colors.blueAccent,
+                  ),
+                  child: Text(appState.userInfo?.username??"unknown"),
                 ),
                 ListTile(
                   title: appState.token == null ? const Text('Login') : const Text('View Profile'),
@@ -148,7 +108,6 @@ class _UserSideBar extends State<UserSideBar> {
                 ListTile(
                   title: const Text('Created Events'),
                   onTap: () {
-                    handleFindAccountByTokenRequest();
                     context.pop();
                     context.push('/events/created');
                   },
@@ -160,19 +119,21 @@ class _UserSideBar extends State<UserSideBar> {
                     context.push('/events/saved');
                   },
                 ),
-                ListTile(
-                  title: appState.token == null ? const Text('') : const Text('Logout'),
-                  onTap: () {
-                    if (appState.token != null) {
+                if (StoreProvider.of<AppState>(context).state.token != null)
+                  ListTile(
+                    title: const Text('Logout'),
+                    onTap: () {
                       Future<http.Response> re = handleLogoutRequest();
-                      re.then((value) {
+                      re.then((value) async {
                         if (value.statusCode == 200) {
                           StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
+                          StoreProvider.of<AppState>(context).dispatch(SetUsernameAction("unknown"));
+                          final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+                          (await prefs).setString("token", "");
                         }
                       });
-                    }
-                  },
-                ),
+                    },
+                  )
               ],
             ),
           );

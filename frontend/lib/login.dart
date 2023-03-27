@@ -58,6 +58,17 @@ class _MyLoginPageState extends State<MyLoginPage> {
     focusNode.dispose();
   }
 
+  Future<String> handleFindAccountByTokenRequest(String token) async {
+    var response = await http.get(
+      Uri.parse('${Config.baseURL}/account/find'),
+      headers: {"Content-Type": "application/json", "Authorization": token},
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['data']['username'];
+    }
+    return "unknown";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,8 +109,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     re.then((value) {
                       // redirect to next page on success
                       if (value.statusCode == 200) {
-                        StoreProvider.of<AppState>(context).dispatch(
-                            SetTokenAction(jsonDecode(value.body)['data']));
+                        var tokenVal = jsonDecode(value.body)['data'];
+                        StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
+                        handleFindAccountByTokenRequest(tokenVal).then((value) =>
+                            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(value)));
                         context.pop(context);
                       } else {
                         // if incorrect username or password, pop alert window
