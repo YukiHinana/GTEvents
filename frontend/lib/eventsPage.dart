@@ -17,7 +17,7 @@ class _EventsPage extends State<EventsPage> {
   late ScrollController _scrollController;
 
   Future<http.Response> fetchEventsRequest() async {
-    print('${Config.baseURL}/events/events?pageNumber=$curScrollPage&pageSize=8');
+    // print('${Config.baseURL}/events/events?pageNumber=$curScrollPage&pageSize=8');
     var response = await http.get(
       Uri.parse('${Config.baseURL}/events/events?pageNumber=$curScrollPage&pageSize=8'),
       headers: {"Content-Type": "application/json"},
