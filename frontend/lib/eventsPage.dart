@@ -37,7 +37,7 @@ class _EventsPage extends State<EventsPage> {
     List<EventCard> eventCardList = [];
 
     for (var info in eventList) {
-      eventCardList.add(EventCard(title: info['title'], location: info['location']));
+      eventCardList.add(EventCard(eventId: info['id'],title: info['title'], location: info['location']));
     }
     return eventCardList;
   }
@@ -49,7 +49,7 @@ class _EventsPage extends State<EventsPage> {
     super.initState();
     getEventCards().then((value) {
       setState(() {
-        print(value);
+        // print(value);
         events = value;
       });
     });
@@ -57,13 +57,8 @@ class _EventsPage extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Card(
-      child: SizedBox(
-        height: 200,
-        width: 250,
-        child: (Text('aa')),
-      ),
+    return Column(
+      children: events,
     );
   }
 }

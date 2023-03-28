@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:GTEvents/config.dart';
 import 'package:GTEvents/event.dart';
 import 'package:GTEvents/component/sidebar.dart';
+import 'package:GTEvents/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
       var result = value.getString('token');
       var tokenVal = result == "" || result == null ? null : result;
       StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
+      if (tokenVal != null) {
+        handleFindUsernameByTokenRequest(tokenVal).then((usernameVal) =>
+            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(usernameVal)));
+      }
     });
   }
 
@@ -47,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
           return store.state;
         },
         builder: (context, appState) {
-          // TODO: test only, change this to events page
           return EventsPage();
         },
       ),

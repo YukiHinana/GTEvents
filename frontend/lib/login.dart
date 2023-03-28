@@ -7,6 +7,17 @@ import 'package:http/http.dart' as http;
 
 import 'config.dart';
 
+Future<String> handleFindUsernameByTokenRequest(String token) async {
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/account/find'),
+    headers: {"Content-Type": "application/json", "Authorization": token},
+  );
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body)['data']['username'];
+  }
+  return "unknown";
+}
+
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
 
@@ -58,17 +69,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
     focusNode.dispose();
   }
 
-  Future<String> handleFindAccountByTokenRequest(String token) async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/account/find'),
-      headers: {"Content-Type": "application/json", "Authorization": token},
-    );
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['data']['username'];
-    }
-    return "unknown";
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,8 +111,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       if (value.statusCode == 200) {
                         var tokenVal = jsonDecode(value.body)['data'];
                         StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
-                        handleFindAccountByTokenRequest(tokenVal).then((value) =>
-                            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(value)));
+                        StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(_usernameController.text));
                         context.pop(context);
                       } else {
                         // if incorrect username or password, pop alert window

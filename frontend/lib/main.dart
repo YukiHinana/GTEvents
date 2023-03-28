@@ -1,3 +1,4 @@
+import 'package:GTEvents/EventDetailPage.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/savedEventsPage.dart';
@@ -50,12 +51,12 @@ final GoRouter _router = GoRouter(
         return const MyLoginPage();
       }
     ),
-    // GoRoute(
-    //   path: '/signup',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     return const MySignupPage();
-    //   }
-    // ),
+    GoRoute(
+      path: '/signup',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MySignupPage();
+      }
+    ),
     GoRoute(
         name: "search",
         path: '/search',
@@ -83,6 +84,10 @@ final GoRouter _router = GoRouter(
               return const SavedEventsPage();
             }
         ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) => EventDetailPage(eventId: int.parse(state.params['id']!)),
+        ),
         // GoRoute(
         //     name: "createEvent",
         //     path: '/create',
@@ -90,30 +95,7 @@ final GoRouter _router = GoRouter(
         //       return const NewPostPage();
         //     }
         // ),
-        // GoRoute(
-        //   path: 'view/:id',
-        //   builder: (context, state) => SinglePostPage(postId: int.parse(state.params['id']!)),
-        // ),
       ],
     ),
   ],
 );
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp.router(
-//       theme: ThemeData(
-//         primarySwatch: Colors.yellow,
-//         inputDecorationTheme: const InputDecorationTheme(
-//             labelStyle: TextStyle(color: Colors.deepPurpleAccent),
-//         )
-//       ),
-//       // home: const MyLoginPage(),
-//       routerConfig: _router,
-//     );
-//   }
-// }
-//
