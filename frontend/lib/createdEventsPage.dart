@@ -1,6 +1,7 @@
 import 'package:GTEvents/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'createEvent.dart';
 
 class CreatedEventsPage extends StatefulWidget {
   const CreatedEventsPage({super.key});
@@ -10,6 +11,11 @@ class CreatedEventsPage extends StatefulWidget {
 }
 
 class _CreatedEventsPage extends State<CreatedEventsPage> {
+  void navigateEventCreation(BuildContext ctx) {
+    Navigator.of(ctx).push(MaterialPageRoute(builder: (_){
+      return CreateEvent();
+    }));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +28,12 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
         ],
       ),
       drawer: UserSideBar(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          navigateEventCreation(context);
+        },
+        label: const Text("Create New Event"),
+      ),
     );
   }
 }
