@@ -2,16 +2,12 @@ import 'package:GTEvents/EventDetailPage.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/savedEventsPage.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
-import 'package:GTEvents/allPostPage.dart';
 import 'package:GTEvents/signup.dart';
-import 'package:GTEvents/singlePostPage.dart';
 import './login.dart';
 import 'config.dart';
-import 'createPostPage.dart';
 import 'package:redux/redux.dart';
 
 void main() {
