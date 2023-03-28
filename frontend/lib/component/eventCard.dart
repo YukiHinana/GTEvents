@@ -19,7 +19,7 @@ class _EventCardState extends State<EventCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(StoreProvider.of<AppState>(context).state.userInfo?.username);
+        // print(StoreProvider.of<AppState>(context).state.userInfo?.username);
         context.push('/events/${widget.eventId}');
       },
       child: Card(

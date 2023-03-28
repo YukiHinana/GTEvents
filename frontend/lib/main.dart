@@ -1,7 +1,9 @@
 import 'package:GTEvents/EventDetailPage.dart';
+import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/savedEventsPage.dart';
+import 'package:GTEvents/searchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -57,7 +59,7 @@ final GoRouter _router = GoRouter(
         name: "search",
         path: '/search',
         builder: (BuildContext context, GoRouterState state) {
-          return const MyLoginPage();
+          return const SearchPage();
         }
     ),
     GoRoute(
@@ -66,6 +68,13 @@ final GoRouter _router = GoRouter(
         return const HomeScreen();
       },
       routes: <RouteBase>[
+        GoRoute(
+            name: "createEvent",
+            path: 'create',
+            builder: (BuildContext context, GoRouterState state) {
+              return const CreateEvent();
+            }
+        ),
         GoRoute(
             name: "createdEvents",
             path: 'created',
@@ -84,13 +93,7 @@ final GoRouter _router = GoRouter(
           path: ':id',
           builder: (context, state) => EventDetailPage(eventId: int.parse(state.params['id']!)),
         ),
-        // GoRoute(
-        //     name: "createEvent",
-        //     path: '/create',
-        //     builder: (BuildContext context, GoRouterState state) {
-        //       return const NewPostPage();
-        //     }
-        // ),
+
       ],
     ),
   ],

@@ -1,7 +1,5 @@
-import 'dart:convert';
 
 import 'package:GTEvents/config.dart';
-import 'package:GTEvents/event.dart';
 import 'package:GTEvents/component/sidebar.dart';
 import 'package:GTEvents/login.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return store.state;
         },
         builder: (context, appState) {
-          return EventsPage();
+          return const EventsPage();
         },
       ),
       drawer: const UserSideBar(),
