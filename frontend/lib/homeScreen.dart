@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 import 'eventsPage.dart';
 
+//Home Screen Page
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -22,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  //checking token value matches
   @override
   void initState() {
     super.initState();
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
   }
-
+//Home screen interfaces
   @override
   Widget build(BuildContext context) {
     return Scaffold(

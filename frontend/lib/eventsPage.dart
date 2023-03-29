@@ -12,7 +12,7 @@ class EventsPage extends StatefulWidget {
   @override
   State<EventsPage> createState() => _EventsPage();
 }
-
+//Event Page
 class _EventsPage extends State<EventsPage> {
   late ScrollController _scrollController;
 
@@ -25,6 +25,7 @@ class _EventsPage extends State<EventsPage> {
     return response;
   }
 
+  //Event page mapping post event to all the events
   Future<List<dynamic>> getEvents() async {
     List<dynamic> eventList = [];
     http.Response re = await fetchEventsRequest();
@@ -35,6 +36,7 @@ class _EventsPage extends State<EventsPage> {
     return eventList;
   }
 
+  //Get events details from posting events
   Future<void> getEventCards() async {
     List<dynamic> eventList = await getEvents();
     List<EventCard> eventCardList = [];
@@ -46,6 +48,7 @@ class _EventsPage extends State<EventsPage> {
     });
   }
 
+  //All Event array lists
   List<EventCard> events = [];
   int curScrollPage = 0;
 

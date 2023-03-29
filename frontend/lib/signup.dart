@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import 'login.dart';
 
+//Sign Up Page
 class MySignupPage extends StatefulWidget {
   const MySignupPage({super.key});
 
@@ -15,10 +16,12 @@ class MySignupPage extends StatefulWidget {
   State<MySignupPage> createState() => _MySignupState();
 }
 
+//Sign up variables
 class _MySignupState extends State<MySignupPage> {
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
 
+  //sendSignupRequest
   Future<http.Response> sendSignupRequest() async {
     var signupData = json.encode(
         {
@@ -41,6 +44,7 @@ class _MySignupState extends State<MySignupPage> {
     _passwordController = TextEditingController();
   }
 
+  //SignUp Page Interface
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery

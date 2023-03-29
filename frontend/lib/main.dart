@@ -10,6 +10,7 @@ import './login.dart';
 import 'config.dart';
 import 'package:redux/redux.dart';
 
+// run main.dart to start the program
 void main() {
   final store = Store<AppState>(appReducer, initialState: const AppState());
   runApp(
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
 
   const MyApp({super.key, required this.store});
 
+  //Main interface
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
+//Route to different pages
 final GoRouter _router = GoRouter(
   initialLocation: '/events',
   routes: <RouteBase>[

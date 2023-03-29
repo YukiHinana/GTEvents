@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'config.dart';
 
+//Login Page get request and checking token and usernames
 Future<String> handleFindUsernameByTokenRequest(String token) async {
   var response = await http.get(
     Uri.parse('${Config.baseURL}/account/find'),
@@ -25,12 +26,14 @@ class MyLoginPage extends StatefulWidget {
   State<MyLoginPage> createState() => _MyLoginPageState();
 }
 
+//Login Page State controllers
 class _MyLoginPageState extends State<MyLoginPage> {
   late FocusNode focusNode;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  //login request variables
   Future<http.Response> sendLoginRequest() async {
     var loginData = json.encode(
         {
@@ -38,6 +41,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
           'password': _passwordController.text
         }
     );
+    //if no repeated token and username, then create a new account
     var response = await http.post(
         Uri.parse('${Config.baseURL}/account/login'),
         headers: {"Content-Type": "application/json"},
@@ -69,6 +73,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     focusNode.dispose();
   }
 
+  //Login Page Interfaces
   @override
   Widget build(BuildContext context) {
     return Scaffold(

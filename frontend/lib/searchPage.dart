@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+// Search Page
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
