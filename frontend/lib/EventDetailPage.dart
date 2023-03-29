@@ -13,7 +13,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: const Text('Test page'))
+        title: Text(widget.eventId.toString()))
     );
   }
 }

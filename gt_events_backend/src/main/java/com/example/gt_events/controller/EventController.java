@@ -8,6 +8,7 @@ import com.example.gt_events.entity.Event;
 import com.example.gt_events.entity.Tag;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
+import com.example.gt_events.model.SearchEventRequest;
 import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
@@ -48,6 +49,14 @@ public class EventController {
     public ResponseWrapper<?> getEvents(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Pageable aa = PageRequest.of(pageNumber, pageSize);
         return new ResponseWrapper<>(eventRepository.findAll(aa));
+    }
+
+    @GetMapping("/events/search")
+    public ResponseWrapper<?> getEventsByKeyword(@RequestParam String keyword,
+                                                 @RequestParam int pageNumber, @RequestParam int pageSize) {
+        Pageable aa = PageRequest.of(pageNumber, pageSize);
+//        eventRepository.findByTitleContaining(request.getKeyword(), aa);
+        return new ResponseWrapper<>(eventRepository.findByTitleContainingOrAuthor_UsernameContaining(keyword, keyword, aa));
     }
 
     @GetMapping("/events/find/event-date-between")
