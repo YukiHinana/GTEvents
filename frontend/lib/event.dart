@@ -1,3 +1,4 @@
+//Event variables
 class Event {
   int eventId;
   String title;
@@ -9,7 +10,7 @@ class Event {
 
   Event(this.eventId, this.title, this.location, this.description,
       this.eventDate, this.capacity, this.fee);
-
+//jason for the variables
   factory Event.fromJson(dynamic json) {
     return Event(json['id'] as int, json['title'] as String,
         json['location'] as String, json['description'] as String,
@@ -17,7 +18,7 @@ class Event {
         json['fee'] as int);
         // json['author']['username'] as String, json['location'] as String);
   }
-
+//change the variables to string
   @override
   String toString() {
     return'{$eventId, $title, $location, $description, $eventDate, $capacity, $fee}';
