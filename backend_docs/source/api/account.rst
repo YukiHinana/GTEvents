@@ -34,7 +34,6 @@ This api allows user to create a new account.
   .. code-block:: json
 
     {
-        "message": null,
         "data": "Sign up success"
     }
 
@@ -47,7 +46,6 @@ This api allows user to create a new account.
   .. code-block:: json
 
     {
-        "message": null,
         "data": "Username already exists!"
     }
 
@@ -98,7 +96,6 @@ This api allows user to login to an account
   .. code-block:: json
 
     {
-        "message": null,
         "data": "Incorrect username or password"
     }
 
@@ -132,7 +129,6 @@ Request a password reset and perform the reset.
   .. code-block:: json
 
     {
-        "message": null,
         "data": "Success"
     }
 
@@ -145,8 +141,19 @@ Request a password reset and perform the reset.
   .. code-block:: json
 
     {
-        "message": null,
         "data": "The new password cannot be the same as the old one"
+    }
+
+* Sample Fail Response
+
+  .. code-block::
+
+    HTTP Status Code: 400
+
+  .. code-block:: json
+
+    {
+        "data": "Incorrect username or password"
     }
 
 /account/delete - ``DELETE``
@@ -172,7 +179,6 @@ Delete a user
   .. code-block:: json
 
     {
-        "message": null,
         "data": "Account alice successfully deleted"
     }
 
@@ -181,3 +187,47 @@ Delete a user
   .. code-block::
 
     HTTP Status Code: 401
+
+  .. code-block:: json
+
+    {
+        "data": "Failed. Account not found."
+    }
+
+/logout - ``PUT``
+----------------------------------------
+logout a user
+
+
+**Full Request Path**
+``PUT`` - ``http://3.145.83.83:8080/logout``
+
+**Returns:** Delete result message and http status code.
+
+**Examples:**
+
+* Sample Request Param
+
+* Sample Success Response
+
+  .. code-block::
+
+    HTTP Status Code: 200
+
+  .. code-block:: json
+
+    {
+        "data": "Account logged out"
+    }
+
+* Sample Fail Response
+
+  .. code-block::
+
+    HTTP Status Code: 401
+
+  .. code-block:: json
+
+    {
+        "data": "Invalid token"
+    }
