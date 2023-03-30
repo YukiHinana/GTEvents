@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'config.dart';
 
 //Login Page get request and checking token and usernames
-Future<String> handleFindUsernameByTokenRequest(String token) async {
+Future<String?> handleFindUsernameByTokenRequest(String token) async {
   var response = await http.get(
     Uri.parse('${Config.baseURL}/account/find'),
     headers: {"Content-Type": "application/json", "Authorization": token},
@@ -16,7 +16,7 @@ Future<String> handleFindUsernameByTokenRequest(String token) async {
   if (response.statusCode == 200) {
     return jsonDecode(response.body)['data']['username'];
   }
-  return "unknown";
+  return null;
 }
 
 class MyLoginPage extends StatefulWidget {

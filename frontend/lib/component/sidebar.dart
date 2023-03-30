@@ -47,7 +47,7 @@ class _UserSideBar extends State<UserSideBar> {
                   decoration: const BoxDecoration(
                     color: Colors.blueAccent,
                   ),
-                  child: Text(appState.userInfo?.username??"unknown"),
+                  child: Text(appState.userInfo?.username??""),
                 ),
                 ListTile(
                   title: appState.token == null ? const Text('Login') : const Text('View Profile'),
@@ -79,7 +79,7 @@ class _UserSideBar extends State<UserSideBar> {
                       re.then((value) async {
                         if (value.statusCode == 200) {
                           StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
-                          StoreProvider.of<AppState>(context).dispatch(SetUsernameAction("unknown"));
+                          StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
                           final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
                           (await prefs).setString("token", "");
                         }

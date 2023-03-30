@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 import 'event.dart';
 import 'eventsPage.dart';
 
-//Home Screen Page
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  //checking token value matches
   @override
   void initState() {
     super.initState();
@@ -38,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
   }
-//Home screen interfaces
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,14 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('GTEvents'),
         actions: <Widget>[
           IconButton(
-            onPressed: () {
-              showSearch(
+              onPressed: () {
+                showSearch(
                   context: context,
                   delegate: CustomSearchDelegate(),
-              );
-            },
-            // onPressed: () => context.go('/search'),
-            icon: const Icon(Icons.search))
+                );
+              },
+              icon: const Icon(Icons.search))
         ],
       ),
       body: StoreConnector<AppState, AppState>(
@@ -137,5 +134,4 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
-
 

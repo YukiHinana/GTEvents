@@ -1,5 +1,5 @@
 
-import 'package:GTEvents/EventDetailPage.dart';
+import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/homeScreen.dart';
@@ -96,7 +96,6 @@ final GoRouter _router = GoRouter(
           path: ':id',
           builder: (context, state) => EventDetailPage(eventId: int.parse(state.params['id']!)),
         ),
-
       ],
     ),
   ],
