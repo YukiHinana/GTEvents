@@ -1,4 +1,4 @@
-import 'package:GTEvents/homeScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'createEvent.dart';
@@ -31,11 +31,12 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
               icon: const Icon(Icons.home))
         ],
       ),
-      drawer: UserSideBar(),
+      drawer: const UserSideBar(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          navigateEventCreation(context);
-        },
+        onPressed: () => context.push("/events/create"),
+        // onPressed: () {
+        //   navigateEventCreation(context);
+        // },
         label: const Text("Create New Event"),
       ),
     );

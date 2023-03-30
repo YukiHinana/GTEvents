@@ -26,11 +26,12 @@ class _MySignupState extends State<MySignupPage> {
     var signupData = json.encode(
         {
           'username': _usernameController.text,
-          'password': _passwordController.text
+          'password': _passwordController.text,
+          'isOrganizer': true,
         }
     );
     var response = await http.post(
-        Uri.parse('${Config.baseURL}/account/'),
+        Uri.parse('${Config.baseURL}/account/register'),
         headers: {"Content-Type": "application/json"},
         body: signupData
     );
