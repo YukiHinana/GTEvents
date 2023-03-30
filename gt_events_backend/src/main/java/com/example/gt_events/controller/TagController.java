@@ -22,6 +22,11 @@ public class TagController {
         this.tagRepository = tagRepository;
     }
 
+    @GetMapping("/")
+    public ResponseWrapper<?> getTags() {
+        return new ResponseWrapper<>(tagRepository.findAll());
+    }
+
     @GetMapping("/{id}")
     public ResponseWrapper<?> viewTag(@PathVariable Long id) {
         Optional<Tag> tag = tagRepository.findById(id);

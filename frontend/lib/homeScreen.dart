@@ -32,11 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
       var tokenVal = result == "" || result == null ? null : result;
       StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
       if (tokenVal != null) {
-        handleFindUsernameByTokenRequest(tokenVal).then((usernameVal) =>
-            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(usernameVal)));
-      }
-    });
+        handleFindUsernameByTokenRequest(tokenVal).then((usernameVal) {
+          if (usernameVal == null) {
+            StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
+            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
+            value.setString("token", "");
+          } else {
+            StoreProvider.of<AppState>(context).dispatch(
+                SetUsernameAction(usernameVal));
+          }
+        });
+      }});
   }
+
 //Home screen interfaces
   @override
   Widget build(BuildContext context) {

@@ -25,3 +25,17 @@ class Event {
     // return '{ $eventId, $title, $author, $body }';
   }
 }
+
+class Tag {
+  int tagId;
+  String name;
+  Tag(this.tagId, this.name);
+  factory Tag.fromJson(dynamic json) {
+    return Tag(json['id'] as int, json['name'] as String);
+  }
+//change the variables to string
+  @override
+  String toString() {
+    return'{$tagId, $name}';
+  }
+}
