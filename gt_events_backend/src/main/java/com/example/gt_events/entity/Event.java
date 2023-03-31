@@ -1,5 +1,6 @@
 package com.example.gt_events.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -25,6 +26,7 @@ public class Event {
     private String description;
 
     // TODO: create a field for uploading pictures
+    @JsonIgnore
     @ElementCollection
     private List<String> imagesKeys;
 
