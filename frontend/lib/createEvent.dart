@@ -15,12 +15,13 @@ class CreateEvent extends StatefulWidget{
   @override
   State<CreateEvent> createState() => _CreateEventState();
 }
-
+DateTime dateTime = DateTime(2023, 03, 28);
 class _CreateEventState extends State<CreateEvent>{
   // tag value
   int? value;
   //DateTime currentDate = DateTime.now();
-  DateTime dateTime = DateTime(2023, 03, 28);
+  final hours = dateTime.hour.toString().padLeft(2, '0');
+  final minutes = dateTime.minute.toString().padLeft(2, '0');
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
@@ -67,11 +68,26 @@ class _CreateEventState extends State<CreateEvent>{
           const SizedBox(height: 24),
           buildCategoryPicker(),
           const SizedBox(height: 24),
-          buildDatePicker(),
+          Text(
+            'Pick Date and time',
+            style: TextStyle(fontSize: 16),
+            ),
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildDatePicker(),
+              buildTimePicker(),
+            ],
+          ),
+          const SizedBox(height: 24),
+          buildEventCapacityField(),
+          const SizedBox(height: 24),
+          buildEventFeeField(),
           const SizedBox(height: 24),
           previewCreateEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
+          
 
         ],
       ),
@@ -115,6 +131,7 @@ class _CreateEventState extends State<CreateEvent>{
           future: _getEventTags(),
           builder: (context, snapshot) {
             return DropdownButton<int>(
+                isExpanded: true,
                 hint: const Text('Pick Category'),
                 value: value,
                 items: snapshot.data?.map((e) => DropdownMenuItem<int>(
@@ -145,7 +162,17 @@ class _CreateEventState extends State<CreateEvent>{
       if (date == null) {
         return;
       }
-    },
+      final newDataTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        dateTime.hour,
+        dateTime.minute,
+      );
+      setState(() {
+        dateTime = newDataTime;
+      });
+    }, 
   );
 
   Future<DateTime?> pickDate() => showDatePicker(
@@ -153,6 +180,43 @@ class _CreateEventState extends State<CreateEvent>{
     initialDate: dateTime,
     firstDate: DateTime(2021),
     lastDate: DateTime(2100),
+  );
+  Widget buildTimePicker() => ElevatedButton(
+    child: Text('7:00'),
+    onPressed: () async {
+      final time = await pickTime();
+      if (time == null) {
+        return;
+      }
+      final newDataTime = DateTime(
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        time.hour,
+        time.minute,
+      );
+      setState(() {
+        dateTime = newDataTime;
+      });
+    }, 
+  );
+   Future<TimeOfDay?> pickTime() => showTimePicker(
+    context: context,
+    initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+  );
+  Widget buildEventCapacityField() => TextField(
+    decoration: InputDecoration(
+      labelText: 'Enter Event Capacity',
+      border: OutlineInputBorder(),
+    ),
+    controller: _eventLocationController,
+  );
+  Widget buildEventFeeField() => TextField(
+    decoration: InputDecoration(
+      labelText: 'Enter Event Fees',
+      border: OutlineInputBorder(),
+    ),
+    controller: _eventLocationController,
   );
 
   Widget previewCreateEvent() => FloatingActionButton.extended(
