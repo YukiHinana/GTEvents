@@ -18,27 +18,35 @@ class SavedEventsPage extends StatefulWidget {
   @override
   State<SavedEventsPage> createState() => _SavedEventsPage();
 }
-//SavedEventsPage interface
-class _SavedEventsPage extends State<SavedEventsPage> {
 
-  Future<List<Event>> _fetchSavedEvents(String? token) async {
-    // print(token);
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/events/saved'),
-      headers: {"Content-Type": "application/json", "Authorization": token??""},
-    );
-    // print(jsonDecode(response.body)['data'].length);
-    List<Event> eventList = [];
-    for (var i in jsonDecode(response.body)['data']) {
-      Map<String, dynamic> map = Map<String, dynamic>.from(i);
-      eventList.add(Event(map['id'], map['title'], map['location'],
-          map['description'], map['capacity'], map['fee']));
-    }
-    // print(eventList);
-    // print(eventList);
-
+Future<List<Event>> fetchSavedEvents(String? token) async {
+  List<Event> eventList = [];
+  if (token == null) {
     return eventList;
   }
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/events/saved'),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ?? ""
+    },
+  );
+  // print(jsonDecode(response.body)['data'].length);
+
+  for (var i in jsonDecode(response.body)['data']) {
+    Map<String, dynamic> map = Map<String, dynamic>.from(i);
+    eventList.add(Event(map['id'], map['title'], map['location'],
+        map['description'], map['capacity'], map['fee']));
+  }
+  // print(eventList);
+
+  return eventList;
+}
+
+
+
+//SavedEventsPage interface
+class _SavedEventsPage extends State<SavedEventsPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +59,34 @@ class _SavedEventsPage extends State<SavedEventsPage> {
               icon: const Icon(Icons.home))
         ],
       ),
-      // body: FutureBuilder<List<Event>>(
-      //     future: _fetchSavedEvents(
-      //         StoreProvider.of<AppState>(context).state.token),
-      //     builder: (context, snapshot) {
-      //       return ListView.builder(
-      //         itemCount: snapshot.data?.length,
-      //         itemBuilder: (context, index) {
-      //           // print(snapshot.data??"");
-      //           return Container();
-      //           // return EventCard(eventId: snapshot.data,
-      //           //     title: snapshot.data?[index]['title'],
-      //           //     location: snapshot.data?[index]['location']);
-      //         }
-      //       );
-      //     }
-      // ),
+      body: FutureBuilder<List<Event>>(
+          future: fetchSavedEvents(
+              StoreProvider.of<AppState>(context).state.token),
+          builder: (context, snapshot) {
+            print(snapshot.data);
+            if (snapshot.hasError) {
+              print(snapshot.error);
+            }
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+                itemCount: snapshot.data?.length??0,
+                itemBuilder: (context, index) {
+                  // print(snapshot.data??"");
+                  // return Container();
+                  var curItem = snapshot.data![index];
+                  return EventCard(eventId: curItem.eventId,
+                      title: curItem.title,
+                      location: curItem.location,
+                      isSaved: true
+                  );
+                }
+            );
+          }
+      ),
       drawer: const UserSideBar(),
     );
   }

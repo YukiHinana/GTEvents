@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:GTEvents/component/eventCard.dart';
+import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:http/http.dart' as http;
 
 import 'config.dart';
@@ -35,20 +37,40 @@ class _EventsPage extends State<EventsPage> {
     return eventList;
   }
 
+  List<EventCard> eventCardList = [];
+
   //Get events details from posting events
-  Future<void> getEventCards() async {
+  Future<List<EventCard>> getEventCards(String? token) async {
     List<dynamic> eventList = await getEvents();
-    List<EventCard> eventCardList = [];
+    List<Event> savedEventList = await fetchSavedEvents(token);
+    // List<EventCard> eventCardList = [];
     for (var info in eventList) {
-      eventCardList.add(EventCard(eventId: info['id'],title: info['title'], location: info['location']));
+      var isSaved = false;
+      for (Event e in savedEventList) {
+        if (e.eventId == info['id']) {
+          isSaved = true;
+        }
+      }
+      eventCardList.add(EventCard(eventId: info['id'],title: info['title'], location: info['location'], isSaved: isSaved));
     }
-    setState(() {
-      events = events + eventCardList;
-    });
+    // setState(() {
+    //   events = events + eventCardList;
+    // });
+    return eventCardList;
   }
 
+  // Future<List<dynamic>> getSavedEvents(String? token) async {
+  //
+  //   await fetchSavedEvents(token);
+  //   Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+  //   if (response.statusCode == 200) {
+  //     savedEventList = map['content'];
+  //   }
+  //   return savedEventList;
+  // }
+
   //All Event array lists
-  List<EventCard> events = [];
+  // List<EventCard> events = [];
   int curScrollPage = 0;
 
   _scrollListener() {
@@ -56,7 +78,7 @@ class _EventsPage extends State<EventsPage> {
         && !_scrollController.position.outOfRange) {
       setState(() {
         curScrollPage += 1;
-        getEventCards();
+        getEventCards(StoreProvider.of<AppState>(context).state.token);
       });
     }
   }
@@ -66,20 +88,30 @@ class _EventsPage extends State<EventsPage> {
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     super.initState();
-    getEventCards();
+    // getEventCards(StoreProvider.of<AppState>(context).state.token);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-    controller: _scrollController,
-        itemCount: events.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            child: events[index],
+    return FutureBuilder<List<EventCard>>(
+      future: getEventCards(StoreProvider.of<AppState>(context).state.token),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         }
+        return ListView.builder(
+        controller: _scrollController,
+            itemCount: snapshot.data?.length??0,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                child: snapshot.data?[index],
+              );
+            }
+        );
+      }
     );
   }
 }

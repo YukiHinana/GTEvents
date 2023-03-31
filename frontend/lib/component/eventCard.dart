@@ -9,7 +9,8 @@ class EventCard extends StatefulWidget {
   final int eventId;
   final String title;
   final String location;
-  const EventCard({super.key, required this.eventId, required this.title, required this.location});
+  final bool isSaved;
+  const EventCard({super.key, required this.eventId, required this.title, required this.location, required this.isSaved});
 
   @override
   State<EventCard> createState() => _EventCardState();
@@ -36,6 +37,16 @@ class _EventCardState extends State<EventCard> {
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.isSaved) {
+      iconBtnState = Icons.star;
+      iconColorState = Colors.yellow;
+    }
+  }
+
   void toggleIconBtnState(int eventId, String? token) {
     if (iconBtnState == Icons.star_border) {
       iconBtnState = Icons.star;

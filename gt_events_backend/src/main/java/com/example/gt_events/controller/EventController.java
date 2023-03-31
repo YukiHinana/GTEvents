@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,6 @@ public class EventController {
     public ResponseWrapper<?> getEventsByKeyword(@RequestParam String keyword,
                                                  @RequestParam int pageNumber, @RequestParam int pageSize) {
         Pageable aa = PageRequest.of(pageNumber, pageSize);
-//        eventRepository.findByTitleContaining(request.getKeyword(), aa);
         return new ResponseWrapper<>(eventRepository.findByTitleContainingOrAuthor_UsernameContaining(keyword, keyword, aa));
     }
 
@@ -192,9 +192,13 @@ public class EventController {
     @DeleteMapping("/saved/{eventId}")
     @RequireAuth
     public ResponseWrapper<?> deleteSavedEvent(@PathVariable Long eventId, Account a) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
-        a.getSavedEvents().remove(event);
+        Iterator<Event> iter = a.getSavedEvents().iterator();
+        while (iter.hasNext()) {
+            if (iter.next().getId().equals(eventId)) {
+                iter.remove();
+                break;
+            }
+        }
         accountRepository.save(a);
         return new ResponseWrapper<>("success");
     }
@@ -205,9 +209,25 @@ public class EventController {
         return new ResponseWrapper<>(a.getSavedEvents());
     }
 
+//    @GetMapping("/saved")
+//    @RequireAuth
+//    public ResponseWrapper<?> getSavedEvents(@RequestParam int pageNumber, @RequestParam int pageSize, Account a) {
+//        Pageable aa = PageRequest.of(pageNumber, pageSize);
+//        Set<Event> savedSet = a.getSavedEvents();
+//
+//        return new ResponseWrapper<>(new PageImpl<>(Arrays.asList(a.getSavedEvents().toArray()), aa, savedSet.size()));
+//    }
+
     @GetMapping("/created")
     @RequireAuth
     public ResponseWrapper<?> getCreatedEvents(Account a) {
         return new ResponseWrapper<>(a.getCreatedEvents());
     }
+//    @GetMapping("/created")
+//    @RequireAuth
+//    public ResponseWrapper<?> getCreatedEvents(@RequestParam int pageNumber, @RequestParam int pageSize, Account a) {
+//        Pageable aa = PageRequest.of(pageNumber, pageSize);
+//        Set<Event> createdEvents = a.getCreatedEvents();
+//        return new ResponseWrapper<>(new PageImpl<>(Arrays.asList(a.getCreatedEvents().toArray()), aa, createdEvents.size()));
+//    }
 }
