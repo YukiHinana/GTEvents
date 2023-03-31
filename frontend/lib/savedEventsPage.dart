@@ -31,15 +31,11 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
       "Authorization": token ?? ""
     },
   );
-  // print(jsonDecode(response.body)['data'].length);
-
   for (var i in jsonDecode(response.body)['data']) {
     Map<String, dynamic> map = Map<String, dynamic>.from(i);
     eventList.add(Event(map['id'], map['title'], map['location'],
         map['description'], map['capacity'], map['fee']));
   }
-  // print(eventList);
-
   return eventList;
 }
 
@@ -55,7 +51,7 @@ class _SavedEventsPage extends State<SavedEventsPage> {
         title: const Text('Saved Events'),
         actions: <Widget>[
           IconButton(
-              onPressed: () => context.go('/events'),
+              onPressed: () => context.pushReplacement('/events'),
               icon: const Icon(Icons.home))
         ],
       ),

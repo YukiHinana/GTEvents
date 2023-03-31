@@ -17,6 +17,7 @@ class EventCard extends StatefulWidget {
 }
 
 class _EventCardState extends State<EventCard> {
+  bool eventIsSaved = false;
 
   Widget eventImgCard = Container(
     height: 250,
@@ -44,20 +45,21 @@ class _EventCardState extends State<EventCard> {
     if (widget.isSaved) {
       iconBtnState = Icons.star;
       iconColorState = Colors.yellow;
+      eventIsSaved = widget.isSaved;
     }
   }
-
-  void toggleIconBtnState(int eventId, String? token) {
-    if (iconBtnState == Icons.star_border) {
-      iconBtnState = Icons.star;
-      iconColorState = Colors.yellow;
-      saveEventRequest(eventId, token);
-    } else {
-      iconBtnState = Icons.star_border;
-      iconColorState = Colors.black;
-      deleteSavedEventRequest(eventId, token);
-    }
-  }
+  //
+  // void toggleIconBtnState(int eventId, String? token) {
+  //   if (iconBtnState == Icons.star_border) {
+  //     iconBtnState = Icons.star;
+  //     iconColorState = Colors.yellow;
+  //     saveEventRequest(eventId, token);
+  //   } else {
+  //     iconBtnState = Icons.star_border;
+  //     iconColorState = Colors.black;
+  //     deleteSavedEventRequest(eventId, token);
+  //   }
+  // }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async{
     var response = await http.post(
@@ -125,10 +127,20 @@ class _EventCardState extends State<EventCard> {
                           onPressed: () {
                             var token = StoreProvider.of<AppState>(context).state.token;
                             setState(() {
-                              toggleIconBtnState(widget.eventId, token);
+                              eventIsSaved = !eventIsSaved;
+                              if (eventIsSaved) {
+                                iconBtnState = Icons.star;
+                                iconColorState = Colors.yellow;
+                                saveEventRequest(widget.eventId, token);
+                              } else {
+                                iconBtnState = Icons.star_border;
+                                iconColorState = Colors.black;
+                                deleteSavedEventRequest(widget.eventId, token);
+                              }
                             });
                           },
-                          icon: Icon(iconBtnState, size: 40, color: iconColorState,)
+                          icon: eventIsSaved ? Icon(Icons.star, size: 40, color: Colors.yellow,) :
+                              Icon(Icons.star_border, size: 40,),
                         ),
                       ),
                   ),
