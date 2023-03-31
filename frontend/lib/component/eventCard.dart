@@ -48,18 +48,6 @@ class _EventCardState extends State<EventCard> {
       eventIsSaved = widget.isSaved;
     }
   }
-  //
-  // void toggleIconBtnState(int eventId, String? token) {
-  //   if (iconBtnState == Icons.star_border) {
-  //     iconBtnState = Icons.star;
-  //     iconColorState = Colors.yellow;
-  //     saveEventRequest(eventId, token);
-  //   } else {
-  //     iconBtnState = Icons.star_border;
-  //     iconColorState = Colors.black;
-  //     deleteSavedEventRequest(eventId, token);
-  //   }
-  // }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async{
     var response = await http.post(
@@ -84,72 +72,159 @@ class _EventCardState extends State<EventCard> {
         context.push('/events/${widget.eventId}');
       },
       child: Card(
-        elevation: 10,
-        shadowColor: Colors.black,
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Column(
-          children: [
-            eventImgCard,
-            Container(
-              height: 80,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                ),
-                color: Colors.white60,
+          elevation: 10,
+          shadowColor: Colors.black,
+          margin: const EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Container(
+            height: 250,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
               ),
-              child: Row(
-                children: [
-                  Expanded(
+              image: DecorationImage(
+                opacity: 0.2,
+                fit: BoxFit.fill,
+                image: NetworkImage(
+                    'https://picsum.photos/250?image=9'
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                    width: 350,
                     child: ListTile(
-                      title: Padding(
-                        padding: const EdgeInsets.only(bottom: 7.0),
-                        child: Text(
-                          widget.title,
-                          style: const TextStyle(fontSize: 25),
-                        ),
+                      title: Text(
+                        widget.title,
+                        style: const TextStyle(fontSize: 35),
                       ),
+
+                      // title: Padding(
+                      //   padding: const EdgeInsets.only(bottom: 7.0),
+                      //   child: Text(
+                      //     widget.title,
+                      //     style: const TextStyle(fontSize: 35),
+                      //   ),
+                      // ),
                       subtitle: Text(
                         "location: ${widget.location}",
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 25, color: Colors.black),
                       ),
                     ),
                   ),
-                  Expanded(
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
-                          onPressed: () {
-                            var token = StoreProvider.of<AppState>(context).state.token;
-                            setState(() {
-                              eventIsSaved = !eventIsSaved;
-                              if (eventIsSaved) {
-                                iconBtnState = Icons.star;
-                                iconColorState = Colors.yellow;
-                                saveEventRequest(widget.eventId, token);
-                              } else {
-                                iconBtnState = Icons.star_border;
-                                iconColorState = Colors.black;
-                                deleteSavedEventRequest(widget.eventId, token);
-                              }
-                            });
-                          },
-                          icon: eventIsSaved ? Icon(Icons.star, size: 40, color: Colors.yellow,) :
-                              Icon(Icons.star_border, size: 40,),
-                        ),
-                      ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
+                      onPressed: () {
+                        var token = StoreProvider
+                            .of<AppState>(context)
+                            .state
+                            .token;
+                        setState(() {
+                          eventIsSaved = !eventIsSaved;
+                          if (eventIsSaved) {
+                            iconBtnState = Icons.star;
+                            iconColorState = Colors.yellow;
+                            saveEventRequest(widget.eventId, token);
+                          } else {
+                            iconBtnState = Icons.star_border;
+                            iconColorState = Colors.black;
+                            deleteSavedEventRequest(widget.eventId, token);
+                          }
+                        });
+                      },
+                      icon: eventIsSaved ? const Icon(
+                        Icons.star, size: 40, color: Colors.yellow,) :
+                      const Icon(Icons.star_border, size: 40,),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
       ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       context.push('/events/${widget.eventId}');
+  //     },
+  //     child: Card(
+  //       elevation: 10,
+  //       shadowColor: Colors.black,
+  //       margin: const EdgeInsets.all(10),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(10.0),
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           eventImgCard,
+  //           Container(
+  //             height: 80,
+  //             decoration: const BoxDecoration(
+  //               borderRadius: BorderRadius.only(
+  //                 bottomLeft: Radius.circular(10.0),
+  //                 bottomRight: Radius.circular(10.0),
+  //               ),
+  //               color: Colors.white60,
+  //             ),
+  //             child: Row(
+  //               children: [
+  //                 Expanded(
+  //                   child: ListTile(
+  //                     title: Padding(
+  //                       padding: const EdgeInsets.only(bottom: 7.0),
+  //                       child: Text(
+  //                         widget.title,
+  //                         style: const TextStyle(fontSize: 25),
+  //                       ),
+  //                     ),
+  //                     subtitle: Text(
+  //                       "location: ${widget.location}",
+  //                       style: const TextStyle(fontSize: 15),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                     child: Align(
+  //                       alignment: Alignment.topRight,
+  //                       child: IconButton(
+  //                         padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
+  //                         onPressed: () {
+  //                           var token = StoreProvider.of<AppState>(context).state.token;
+  //                           setState(() {
+  //                             eventIsSaved = !eventIsSaved;
+  //                             if (eventIsSaved) {
+  //                               iconBtnState = Icons.star;
+  //                               iconColorState = Colors.yellow;
+  //                               saveEventRequest(widget.eventId, token);
+  //                             } else {
+  //                               iconBtnState = Icons.star_border;
+  //                               iconColorState = Colors.black;
+  //                               deleteSavedEventRequest(widget.eventId, token);
+  //                             }
+  //                           });
+  //                         },
+  //                         icon: eventIsSaved ? const Icon(Icons.star, size: 40, color: Colors.yellow,) :
+  //                             const Icon(Icons.star_border, size: 40,),
+  //                       ),
+  //                     ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

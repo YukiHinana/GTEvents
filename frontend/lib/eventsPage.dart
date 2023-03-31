@@ -88,7 +88,6 @@ class _EventsPage extends State<EventsPage> {
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     super.initState();
-    // getEventCards(StoreProvider.of<AppState>(context).state.token);
   }
 
   @override
