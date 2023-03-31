@@ -40,7 +40,6 @@ class _EventCardState extends State<EventCard> {
   Color iconColorState = Colors.black;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.isSaved) {
       iconBtnState = Icons.star;
@@ -48,18 +47,6 @@ class _EventCardState extends State<EventCard> {
       eventIsSaved = widget.isSaved;
     }
   }
-  //
-  // void toggleIconBtnState(int eventId, String? token) {
-  //   if (iconBtnState == Icons.star_border) {
-  //     iconBtnState = Icons.star;
-  //     iconColorState = Colors.yellow;
-  //     saveEventRequest(eventId, token);
-  //   } else {
-  //     iconBtnState = Icons.star_border;
-  //     iconColorState = Colors.black;
-  //     deleteSavedEventRequest(eventId, token);
-  //   }
-  // }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async{
     var response = await http.post(
@@ -94,7 +81,7 @@ class _EventCardState extends State<EventCard> {
           children: [
             eventImgCard,
             Container(
-              height: 80,
+              height: 100,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10.0),
@@ -104,7 +91,8 @@ class _EventCardState extends State<EventCard> {
               ),
               child: Row(
                 children: [
-                  Expanded(
+                  SizedBox(
+                    width: 350,
                     child: ListTile(
                       title: Padding(
                         padding: const EdgeInsets.only(bottom: 7.0),
@@ -139,8 +127,8 @@ class _EventCardState extends State<EventCard> {
                               }
                             });
                           },
-                          icon: eventIsSaved ? Icon(Icons.star, size: 40, color: Colors.yellow,) :
-                              Icon(Icons.star_border, size: 40,),
+                          icon: eventIsSaved ? const Icon(Icons.star, size: 40, color: Colors.yellow,) :
+                              const Icon(Icons.star_border, size: 40,),
                         ),
                       ),
                   ),

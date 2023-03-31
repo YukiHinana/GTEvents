@@ -39,8 +39,6 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
   return eventList;
 }
 
-
-
 //SavedEventsPage interface
 class _SavedEventsPage extends State<SavedEventsPage> {
 
@@ -71,8 +69,6 @@ class _SavedEventsPage extends State<SavedEventsPage> {
             return ListView.builder(
                 itemCount: snapshot.data?.length??0,
                 itemBuilder: (context, index) {
-                  // print(snapshot.data??"");
-                  // return Container();
                   var curItem = snapshot.data![index];
                   return EventCard(eventId: curItem.eventId,
                       title: curItem.title,
