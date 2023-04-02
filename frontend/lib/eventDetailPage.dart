@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //Event details page
 class EventDetailPage extends StatefulWidget {
-  // final int eventId;
   // const EventDetailPage({super.key, required this.eventId});
   final String eventTitle;
   final String eventLocation;
@@ -17,10 +16,6 @@ class EventDetailPage extends StatefulWidget {
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
 
-// String eventTitle = 'Sting Break';
-// String eventLocaion = 'Tech Green';
-// String eventDiscription = 'Prepare yourselves Yellow Jackets 🐝 — Join us on a prehistoric journey for Sting Break Before Time on Thursday, March 30th from 7-11pm at Tech Green & W21 Parking Lot! Get ready for a thrilling night filled with prehistoric-themed activities and rides, carnival games, delicious food, and a scavenger hunt for a chance to win FREE tickets to GT Night at Six Flags! Sting Break tickets are free and will go live on Campus Tickets starting Sunday, March 26th at noon!';
-// String eventCategory = 'Social';
 DateTime date = DateTime.now();
 //Event detail page interface
 class _EventDetailPageState extends State<EventDetailPage> {
@@ -28,18 +23,18 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text(widget.eventTitle.toString())),
+        title: const Text("Event Content")),
         body: ListView(
           children: [
-            // Container(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Text(
-            //     widget.eventTitle,
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
-            //   ),
-            //
-            // ),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.eventTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
+              ),
+
+            ),
             Container(
               padding: const EdgeInsets.all(8.0),
               child: const Text(
@@ -92,7 +87,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             Container(
               padding: const EdgeInsets.all(8.0),
               child: const Text(
-                'Catagory',
+                'Category',
                 style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
               ),
             ),

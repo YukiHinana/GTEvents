@@ -20,6 +20,7 @@ class SavedEventsPage extends StatefulWidget {
 }
 
 Future<List<Event>> fetchSavedEvents(String? token) async {
+  print("a");
   List<Event> eventList = [];
   if (token == null) {
     return eventList;
@@ -34,12 +35,10 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
   for (var i in jsonDecode(response.body)['data']) {
     Map<String, dynamic> map = Map<String, dynamic>.from(i);
     eventList.add(Event(map['id'], map['title'], map['location'],
-        map['description'], map['capacity'], map['fee']));
+        map['description'], map['capacity'], map['fee'], true));
   }
   return eventList;
 }
-
-
 
 //SavedEventsPage interface
 class _SavedEventsPage extends State<SavedEventsPage> {
@@ -71,14 +70,9 @@ class _SavedEventsPage extends State<SavedEventsPage> {
             return ListView.builder(
                 itemCount: snapshot.data?.length??0,
                 itemBuilder: (context, index) {
-                  // print(snapshot.data??"");
-                  // return Container();
                   var curItem = snapshot.data![index];
-                  return EventCard(eventId: curItem.eventId,
-                      title: curItem.title,
-                      location: curItem.location,
-                      isSaved: true
-                  );
+                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, true);
+                  return EventCard(event: e,);
                 }
             );
           }

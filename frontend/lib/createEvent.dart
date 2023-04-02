@@ -43,8 +43,6 @@ class _CreateEventState extends State<CreateEvent>{
           'tagIds': value == null ? [] : [value]
         }
     );
-    // print(createEventRequest);
-    // print(token);
     var response = await http.post(
         Uri.parse('${Config.baseURL}/events/events'),
         headers: {"Content-Type": "application/json", "Authorization": token??""},
@@ -58,7 +56,7 @@ class _CreateEventState extends State<CreateEvent>{
     return Scaffold(
       appBar: AppBar(title: Text('Create Event')),
       body: ListView(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         children: [
           buildEventTitleField(),
           const SizedBox(height: 24),
@@ -68,7 +66,7 @@ class _CreateEventState extends State<CreateEvent>{
           const SizedBox(height: 24),
           buildCategoryPicker(),
           const SizedBox(height: 24),
-          Text(
+          const Text(
             'Pick Date and time',
             style: TextStyle(fontSize: 16),
             ),
@@ -95,7 +93,7 @@ class _CreateEventState extends State<CreateEvent>{
   }
 
   Widget buildEventTitleField() => TextField(
-    decoration: InputDecoration(
+    decoration: const InputDecoration(
       labelText: 'Enter Event Title',
       border: OutlineInputBorder(),
     ),
@@ -104,7 +102,7 @@ class _CreateEventState extends State<CreateEvent>{
 
 
   Widget buildEventLocationField() => TextField(
-    decoration: InputDecoration(
+    decoration: const InputDecoration(
       labelText: 'Enter Event Location',
       border: OutlineInputBorder(),
     ),

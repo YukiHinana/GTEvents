@@ -15,7 +15,7 @@ class CreatedEventsPage extends StatefulWidget {
 class _CreatedEventsPage extends State<CreatedEventsPage> {
   void navigateEventCreation(BuildContext ctx) {
     Navigator.of(ctx).push(MaterialPageRoute(builder: (_){
-      return CreateEvent();
+      return const CreateEvent();
     }));
   }
 

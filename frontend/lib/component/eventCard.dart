@@ -1,23 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../config.dart';
+import '../event.dart';
 
 class EventCard extends StatefulWidget {
-  final int eventId;
-  final String title;
-  final String location;
-  final bool isSaved;
-  const EventCard({super.key, required this.eventId, required this.title, required this.location, required this.isSaved});
+  Event event;
+  EventCard({super.key, required this.event});
 
   @override
   State<EventCard> createState() => _EventCardState();
 }
 
 class _EventCardState extends State<EventCard> {
-  bool eventIsSaved = false;
+  // bool eventIsSaved = false;
+  late bool eventIsSaved;
+  late int eventId;
+  late String title;
+  late String location;
+  // final bool isSaved;
 
   Widget eventImgCard = Container(
     height: 250,
@@ -41,11 +46,14 @@ class _EventCardState extends State<EventCard> {
   @override
   void initState() {
     super.initState();
-    if (widget.isSaved) {
+    if (widget.event.isSaved) {
       iconBtnState = Icons.star;
       iconColorState = Colors.yellow;
-      eventIsSaved = widget.isSaved;
     }
+    eventIsSaved = widget.event.isSaved;
+    eventId = widget.event.eventId;
+    title = widget.event.title;
+    location = widget.event.location;
   }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async{
@@ -64,11 +72,32 @@ class _EventCardState extends State<EventCard> {
     return response;
   }
 
+  Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
+    var response = await http.get(
+      Uri.parse('${Config.baseURL}/events/events/$eventId'),
+      headers: {"Content-Type": "application/json"},
+    );
+    // print(jsonDecode(response.body)['data']['id']);
+    return Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/events/${widget.eventId}');
+        fetchEventDetails(eventId).then((value) {
+          context.pushNamed("eventDetails",
+              params: {
+                "id": eventId.toString(),
+              },
+              queryParams: {
+                "eventTitle": value["title"]!,
+                "eventLocation": value["location"]!,
+                "eventDescription": value["description"]!,
+                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"]
+                // "tagName": value["tags"][0]["name"]
+              });
+        });
       },
       child: Card(
         elevation: 10,
@@ -97,12 +126,12 @@ class _EventCardState extends State<EventCard> {
                       title: Padding(
                         padding: const EdgeInsets.only(bottom: 7.0),
                         child: Text(
-                          widget.title,
+                          title,
                           style: const TextStyle(fontSize: 25),
                         ),
                       ),
                       subtitle: Text(
-                        "location: ${widget.location}",
+                        "location: $location",
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),
@@ -119,11 +148,11 @@ class _EventCardState extends State<EventCard> {
                             if (eventIsSaved) {
                               iconBtnState = Icons.star;
                               iconColorState = Colors.yellow;
-                              saveEventRequest(widget.eventId, token);
+                              saveEventRequest(eventId, token);
                             } else {
                               iconBtnState = Icons.star_border;
                               iconColorState = Colors.black;
-                              deleteSavedEventRequest(widget.eventId, token);
+                              deleteSavedEventRequest(eventId, token);
                             }
                           });
                         },
