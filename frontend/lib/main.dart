@@ -69,8 +69,6 @@ final GoRouter _router = GoRouter(
       name: "eventDetails",
       path: '/events/:id',
       builder: (context, state) {
-        // state.queryParams
-        // EventDetailPage(eventId: int.parse(state.params['id']!))
         return EventDetailPage(
             eventTitle: state.queryParams["eventTitle"]??"",
             eventLocation: state.queryParams["eventLocation"]??"",

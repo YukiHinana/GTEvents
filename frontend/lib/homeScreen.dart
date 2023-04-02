@@ -67,11 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = ['a', 'b', 'c', 'd'];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // return <Widget>[];
     return [
       IconButton(
         onPressed: () {
@@ -98,14 +96,16 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 
   Future<List<dynamic>> _searchEvents() async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/events/events/search?pageNumber=0&pageSize=15&keyword=$query'),
-      headers: {"Content-Type": "application/json"},
-    );
     List<dynamic> eventList = [];
-    Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(response.body)['data']);
-    if (response.statusCode == 200) {
-      eventList = map['content'];
+    if (query.length >= 3) {
+      var response = await http.get(
+        Uri.parse('${Config.baseURL}/events/events/search?pageNumber=0&pageSize=15&keyword=${query.toLowerCase()}'),
+        headers: {"Content-Type": "application/json"},
+      );
+      Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+      if (response.statusCode == 200) {
+        eventList = map['content'];
+      }
     }
     return eventList;
   }

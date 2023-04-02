@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -42,7 +40,6 @@ class _EventCardState extends State<EventCard> {
   Color iconColorState = Colors.black;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.isSaved) {
       iconBtnState = Icons.star;
@@ -50,18 +47,6 @@ class _EventCardState extends State<EventCard> {
       eventIsSaved = widget.isSaved;
     }
   }
-  //
-  // void toggleIconBtnState(int eventId, String? token) {
-  //   if (iconBtnState == Icons.star_border) {
-  //     iconBtnState = Icons.star;
-  //     iconColorState = Colors.yellow;
-  //     saveEventRequest(eventId, token);
-  //   } else {
-  //     iconBtnState = Icons.star_border;
-  //     iconColorState = Colors.black;
-  //     deleteSavedEventRequest(eventId, token);
-  //   }
-  // }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async{
     var response = await http.post(
@@ -79,32 +64,11 @@ class _EventCardState extends State<EventCard> {
     return response;
   }
 
-  Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/events/events/$eventId'),
-      headers: {"Content-Type": "application/json"},
-    );
-    // print(jsonDecode(response.body)['data']['id']);
-    return Map<String, dynamic>.from(jsonDecode(response.body)['data']);
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        fetchEventDetails(widget.eventId).then((value) {
-          context.pushNamed("eventDetails",
-              params: {
-                "id": widget.eventId.toString(),
-              },
-              queryParams: {
-                "eventTitle": value["title"]!,
-                "eventLocation": value["location"]!,
-                "eventDescription": value["description"]!,
-                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"]
-                // "tagName": value["tags"][0]["name"]
-              });
-        });
+        context.push('/events/${widget.eventId}');
       },
       child: Card(
         elevation: 10,
@@ -117,7 +81,7 @@ class _EventCardState extends State<EventCard> {
           children: [
             eventImgCard,
             Container(
-              height: 80,
+              height: 100,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10.0),
@@ -127,7 +91,8 @@ class _EventCardState extends State<EventCard> {
               ),
               child: Row(
                 children: [
-                  Expanded(
+                  SizedBox(
+                    width: 350,
                     child: ListTile(
                       title: Padding(
                         padding: const EdgeInsets.only(bottom: 7.0),
@@ -143,29 +108,29 @@ class _EventCardState extends State<EventCard> {
                     ),
                   ),
                   Expanded(
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
-                          onPressed: () {
-                            var token = StoreProvider.of<AppState>(context).state.token;
-                            setState(() {
-                              eventIsSaved = !eventIsSaved;
-                              if (eventIsSaved) {
-                                iconBtnState = Icons.star;
-                                iconColorState = Colors.yellow;
-                                saveEventRequest(widget.eventId, token);
-                              } else {
-                                iconBtnState = Icons.star_border;
-                                iconColorState = Colors.black;
-                                deleteSavedEventRequest(widget.eventId, token);
-                              }
-                            });
-                          },
-                          icon: eventIsSaved ? Icon(Icons.star, size: 40, color: Colors.yellow,) :
-                              Icon(Icons.star_border, size: 40,),
-                        ),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
+                        onPressed: () {
+                          var token = StoreProvider.of<AppState>(context).state.token;
+                          setState(() {
+                            eventIsSaved = !eventIsSaved;
+                            if (eventIsSaved) {
+                              iconBtnState = Icons.star;
+                              iconColorState = Colors.yellow;
+                              saveEventRequest(widget.eventId, token);
+                            } else {
+                              iconBtnState = Icons.star_border;
+                              iconColorState = Colors.black;
+                              deleteSavedEventRequest(widget.eventId, token);
+                            }
+                          });
+                        },
+                        icon: eventIsSaved ? const Icon(Icons.star, size: 40, color: Colors.yellow,) :
+                        const Icon(Icons.star_border, size: 40,),
                       ),
+                    ),
                   ),
                 ],
               ),

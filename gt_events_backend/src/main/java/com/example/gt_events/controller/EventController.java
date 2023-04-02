@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -48,7 +49,8 @@ public class EventController {
 
     @GetMapping("/events")
     public ResponseWrapper<?> getEvents(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Pageable aa = PageRequest.of(pageNumber, pageSize);
+//        Pageable aa = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
+        Pageable aa = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Order.desc("id").ignoreCase()));
         return new ResponseWrapper<>(eventRepository.findAll(aa));
     }
 
@@ -68,7 +70,7 @@ public class EventController {
 
     @GetMapping("/events/find/event-creation-date-between")
     public ResponseWrapper<?> getEventsByCreationDateRange(@RequestParam int pageNumber, @RequestParam int pageSize,
-                                                   @RequestParam Date startDate, @RequestParam Date endDate) {
+                                                           @RequestParam Date startDate, @RequestParam Date endDate) {
         Pageable aa = PageRequest.of(pageNumber, pageSize);
         return new ResponseWrapper<>(eventRepository.findByEventCreationDateBetween(startDate, endDate, aa));
     }

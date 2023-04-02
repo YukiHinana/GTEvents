@@ -20,11 +20,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: const [
           Padding(
-            padding: const EdgeInsets.all(48.0),
+            padding: EdgeInsets.all(48.0),
             child: TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   labelText: 'search',
                   hintText: 'Enter the username'
               ),

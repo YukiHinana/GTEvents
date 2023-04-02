@@ -3,8 +3,8 @@ import 'package:redux/redux.dart';
 
 //change URL to your local ip to run
 class Config {
-  static const baseURL = "http://3.145.83.83:8080";
-  // static const baseURL = "http://localhost:8080";
+  // static const baseURL = "http://3.145.83.83:8080";
+  static const baseURL = "http://localhost:8080";
 }
 //User infor entity
 class UserInfo {
