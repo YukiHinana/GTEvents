@@ -21,27 +21,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
-    _prefs.then((value) {
-      var result = value.getString('token');
-      var tokenVal = result == "" || result == null ? null : result;
-      StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
-      if (tokenVal != null) {
-        handleFindUsernameByTokenRequest(tokenVal).then((usernameVal) {
-          if (usernameVal == null) {
-            StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
-            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
-            value.setString("token", "");
-          } else {
-            StoreProvider.of<AppState>(context).dispatch(
-                SetUsernameAction(usernameVal));
-          }
-        });
-      }});
   }
 
   @override

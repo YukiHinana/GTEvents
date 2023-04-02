@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:GTEvents/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './login.dart';
 import 'config.dart';
 import 'package:redux/redux.dart';
@@ -28,14 +29,43 @@ class MyApp extends StatelessWidget {
 
   const MyApp({super.key, required this.store});
 
+  Future<void> appInit(Store<AppState> store) async {
+    SharedPreferences.getInstance().then((value) {
+      var result = value.getString('token');
+      var tokenVal = result == "" || result == null ? null : result;
+      store.dispatch(SetTokenAction(tokenVal));
+      if (tokenVal != null) {
+        handleFindUsernameByTokenRequest(tokenVal).then((usernameVal) {
+          if (usernameVal == null) {
+            store.dispatch(SetTokenAction(null));
+            store.dispatch(SetUsernameAction(null));
+            value.setString("token", "");
+          } else {
+            store.dispatch(SetUsernameAction(usernameVal));
+          }
+        });
+      }
+    });
+  }
+
   //Main interface
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: MaterialApp.router(
-        title: 'hello',
-        routerConfig: _router,
+      child: FutureBuilder(
+        future: appInit(store),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return MaterialApp.router(
+            title: 'hello',
+            routerConfig: _router,
+          );
+        }
       ),
     );
   }
@@ -97,10 +127,11 @@ final GoRouter _router = GoRouter(
           path: ':id',
           builder: (context, state) {
             return EventDetailPage(
-                eventTitle: state.queryParams["eventTitle"]??"",
-                eventLocation: state.queryParams["eventLocation"]??"",
-                eventDescription: state.queryParams["eventDescription"]??"",
-                tagName: state.queryParams["tagName"]??""
+              eventTitle: state.queryParams["eventTitle"]??"",
+              eventLocation: state.queryParams["eventLocation"]??"",
+              eventDescription: state.queryParams["eventDescription"]??"",
+              tagName: state.queryParams["tagName"]??"",
+              isSaved: state.queryParams["isSaved"] == "true" ? true : false,
             );
           } ,
         ),

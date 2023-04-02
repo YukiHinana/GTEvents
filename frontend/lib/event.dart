@@ -1,4 +1,5 @@
 //Event variables
+
 class Event {
   int eventId;
   String title;
@@ -24,6 +25,8 @@ class Event {
   String toString() {
     return'{$eventId, $title, $location, $description, $capacity, $fee}';
   }
+
+  // bool operator == (e) => e is Event && eventId == e.eventId && title == e.title;
 }
 
 class Tag {

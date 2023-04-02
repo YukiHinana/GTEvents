@@ -13,15 +13,21 @@ import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
 import com.example.gt_events.repo.TokenRepository;
+import com.example.gt_events.service.EventService;
 import com.example.gt_events.service.FileService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -31,20 +37,25 @@ import java.util.*;
 @RestController
 @RequestMapping("/events")
 public class EventController {
+    @PersistenceContext
+    EntityManager entityManager;
     private final EventRepository eventRepository;
     private final AccountRepository accountRepository;
     private final TokenRepository tokenRepository;
     private final TagRepository tagRepository;
     private final FileService fileService;
+    private final EventService eventService;
 
     @Autowired
     public EventController(EventRepository eventRepository, AccountRepository accountRepository,
-                           TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService) {
+                           TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService,
+                           EventService eventService) {
         this.eventRepository = eventRepository;
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
         this.tagRepository = tagRepository;
         this.fileService = fileService;
+        this.eventService = eventService;
     }
 
     @GetMapping("/events")
@@ -223,7 +234,9 @@ public class EventController {
     @GetMapping("/created")
     @RequireAuth
     public ResponseWrapper<?> getCreatedEvents(Account a) {
-        return new ResponseWrapper<>(a.getCreatedEvents());
+
+        Account account = accountRepository.findById(a.getId()).get();
+        return new ResponseWrapper<>(eventService.getCreatedEvents(account));
     }
 //    @GetMapping("/created")
 //    @RequireAuth

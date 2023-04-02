@@ -20,7 +20,7 @@ class SavedEventsPage extends StatefulWidget {
 }
 
 Future<List<Event>> fetchSavedEvents(String? token) async {
-  print("a");
+  // print("here");
   List<Event> eventList = [];
   if (token == null) {
     return eventList;
@@ -29,7 +29,7 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
     Uri.parse('${Config.baseURL}/events/saved'),
     headers: {
       "Content-Type": "application/json",
-      "Authorization": token ?? ""
+      "Authorization": token
     },
   );
   for (var i in jsonDecode(response.body)['data']) {

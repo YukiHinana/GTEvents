@@ -117,7 +117,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                         var tokenVal = jsonDecode(value.body)['data'];
                         StoreProvider.of<AppState>(context).dispatch(SetTokenAction(tokenVal));
                         StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(_usernameController.text));
-                        context.pop(context);
+                        context.go("/events");
                       } else {
                         // if incorrect username or password, pop alert window
                         showDialog<String>(

@@ -67,7 +67,8 @@ class _EventsPage extends State<EventsPage> {
               info['description'],
               info['capacity'],
               info['fee'],
-              isSaved)
+              isSaved
+          )
       );
     }
     return newEventList;
@@ -124,8 +125,6 @@ class _EventsPage extends State<EventsPage> {
             return Container(
               padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
               child: EventCard(event: eventList[index],),
-              // child: EventCard()eventList[index],
-
             );
           } else {
             return const Center(child: CircularProgressIndicator(),);

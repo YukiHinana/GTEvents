@@ -53,7 +53,7 @@ class _UserSideBar extends State<UserSideBar> {
                   title: appState.token == null ? const Text('Login') : const Text('View Profile'),
                   onTap: () {
                     if (appState.token == null) {
-                      context.push('/login');
+                      context.pushReplacement('/login');
                     }
                   },
                 ),
@@ -82,6 +82,8 @@ class _UserSideBar extends State<UserSideBar> {
                           StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
                           final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
                           (await prefs).setString("token", "");
+                          // TODO: change this
+                          context.pushReplacement("/events");
                         }
                       });
                     },
