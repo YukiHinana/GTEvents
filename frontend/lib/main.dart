@@ -66,6 +66,20 @@ final GoRouter _router = GoRouter(
         }
     ),
     GoRoute(
+      name: "eventDetails",
+      path: '/events/:id',
+      builder: (context, state) {
+        // state.queryParams
+        // EventDetailPage(eventId: int.parse(state.params['id']!))
+        return EventDetailPage(
+            eventTitle: state.queryParams["eventTitle"]??"",
+            eventLocation: state.queryParams["eventLocation"]??"",
+            eventDescription: state.queryParams["eventDescription"]??"",
+            tagName: state.queryParams["tagName"]??""
+        );
+      } ,
+    ),
+    GoRoute(
       path: '/events',
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
@@ -92,10 +106,20 @@ final GoRouter _router = GoRouter(
               return const SavedEventsPage();
             }
         ),
-        GoRoute(
-          path: ':id',
-          builder: (context, state) => EventDetailPage(eventId: int.parse(state.params['id']!)),
-        ),
+        // GoRoute(
+        //   name: "eventDetails",
+        //   path: ':id',
+        //   builder: (context, state) {
+        //     // state.queryParams
+        //     // EventDetailPage(eventId: int.parse(state.params['id']!))
+        //     return EventDetailPage(
+        //         eventTitle: state.params["eventTitle"]!,
+        //         eventLocation: state.params["eventLocation"]!,
+        //         eventDescription: state.params["eventDescription"]!,
+        //         tagName: state.params["tagName"]!
+        //     );
+        //   } ,
+        // ),
       ],
     ),
   ],

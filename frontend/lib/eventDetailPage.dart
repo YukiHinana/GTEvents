@@ -2,16 +2,25 @@ import 'package:flutter/material.dart';
 
 //Event details page
 class EventDetailPage extends StatefulWidget {
-  final int eventId;
-  const EventDetailPage({super.key, required this.eventId});
+  // final int eventId;
+  // const EventDetailPage({super.key, required this.eventId});
+  final String eventTitle;
+  final String eventLocation;
+  final String eventDescription;
+  final String tagName;
+
+  const EventDetailPage({super.key, required this.eventTitle,
+    required this.eventLocation, required this.eventDescription,
+    required this.tagName});
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
-String eventTitle = 'Sting Break';
-String eventLocaion = 'Tech Green';
-String eventDiscription = 'Prepare yourselves Yellow Jackets 🐝 — Join us on a prehistoric journey for Sting Break Before Time on Thursday, March 30th from 7-11pm at Tech Green & W21 Parking Lot! Get ready for a thrilling night filled with prehistoric-themed activities and rides, carnival games, delicious food, and a scavenger hunt for a chance to win FREE tickets to GT Night at Six Flags! Sting Break tickets are free and will go live on Campus Tickets starting Sunday, March 26th at noon!';
-String eventCatagory = 'Social';
+
+// String eventTitle = 'Sting Break';
+// String eventLocaion = 'Tech Green';
+// String eventDiscription = 'Prepare yourselves Yellow Jackets 🐝 — Join us on a prehistoric journey for Sting Break Before Time on Thursday, March 30th from 7-11pm at Tech Green & W21 Parking Lot! Get ready for a thrilling night filled with prehistoric-themed activities and rides, carnival games, delicious food, and a scavenger hunt for a chance to win FREE tickets to GT Night at Six Flags! Sting Break tickets are free and will go live on Campus Tickets starting Sunday, March 26th at noon!';
+// String eventCategory = 'Social';
 DateTime date = DateTime.now();
 //Event detail page interface
 class _EventDetailPageState extends State<EventDetailPage> {
@@ -19,22 +28,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text(widget.eventId.toString())),
+        title: Text(widget.eventTitle.toString())),
         body: ListView(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                eventTitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
-              ),
-              
-            ),
+            // Container(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Text(
+            //     widget.eventTitle,
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
+            //   ),
+            //
+            // ),
             Container(
               padding: const EdgeInsets.all(8.0),
               child: const Text(
-                'Data and Time',
+                'Date and Time',
                 style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
               ),
             ),
@@ -62,7 +71,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             Container(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                eventLocaion,
+                widget.eventLocation,
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -76,7 +85,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             Container(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                eventDiscription,
+                widget.eventDescription,
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -90,7 +99,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             Container(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                eventCatagory,
+                widget.tagName,
                 style: TextStyle(fontSize: 16),
               ),
             ),

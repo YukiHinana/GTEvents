@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -77,11 +79,32 @@ class _EventCardState extends State<EventCard> {
     return response;
   }
 
+  Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
+    var response = await http.get(
+      Uri.parse('${Config.baseURL}/events/events/$eventId'),
+      headers: {"Content-Type": "application/json"},
+    );
+    // print(jsonDecode(response.body)['data']['id']);
+    return Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/events/${widget.eventId}');
+        fetchEventDetails(widget.eventId).then((value) {
+          context.pushNamed("eventDetails",
+              params: {
+                "id": widget.eventId.toString(),
+              },
+              queryParams: {
+                "eventTitle": value["title"]!,
+                "eventLocation": value["location"]!,
+                "eventDescription": value["description"]!,
+                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"]
+                // "tagName": value["tags"][0]["name"]
+              });
+        });
       },
       child: Card(
         elevation: 10,
