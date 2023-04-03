@@ -38,13 +38,13 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
         "Authorization": token
       },
     );
-    print(response.body);
-    for (var i in jsonDecode(response.body)['data']) {
-      Map<String, dynamic> map = Map<String, dynamic>.from(i);
-      eventList.add(Event(map['id'], map['title'], map['location'],
-          map['description'], map['capacity'], map['fee'], true));
+    if (response.statusCode == 200) {
+      for (var i in jsonDecode(response.body)['data']) {
+        Map<String, dynamic> map = Map<String, dynamic>.from(i);
+        eventList.add(Event(map['id'], map['title'], map['location'],
+            map['description'], map['capacity'], map['fee'], true));
+      }
     }
-    print(eventList);
     return eventList;
   }
 

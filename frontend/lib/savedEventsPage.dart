@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'config.dart';
 import 'event.dart';
@@ -20,7 +21,6 @@ class SavedEventsPage extends StatefulWidget {
 }
 
 Future<List<Event>> fetchSavedEvents(String? token) async {
-  // print("here");
   List<Event> eventList = [];
   if (token == null) {
     return eventList;
@@ -32,16 +32,19 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
       "Authorization": token
     },
   );
-  for (var i in jsonDecode(response.body)['data']) {
-    Map<String, dynamic> map = Map<String, dynamic>.from(i);
-    eventList.add(Event(map['id'], map['title'], map['location'],
-        map['description'], map['capacity'], map['fee'], true));
+  if (response.statusCode == 200) {
+    for (var i in jsonDecode(response.body)['data']) {
+      Map<String, dynamic> map = Map<String, dynamic>.from(i);
+      eventList.add(Event(map['id'], map['title'], map['location'],
+          map['description'], map['capacity'], map['fee'], true));
+    }
   }
   return eventList;
 }
 
 //SavedEventsPage interface
 class _SavedEventsPage extends State<SavedEventsPage> {
+  final RefreshController _refreshController = RefreshController(initialRefresh: true);
 
   @override
   Widget build(BuildContext context) {
@@ -54,29 +57,30 @@ class _SavedEventsPage extends State<SavedEventsPage> {
               icon: const Icon(Icons.home))
         ],
       ),
-      body: FutureBuilder<List<Event>>(
-          future: fetchSavedEvents(
-              StoreProvider.of<AppState>(context).state.token),
-          builder: (context, snapshot) {
-            print(snapshot.data);
-            if (snapshot.hasError) {
-              print(snapshot.error);
-            }
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return ListView.builder(
-                itemCount: snapshot.data?.length??0,
-                itemBuilder: (context, index) {
-                  var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, true);
-                  return EventCard(event: e,);
-                }
-            );
-          }
-      ),
+      body: SmartRefresher(controller: _refreshController),
+      // body: FutureBuilder<List<Event>>(
+      //     future: fetchSavedEvents(
+      //         StoreProvider.of<AppState>(context).state.token),
+      //     builder: (context, snapshot) {
+      //       print(snapshot.data);
+      //       if (snapshot.hasError) {
+      //         print(snapshot.error);
+      //       }
+      //       if (snapshot.connectionState != ConnectionState.done) {
+      //         return const Center(
+      //           child: CircularProgressIndicator(),
+      //         );
+      //       }
+      //       return ListView.builder(
+      //           itemCount: snapshot.data?.length??0,
+      //           itemBuilder: (context, index) {
+      //             var curItem = snapshot.data![index];
+      //             Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, true);
+      //             return EventCard(event: e,);
+      //           }
+      //       );
+      //     }
+      // ),
       drawer: const UserSideBar(),
     );
   }
