@@ -28,7 +28,7 @@ public class Account {
     @JsonIgnore
     private Set<Event> createdEvents = new LinkedHashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = {@JoinColumn(name = "account_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")})
     @JsonIgnore

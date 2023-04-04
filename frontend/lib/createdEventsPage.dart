@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:GTEvents/component/eventTile.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -85,7 +86,8 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
                   Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, curItem.isSaved);
-                  return EventCard(event: e,);
+                  return EventTile(event: e);
+                  // return EventCard(event: e,);
                 }
             );
           }

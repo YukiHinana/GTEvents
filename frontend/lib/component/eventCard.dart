@@ -16,6 +16,15 @@ class EventCard extends StatefulWidget {
   State<EventCard> createState() => _EventCardState();
 }
 
+Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/events/events/$eventId'),
+    headers: {"Content-Type": "application/json"},
+  );
+  Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
+  return map;
+}
+
 class _EventCardState extends State<EventCard> {
   // bool eventIsSaved = false;
   late bool eventIsSaved;
@@ -24,7 +33,7 @@ class _EventCardState extends State<EventCard> {
   late String location;
   // final bool isSaved;
 
-  Widget eventImgCard = Container(
+  final Widget _eventImgCard = Container(
     height: 250,
     decoration:  const BoxDecoration(
       borderRadius: BorderRadius.only(
@@ -72,15 +81,6 @@ class _EventCardState extends State<EventCard> {
     return response;
   }
 
-  Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/events/events/$eventId'),
-      headers: {"Content-Type": "application/json"},
-    );
-    Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
-    return map;
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -108,7 +108,7 @@ class _EventCardState extends State<EventCard> {
         ),
         child: Column(
           children: [
-            eventImgCard,
+            _eventImgCard,
             Container(
               height: 100,
               decoration: const BoxDecoration(

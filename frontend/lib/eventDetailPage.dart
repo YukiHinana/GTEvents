@@ -28,7 +28,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         actions: <Widget>[
           IconButton(
               onPressed: () {},
-              icon: widget.isSaved ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border)),
+              icon: widget.isSaved
+                  ? const Icon(Icons.star, color: Colors.yellow,)
+                  : const Icon(Icons.star_border)),
         ],),
       body: ListView(
         children: [
@@ -72,7 +74,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.eventLocation,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Container(
@@ -86,7 +88,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.eventDescription,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Container(
@@ -100,7 +102,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.tagName,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
