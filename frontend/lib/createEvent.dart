@@ -16,9 +16,10 @@ class CreateEvent extends StatefulWidget{
   State<CreateEvent> createState() => _CreateEventState();
 }
 DateTime dateTime = DateTime(2023, 03, 28);
-class _CreateEventState extends State<CreateEvent>{
+class _CreateEventState extends State<CreateEvent> {
   // tag value
   int? value;
+
   //DateTime currentDate = DateTime.now();
   final hours = dateTime.hour.toString().padLeft(2, '0');
   final minutes = dateTime.minute.toString().padLeft(2, '0');
@@ -35,7 +36,6 @@ class _CreateEventState extends State<CreateEvent>{
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
-    // print(_eventTitleController.text);
     var createEventRequest = json.encode(
         {
           'title': _eventTitleController.text,
@@ -46,7 +46,10 @@ class _CreateEventState extends State<CreateEvent>{
     );
     var response = await http.post(
         Uri.parse('${Config.baseURL}/events/events'),
-        headers: {"Content-Type": "application/json", "Authorization": token??""},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token ?? ""
+        },
         body: createEventRequest
     );
     return response;
@@ -55,7 +58,7 @@ class _CreateEventState extends State<CreateEvent>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Event')),
+      appBar: AppBar(title: const Text('Create Event')),
       body: ListView(
         padding: const EdgeInsets.all(32),
         children: [
@@ -63,14 +66,14 @@ class _CreateEventState extends State<CreateEvent>{
           const SizedBox(height: 24),
           buildEventLocationField(),
           const SizedBox(height: 24),
-          buildEventDiscriptionField(),
+          buildEventDescriptionField(),
           const SizedBox(height: 24),
           buildCategoryPicker(),
           const SizedBox(height: 24),
           const Text(
             'Pick Date and time',
             style: TextStyle(fontSize: 16),
-            ),
+          ),
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -86,29 +89,29 @@ class _CreateEventState extends State<CreateEvent>{
           previewCreateEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
-          
-
         ],
       ),
     );
   }
 
-  Widget buildEventTitleField() => TextField(
-    decoration: const InputDecoration(
-      labelText: 'Enter Event Title',
-      border: OutlineInputBorder(),
-    ),
-    controller: _eventTitleController,
-  );
+  Widget buildEventTitleField() =>
+      TextField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Event Title',
+          border: OutlineInputBorder(),
+        ),
+        controller: _eventTitleController,
+      );
 
 
-  Widget buildEventLocationField() => TextField(
-    decoration: const InputDecoration(
-      labelText: 'Enter Event Location',
-      border: OutlineInputBorder(),
-    ),
-    controller: _eventLocationController,
-  );
+  Widget buildEventLocationField() =>
+      TextField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Event Location',
+          border: OutlineInputBorder(),
+        ),
+        controller: _eventLocationController,
+      );
 
   Future<List<Tag>> _getEventTags() async {
     var response = await http.get(
@@ -133,10 +136,11 @@ class _CreateEventState extends State<CreateEvent>{
                 isExpanded: true,
                 hint: const Text('Pick Category'),
                 value: value,
-                items: snapshot.data?.map((e) => DropdownMenuItem<int>(
-                  value: e.tagId,
-                  child: Text(e.name),
-                )).toList(),
+                items: snapshot.data?.map((e) =>
+                    DropdownMenuItem<int>(
+                      value: e.tagId,
+                      child: Text(e.name),
+                    )).toList(),
                 onChanged: (selectedValue) {
                   setState(() => value = selectedValue);
                 }
@@ -144,109 +148,137 @@ class _CreateEventState extends State<CreateEvent>{
           }
       );
 
-  Widget buildEventDiscriptionField() => TextField(
-    decoration: InputDecoration(
-      labelText: 'Enter Event Discription',
-      border: OutlineInputBorder(),
-    ),
-    controller: _eventDescriptionController,
-    keyboardType: TextInputType.multiline,
-    maxLines: null,
-  );
-
-  Widget buildDatePicker() => ElevatedButton(
-    child: Text('${dateTime.month}/${dateTime.day}/${dateTime.year}'),
-    onPressed: () async {
-      final date = await pickDate();
-      if (date == null) {
-        return;
-      }
-      final newDataTime = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        dateTime.hour,
-        dateTime.minute,
+  Widget buildEventDescriptionField() =>
+      TextField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Event Description',
+          border: OutlineInputBorder(),
+        ),
+        controller: _eventDescriptionController,
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
       );
-      setState(() {
-        dateTime = newDataTime;
-      });
-    }, 
-  );
 
-  Future<DateTime?> pickDate() => showDatePicker(
-    context: context,
-    initialDate: dateTime,
-    firstDate: DateTime(2021),
-    lastDate: DateTime(2100),
-  );
-  Widget buildTimePicker() => ElevatedButton(
-    child: Text('7:00'),
-    onPressed: () async {
-      final time = await pickTime();
-      if (time == null) {
-        return;
-      }
-      final newDataTime = DateTime(
-        dateTime.year,
-        dateTime.month,
-        dateTime.day,
-        time.hour,
-        time.minute,
-      );
-      setState(() {
-        dateTime = newDataTime;
-      });
-    }, 
-  );
-   Future<TimeOfDay?> pickTime() => showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
-  );
-  Widget buildEventCapacityField() => TextField(
-    decoration: InputDecoration(
-      labelText: 'Enter Event Capacity',
-      border: OutlineInputBorder(),
-    ),
-    controller: _eventLocationController,
-  );
-  Widget buildEventFeeField() => TextField(
-    decoration: InputDecoration(
-      labelText: 'Enter Event Fees',
-      border: OutlineInputBorder(),
-    ),
-    controller: _eventLocationController,
-  );
-
-  Widget previewCreateEvent() => FloatingActionButton.extended(
-      heroTag: "preview",
-      onPressed: () {
-      },
-      label: const Text("Preview")
-  );
-
-  Widget buildCreateEvent() => FloatingActionButton.extended(
-      heroTag: "create",
-      onPressed: () {
-        var token = StoreProvider.of<AppState>(context).state.token;
-        submitCreateEventRequest(token).then((value) {
-          if (value.statusCode == 200) {
-            showDialog<String>(
-                context: context,
-                builder: (BuildContext context) =>
-                    AlertDialog(
-                      content: const Text("Event successfully created"),
-                      actions: [
-                        TextButton(
-                            onPressed: () =>
-                                context.pushReplacement("/events/${jsonDecode(value.body)['data']['id']}"),
-                            child: const Text('OK'))
-                      ],
-                    )
-            );
+  Widget buildDatePicker() =>
+      ElevatedButton(
+        child: Text('${dateTime.month}/${dateTime.day}/${dateTime.year}'),
+        onPressed: () async {
+          final date = await pickDate();
+          if (date == null) {
+            return;
           }
-        });
-      },
-      label: const Text("Create")
-  );
+          final newDataTime = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            dateTime.hour,
+            dateTime.minute,
+          );
+          setState(() {
+            dateTime = newDataTime;
+          });
+        },
+      );
+
+  Future<DateTime?> pickDate() =>
+      showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime(2021),
+        lastDate: DateTime(2100),
+      );
+
+  Widget buildTimePicker() =>
+      ElevatedButton(
+        child: Text('7:00'),
+        onPressed: () async {
+          final time = await pickTime();
+          if (time == null) {
+            return;
+          }
+          final newDataTime = DateTime(
+            dateTime.year,
+            dateTime.month,
+            dateTime.day,
+            time.hour,
+            time.minute,
+          );
+          setState(() {
+            dateTime = newDataTime;
+          });
+        },
+      );
+
+  Future<TimeOfDay?> pickTime() =>
+      showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+      );
+
+  Widget buildEventCapacityField() =>
+      TextField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Event Capacity',
+          border: OutlineInputBorder(),
+        ),
+        controller: _eventLocationController,
+      );
+
+  Widget buildEventFeeField() =>
+      TextField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Event Fees',
+          border: OutlineInputBorder(),
+        ),
+        controller: _eventLocationController,
+      );
+
+  Widget previewCreateEvent() =>
+      FloatingActionButton.extended(
+          heroTag: "preview",
+          onPressed: () {},
+          label: const Text("Preview")
+      );
+
+  Widget buildCreateEvent() =>
+      FloatingActionButton.extended(
+          heroTag: "create",
+          onPressed: () {
+            var token = StoreProvider
+                .of<AppState>(context)
+                .state
+                .token;
+            submitCreateEventRequest(token).then((value) {
+              if (value.statusCode == 200) {
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          content: const Text("Event successfully created"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  var event = jsonDecode(value.body)['data'];
+                                  context.pushReplacementNamed("eventDetails",
+                                      params: {
+                                        "id": event['id'].toString(),
+                                      },
+                                      queryParams: {
+                                        "eventTitle": event["title"]!,
+                                        "eventLocation": event["location"]!,
+                                        "eventDescription": event["description"]!,
+                                        "tagName": event["tags"].length == 0 ? "" : event["tags"][0]["name"],
+                                        "isSaved": false.toString(),
+                                      }
+                                  );
+                                },
+                                child: const Text('OK'))
+                          ],
+                        )
+                );
+              }
+            });
+          },
+          label: const Text("Create")
+      );
 }

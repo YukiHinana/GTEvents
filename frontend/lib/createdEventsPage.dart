@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -11,14 +12,14 @@ import 'package:http/http.dart' as http;
 
 import 'component/sidebar.dart';
 import 'event.dart';
-//Create event page class
+
 class CreatedEventsPage extends StatefulWidget {
   const CreatedEventsPage({super.key});
 
   @override
   State<CreatedEventsPage> createState() => _CreatedEventsPage();
 }
-//Route webpage to create event site
+
 class _CreatedEventsPage extends State<CreatedEventsPage> {
   void navigateEventCreation(BuildContext ctx) {
     Navigator.of(ctx).push(MaterialPageRoute(builder: (_){
@@ -41,16 +42,23 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
     if (response.statusCode == 200) {
       for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
         Map<String, dynamic> map = Map<String, dynamic>.from(i);
+        List<Event> savedEventList = await fetchSavedEvents(token);
+        var isSaved = false;
+        for (Event e in savedEventList) {
+          if (e.eventId == map['id']) {
+            isSaved = true;
+          }
+        }
         eventList.add(Event(map['id'], map['title'], map['location'],
-            map['description'], map['capacity'], map['fee'], true));
+                  map['description'], map['capacity'], map['fee'], isSaved));
       }
     }
     return eventList;
   }
 
-  //Create event page interface
   @override
   Widget build(BuildContext context) {
+    // TODO: add search bar for this page
     return Scaffold(
       appBar: AppBar(
         title: const Text('Events Created'),
@@ -76,7 +84,7 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                 itemCount: snapshot.data?.length??0,
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, true);
+                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, curItem.isSaved);
                   return EventCard(event: e,);
                 }
             );
