@@ -16,65 +16,47 @@ class EventsPage extends StatefulWidget {
   State<EventsPage> createState() => _EventsPage();
 }
 
+const _PAGE_SIZE = 8;
+
+/// This structure represents a paged fetch result.
+class PagedResult<T> {
+  int pageNumber;
+  int totalPages;
+  int totalElements;
+  List<T> items = [];
+
+  PagedResult(
+      {this.pageNumber = 0, this.totalPages = 0, this.totalElements = 0});
+}
+
 //Event Page
 class _EventsPage extends State<EventsPage> {
-  // late ScrollController _scrollController;
-
-  // Future<http.Response> fetchEventsRequest(int page) async {
-  //   var response = await http.get(
-  //     Uri.parse(
-  //         '${Config.baseURL}/events/events?pageNumber=$page&pageSize=8'),
-  //     headers: {"Content-Type": "application/json"},
-  //   );
-  //   return response;
-  // }
-
-  // Future<List<dynamic>> getEvents(int page) async {
-  //   List<dynamic> eventList = [];
-  //   http.Response re = await fetchEventsRequest(page);
-  //   Map<String, dynamic> map =
-  //   Map<String, dynamic>.from(jsonDecode(re.body)['data']);
-  //   if (re.statusCode == 200) {
-  //     eventList = map['content'];
-  //     if (page == 0) {
-  //       limitedPages = map['totalPages'];
-  //     }
-  //   }
-  //   return eventList;
-  // }
-
+  // States
   List<Event> eventList = [];
-  late int limitedPages;
+  int totalPages = 0;
   int curScrollPage = 0;
-  final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  Future<bool> fetchEvents(String? token, {bool isRefresh = false}) async {
-    print("page: $curScrollPage");
-    if (isRefresh) {
-      curScrollPage = 0;
-      print("refresh $curScrollPage");
-    } else {
-      if (curScrollPage > limitedPages) {
-        refreshController.loadNoData();
-        return false;
-      }
-    }
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: true);
+
+  /// Returns a future which resolves to List<Event>?.
+  Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber) async {
     List<Event> newEventList = [];
-    print('${Config.baseURL}/events/events?pageNumber=${curScrollPage}&pageSize=8');
     var response = await http.get(
       Uri.parse(
-          '${Config.baseURL}/events/events?pageNumber=${curScrollPage}&pageSize=8'),
+          '${Config.baseURL}/events/events?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
       headers: {"Content-Type": "application/json"},
     );
     if (response.statusCode == 200) {
-      Map<String, dynamic> map = Map<String, dynamic>.from(
-          jsonDecode(response.body)['data']);
+      PagedResult<Event> result = PagedResult();
+      Map<String, dynamic> map =
+          Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+      result.totalPages = map['totalPages'];
+      result.pageNumber = map['number'];
+      result.totalElements = map['totalElements'];
       List<dynamic> fetchResult = map['content'];
-      // if (curScrollPage == 1) {
-        limitedPages = map['totalPages'];
-      // }
+      // decide whether an event needs to show stared icon
       List<Event> savedEventList = await fetchSavedEvents(token);
-      print("token $token");
       for (var info in fetchResult) {
         var isSaved = false;
         for (Event e in savedEventList) {
@@ -82,95 +64,18 @@ class _EventsPage extends State<EventsPage> {
             isSaved = true;
           }
         }
-        newEventList.add(
-            Event(
-                info['id'],
-                info['title'],
-                info['location'],
-                info['description'],
-                info['capacity'],
-                info['fee'],
-                isSaved
-            )
-        );
+        newEventList.add(Event(info['id'], info['title'], info['location'],
+            info['description'], info['capacity'], info['fee'], isSaved));
       }
-      if (isRefresh) {
-        eventList = [...newEventList];
-        print("refresh: $eventList");
-      } else {
-        eventList.addAll(newEventList);
-        print("loading: $eventList");
-      }
-      curScrollPage++;
-      setState(() {});
-      return true;
+      result.items = newEventList;
+      return result;
     }
-    return false;
+    return null;
   }
-
-  // Future<List<Event>> fetchEvents(String? token, {int page = 0}) async {
-  //   List<Event> newEventList = [...eventList]; // Cloning eventList
-  //   List<dynamic> events = await getEvents(page);
-  //   List<Event> savedEventList = await fetchSavedEvents(token);
-  //   for (var info in events) {
-  //     var isSaved = false;
-  //     for (Event e in savedEventList) {
-  //       if (e.eventId == info['id']) {
-  //         isSaved = true;
-  //       }
-  //     }
-  //     newEventList.add(
-  //         Event(
-  //             info['id'],
-  //             info['title'],
-  //             info['location'],
-  //             info['description'],
-  //             info['capacity'],
-  //             info['fee'],
-  //             isSaved
-  //         )
-  //     );
-  //   }
-  //   return newEventList;
-  // }
-
-  // bool isLoading = false;
-  // _scrollListener() {
-  //   if (_scrollController.offset >=
-  //       _scrollController.position.maxScrollExtent &&
-  //       !_scrollController.position.outOfRange) {
-  //     if (curScrollPage < limitedPages) {
-  //       setState(() {
-  //         isLoading = true;
-  //       });
-  //       fetchEvents(StoreProvider
-  //           .of<AppState>(context)
-  //           .state
-  //           .token, page: curScrollPage + 1).then((events) {
-  //         setState(() {
-  //           curScrollPage = curScrollPage + 1;
-  //           eventList = events;
-  //           isLoading = false;
-  //         });
-  //       });
-  //     }
-  //   }
-  // }
 
   @override
   void initState() {
-    // _scrollController = ScrollController();
-    // _scrollController.addListener(_scrollListener);
     super.initState();
-    // Future.delayed(Duration.zero, () async {
-    //   var newEventList = await fetchEvents(StoreProvider
-    //       .of<AppState>(context)
-    //       .state
-    //       .token);
-    //   setState(() {
-    //     // eventList = newEventList;
-    //   });
-    // });
   }
 
   @override
@@ -179,49 +84,56 @@ class _EventsPage extends State<EventsPage> {
       controller: refreshController,
       enablePullUp: true,
       onRefresh: () async {
-        var result = await fetchEvents(StoreProvider.of<AppState>(context).state.token, isRefresh: true);
-        if (result) {
-          print("refresh");
-          refreshController.refreshCompleted();
+        // Call fetchEvents with 0, to get the initial page
+        var result = await fetchEvents(
+            StoreProvider.of<AppState>(context).state.token, 0);
+        if (result != null) {
+          // Fetch succeed, update state and trigger re-render
+          setState(() {
+            eventList = result.items;
+            totalPages = result.totalPages;
+            curScrollPage = result.pageNumber;
+
+            refreshController.resetNoData();
+            refreshController.refreshCompleted();
+          });
         } else {
+          // Null is failed fetch for whatever reason
           refreshController.refreshFailed();
         }
       },
       onLoading: () async {
-        var result = await fetchEvents(StoreProvider.of<AppState>(context).state.token);
-        if (result) {
-          print("load");
-          refreshController.loadComplete();
-        } else {
-          if (curScrollPage > limitedPages) {
-            refreshController.loadNoData();
+        if ((curScrollPage + 1) < totalPages) {
+          // Has next page
+          var result = await fetchEvents(
+              StoreProvider.of<AppState>(context).state.token,
+              curScrollPage + 1);
+          if (result != null) {
+            setState(() {
+              eventList = [...eventList, ...result.items];
+              totalPages = result.totalPages;
+              curScrollPage = result.pageNumber;
+
+              refreshController.loadComplete();
+            });
           } else {
             refreshController.loadFailed();
           }
+        } else {
+          refreshController.loadNoData();
         }
       },
       child: ListView.builder(
-        itemCount: eventList.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-            child: EventCard(event: eventList[index],),
-          );
-        }),
+          itemCount: eventList.length,
+          itemBuilder: (context, index) {
+            return Container(
+              key: Key("${eventList[index].eventId}"),
+              padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+              child: EventCard(
+                event: eventList[index],
+              ),
+            );
+          }),
     );
-    // return ListView.builder(
-    //     controller: _scrollController,
-    //     itemCount: isLoading ? eventList.length + 1 : eventList.length,
-    //     itemBuilder: (BuildContext context, int index) {
-    //       if (index < eventList.length) {
-    //         return Container(
-    //           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-    //           child: EventCard(event: eventList[index],),
-    //         );
-    //       } else {
-    //         return const Center(child: CircularProgressIndicator(),);
-    //       }
-    //     }
-    // );
   }
 }

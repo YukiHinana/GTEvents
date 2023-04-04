@@ -56,7 +56,7 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
         title: const Text('Events Created'),
         actions: <Widget>[
           IconButton(
-              onPressed: () => context.go('/events'),
+              onPressed: () => context.pushReplacement('/events'),
               icon: const Icon(Icons.home))
         ],
       ),
