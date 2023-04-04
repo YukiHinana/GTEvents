@@ -35,6 +35,7 @@ class _CreateEventState extends State<CreateEvent>{
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
+    // print(_eventTitleController.text);
     var createEventRequest = json.encode(
         {
           'title': _eventTitleController.text,
@@ -116,7 +117,7 @@ class _CreateEventState extends State<CreateEvent>{
     );
     List<Tag> eventTagList = [];
     if (response.statusCode == 200) {
-      for (var i in jsonDecode(response.body)['data']) {
+      for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
         Map<String, dynamic> map = Map<String, dynamic>.from(i);
         eventTagList.add(Tag(map['id'], map['name']));
       }

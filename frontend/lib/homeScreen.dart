@@ -92,7 +92,7 @@ class CustomSearchDelegate extends SearchDelegate {
         Uri.parse('${Config.baseURL}/events/events/search?pageNumber=0&pageSize=15&keyword=${query.toLowerCase()}'),
         headers: {"Content-Type": "application/json"},
       );
-      Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+      Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
       if (response.statusCode == 200) {
         eventList = map['content'];
       }

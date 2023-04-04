@@ -14,7 +14,7 @@ Future<String?> handleFindUsernameByTokenRequest(String token) async {
     headers: {"Content-Type": "application/json", "Authorization": token},
   );
   if (response.statusCode == 200) {
-    return jsonDecode(response.body)['data']['username'];
+    return jsonDecode(utf8.decode(response.bodyBytes))['data']['username'];
   }
   return null;
 }
@@ -48,7 +48,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         body: loginData
     );
     if (response.body.isNotEmpty) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final Map<String, dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
       final SharedPreferences prefs = await _prefs;
       if (response.statusCode == 200) {
         (prefs).setString("token", responseData['data']);

@@ -39,7 +39,7 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
       },
     );
     if (response.statusCode == 200) {
-      for (var i in jsonDecode(response.body)['data']) {
+      for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
         Map<String, dynamic> map = Map<String, dynamic>.from(i);
         eventList.add(Event(map['id'], map['title'], map['location'],
             map['description'], map['capacity'], map['fee'], true));
@@ -64,7 +64,6 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
           future: fetchCreatedEvents(
               StoreProvider.of<AppState>(context).state.token),
           builder: (context, snapshot) {
-            print(snapshot.data);
             if (snapshot.hasError) {
               print(snapshot.error);
             }

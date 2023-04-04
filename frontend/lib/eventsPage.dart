@@ -50,7 +50,7 @@ class _EventsPage extends State<EventsPage> {
     if (response.statusCode == 200) {
       PagedResult<Event> result = PagedResult();
       Map<String, dynamic> map =
-          Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+          Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
       result.totalPages = map['totalPages'];
       result.pageNumber = map['number'];
       result.totalElements = map['totalElements'];

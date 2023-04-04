@@ -77,8 +77,8 @@ class _EventCardState extends State<EventCard> {
       Uri.parse('${Config.baseURL}/events/events/$eventId'),
       headers: {"Content-Type": "application/json"},
     );
-    print(jsonDecode(response.body)['data']['id']);
-    return Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+    Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
+    return map;
   }
 
   @override
@@ -96,7 +96,6 @@ class _EventCardState extends State<EventCard> {
                 "eventDescription": value["description"]!,
                 "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
-                // "tagName": value["tags"][0]["name"]
               });
         });
       },
