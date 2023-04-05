@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 //Event details page
 class EventDetailPage extends StatefulWidget {
-  // const EventDetailPage({super.key, required this.eventId});
   final String eventTitle;
   final String eventLocation;
   final String eventDescription;
+  final String eventDate;
+  final String eventCreationDate;
   final String tagName;
   final bool isSaved;
 
   const EventDetailPage({super.key, required this.eventTitle,
     required this.eventLocation, required this.eventDescription,
+    required this.eventDate, required this.eventCreationDate,
     required this.tagName, required this.isSaved});
 
   @override
@@ -18,8 +21,12 @@ class EventDetailPage extends StatefulWidget {
 }
 
 DateTime date = DateTime.now();
-//Event detail page interface
 class _EventDetailPageState extends State<EventDetailPage> {
+
+  String _convertTimestampToDate(String str) {
+    return DateFormat('MM/dd/yyyy, HH:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(str) * 1000));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,16 +58,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
           ),
           Container(
             padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              '03/30/2023',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              '7:00 pm',
-              style: TextStyle(fontSize: 16),
+            child: Text(
+              _convertTimestampToDate(widget.eventDate),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Container(
@@ -80,7 +80,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           Container(
             padding: const EdgeInsets.all(8.0),
             child: const Text(
-              'Description',
+              'Details',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -101,7 +101,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           Container(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              widget.tagName,
+              widget.tagName == "" ? "None" : widget.tagName,
               style: const TextStyle(fontSize: 16),
             ),
           ),

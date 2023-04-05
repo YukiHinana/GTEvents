@@ -94,6 +94,8 @@ class _EventCardState extends State<EventCard> {
                 "eventTitle": value["title"]!,
                 "eventLocation": value["location"]!,
                 "eventDescription": value["description"]!,
+                "eventDate": value["eventDate"].toString(),
+                "eventCreationDate": value["eventCreationDate"].toString(),
                 "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
               });

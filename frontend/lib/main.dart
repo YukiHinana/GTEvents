@@ -130,6 +130,8 @@ final GoRouter _router = GoRouter(
               eventTitle: state.queryParams["eventTitle"]??"",
               eventLocation: state.queryParams["eventLocation"]??"",
               eventDescription: state.queryParams["eventDescription"]??"",
+              eventDate: state.queryParams["eventDate"]??"0",
+              eventCreationDate: state.queryParams["eventCreationDate"]??"0",
               tagName: state.queryParams["tagName"]??"",
               isSaved: state.queryParams["isSaved"] == "true" ? true : false,
             );

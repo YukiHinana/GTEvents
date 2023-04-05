@@ -211,7 +211,6 @@ class _CreateEventState extends State<CreateEvent> {
           );
           setState(() {
             dateTime = newDateTime;
-            print(dateTime);
           });
         },
       );
@@ -241,7 +240,6 @@ class _CreateEventState extends State<CreateEvent> {
           );
           setState(() {
             dateTime = newDateTime;
-            print(dateTime);
           });
         },
       );
