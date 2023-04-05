@@ -24,6 +24,7 @@ class _EventTileState extends State<EventTile> {
   late String title;
   late String location;
   late String creationDate;
+  late double reverse;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
@@ -35,6 +36,8 @@ class _EventTileState extends State<EventTile> {
     title = widget.event.title;
     location = widget.event.location;
     creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(DateTime.fromMillisecondsSinceEpoch(widget.event.eventCreationTimestamp * 1000));
+    // reverse = DateTime.parse(creationDate).toUtc().millisecondsSinceEpoch / 1000;
+    reverse = 0;
   }
 
   @override
@@ -74,7 +77,8 @@ class _EventTileState extends State<EventTile> {
                   // Align(
                   //   alignment: Alignment.centerLeft,
                   //   child: Text(
-                  //     "location: $location",
+                  //     "hi",
+                  //     // "location: ${DateFormat('MM/dd/yyyy, HH:mm').parse(creationDate).toUtc().millisecondsSinceEpoch/1000}",
                   //     style: const TextStyle(fontSize: 15),
                   //   ),
                   // ),

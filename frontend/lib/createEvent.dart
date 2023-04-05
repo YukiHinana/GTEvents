@@ -15,14 +15,16 @@ class CreateEvent extends StatefulWidget{
   @override
   State<CreateEvent> createState() => _CreateEventState();
 }
-DateTime dateTime = DateTime.now();
+
 class _CreateEventState extends State<CreateEvent> {
   // tag value
   int? value;
 
+  late DateTime dateTime;
   //DateTime currentDate = DateTime.now();
-  final hours = dateTime.hour.toString().padLeft(2, '0');
-  final minutes = dateTime.minute.toString().padLeft(2, '0');
+  // final hours = dateTime.hour.toString().padLeft(2, '0');
+  // final minutes = dateTime.minute.toString().padLeft(2, '0');
+
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
@@ -37,6 +39,7 @@ class _CreateEventState extends State<CreateEvent> {
     _eventDescriptionController = TextEditingController();
     _eventCapacityController = TextEditingController();
     _eventFeeController = TextEditingController();
+    dateTime = DateTime.now();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
@@ -45,9 +48,11 @@ class _CreateEventState extends State<CreateEvent> {
           'title': _eventTitleController.text,
           'location': _eventLocationController.text,
           'description': _eventDescriptionController.text,
+          'eventDate': dateTime.toUtc().millisecondsSinceEpoch/1000,
           'tagIds': value == null ? [] : [value]
         }
     );
+    print(dateTime.toUtc().millisecondsSinceEpoch/1000);
     var response = await http.post(
         Uri.parse('${Config.baseURL}/events/events'),
         headers: {
@@ -206,6 +211,7 @@ class _CreateEventState extends State<CreateEvent> {
           );
           setState(() {
             dateTime = newDateTime;
+            print(dateTime);
           });
         },
       );
@@ -235,6 +241,7 @@ class _CreateEventState extends State<CreateEvent> {
           );
           setState(() {
             dateTime = newDateTime;
+            print(dateTime);
           });
         },
       );
