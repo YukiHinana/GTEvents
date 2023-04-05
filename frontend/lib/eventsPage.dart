@@ -65,7 +65,8 @@ class _EventsPage extends State<EventsPage> {
           }
         }
         newEventList.add(Event(info['id'], info['title'], info['location'],
-            info['description'], info['capacity'], info['fee'], isSaved));
+            info['description'], info['capacity'], info['fee'], isSaved,
+            info['eventCreationDate']));
       }
       result.items = newEventList;
       return result;

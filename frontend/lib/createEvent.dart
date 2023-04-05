@@ -15,7 +15,7 @@ class CreateEvent extends StatefulWidget{
   @override
   State<CreateEvent> createState() => _CreateEventState();
 }
-DateTime dateTime = DateTime(2023, 03, 28);
+DateTime dateTime = DateTime.now();
 class _CreateEventState extends State<CreateEvent> {
   // tag value
   int? value;
@@ -26,6 +26,8 @@ class _CreateEventState extends State<CreateEvent> {
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
+  late TextEditingController _eventCapacityController;
+  late TextEditingController _eventFeeController;
 
   @override
   void initState() {
@@ -33,6 +35,8 @@ class _CreateEventState extends State<CreateEvent> {
     _eventTitleController = TextEditingController();
     _eventLocationController = TextEditingController();
     _eventDescriptionController = TextEditingController();
+    _eventCapacityController = TextEditingController();
+    _eventFeeController = TextEditingController();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
@@ -62,16 +66,16 @@ class _CreateEventState extends State<CreateEvent> {
       body: ListView(
         padding: const EdgeInsets.all(32),
         children: [
-          buildEventTitleField(),
-          const SizedBox(height: 24),
+          buildEventNameField(),
+          const SizedBox(height: 20),
           buildEventLocationField(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           buildEventDescriptionField(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           buildCategoryPicker(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           const Text(
-            'Pick Date and time',
+            'Pick event date and time',
             style: TextStyle(fontSize: 16),
           ),
           ButtonBar(
@@ -94,23 +98,40 @@ class _CreateEventState extends State<CreateEvent> {
     );
   }
 
-  Widget buildEventTitleField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Title',
-          border: OutlineInputBorder(),
-        ),
-        controller: _eventTitleController,
+  Widget buildEventNameField() =>
+      Column(
+        children: [
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text("* Event Name: (required)", style: TextStyle(fontSize: 16),)
+          ),
+          const SizedBox(height: 5),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Event Name',
+              border: OutlineInputBorder(),
+            ),
+            controller: _eventTitleController,
+          ),
+        ],
       );
 
-
   Widget buildEventLocationField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Location',
-          border: OutlineInputBorder(),
-        ),
-        controller: _eventLocationController,
+      Column(
+        children: [
+          const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("* Location: (required)", style: TextStyle(fontSize: 16),)
+          ),
+          const SizedBox(height: 5),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Event Location',
+              border: OutlineInputBorder(),
+            ),
+            controller: _eventLocationController,
+          ),
+        ],
       );
 
   Future<List<Tag>> _getEventTags() async {
@@ -149,14 +170,23 @@ class _CreateEventState extends State<CreateEvent> {
       );
 
   Widget buildEventDescriptionField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Description',
-          border: OutlineInputBorder(),
-        ),
-        controller: _eventDescriptionController,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
+      Column(
+        children: [
+          const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("* Description: (required)", style: TextStyle(fontSize: 16),)
+          ),
+          const SizedBox(height: 5),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Event Description',
+              border: OutlineInputBorder(),
+            ),
+            controller: _eventDescriptionController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+          ),
+        ],
       );
 
   Widget buildDatePicker() =>
@@ -167,7 +197,7 @@ class _CreateEventState extends State<CreateEvent> {
           if (date == null) {
             return;
           }
-          final newDataTime = DateTime(
+          final newDateTime = DateTime(
             date.year,
             date.month,
             date.day,
@@ -175,7 +205,7 @@ class _CreateEventState extends State<CreateEvent> {
             dateTime.minute,
           );
           setState(() {
-            dateTime = newDataTime;
+            dateTime = newDateTime;
           });
         },
       );
@@ -190,13 +220,13 @@ class _CreateEventState extends State<CreateEvent> {
 
   Widget buildTimePicker() =>
       ElevatedButton(
-        child: Text('7:00'),
+        child: Text('${dateTime.hour}:${dateTime.minute}'),
         onPressed: () async {
           final time = await pickTime();
           if (time == null) {
             return;
           }
-          final newDataTime = DateTime(
+          final newDateTime = DateTime(
             dateTime.year,
             dateTime.month,
             dateTime.day,
@@ -204,7 +234,7 @@ class _CreateEventState extends State<CreateEvent> {
             time.minute,
           );
           setState(() {
-            dateTime = newDataTime;
+            dateTime = newDateTime;
           });
         },
       );
@@ -221,7 +251,7 @@ class _CreateEventState extends State<CreateEvent> {
           labelText: 'Enter Event Capacity',
           border: OutlineInputBorder(),
         ),
-        controller: _eventLocationController,
+        controller: _eventCapacityController,
       );
 
   Widget buildEventFeeField() =>
@@ -230,7 +260,7 @@ class _CreateEventState extends State<CreateEvent> {
           labelText: 'Enter Event Fees',
           border: OutlineInputBorder(),
         ),
-        controller: _eventLocationController,
+        controller: _eventFeeController,
       );
 
   Widget previewCreateEvent() =>

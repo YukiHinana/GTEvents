@@ -9,16 +9,18 @@ class Event {
   int capacity;
   int fee;
   bool isSaved;
+  int eventCreationTimestamp;
 
   Event(this.eventId, this.title, this.location, this.description,
-      this.capacity, this.fee, this.isSaved);
+      this.capacity, this.fee, this.isSaved, this.eventCreationTimestamp);
 
 //jason for the variables
   factory Event.fromJson(dynamic json) {
     return Event(json['id'] as int, json['title'] as String,
         json['location'] as String, json['description'] as String,
         json['capacity'] as int,
-        json['fee'] as int, false);
+        json['fee'] as int, false,
+        json['eventCreationDate'] as int);
   }
 //change the variables to string
   @override

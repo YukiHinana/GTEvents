@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../config.dart';
 import '../event.dart';
@@ -22,23 +23,7 @@ class _EventTileState extends State<EventTile> {
   late int eventId;
   late String title;
   late String location;
-
-  Widget eventImgCard = Container(
-    height: 250,
-    decoration:  const BoxDecoration(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10.0),
-        topRight: Radius.circular(10.0),
-      ),
-      image: DecorationImage(
-        opacity: 0.3,
-        fit: BoxFit.fill,
-        image: NetworkImage(
-            'https://picsum.photos/250?image=9'
-        ),
-      ),
-    ),
-  );
+  late String creationDate;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
@@ -49,6 +34,7 @@ class _EventTileState extends State<EventTile> {
     eventId = widget.event.eventId;
     title = widget.event.title;
     location = widget.event.location;
+    creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(DateTime.fromMillisecondsSinceEpoch(widget.event.eventCreationTimestamp * 1000));
   }
 
   @override
@@ -83,14 +69,27 @@ class _EventTileState extends State<EventTile> {
                   style: const TextStyle(fontSize: 25),
                 ),
               ),
-              subtitle: Text(
-                "location: $location",
-                style: const TextStyle(fontSize: 15),
-              ),
+              subtitle: Column(
+                children: [
+                  // Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: Text(
+                  //     "location: $location",
+                  //     style: const TextStyle(fontSize: 15),
+                  //   ),
+                  // ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "created on $creationDate"
+                    ),
+                  )
+                ],
+              )
             ),
             Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 ShaderMask(
                   shaderCallback: (rect) {
                     return const LinearGradient(

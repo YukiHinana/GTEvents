@@ -51,7 +51,8 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
           }
         }
         eventList.add(Event(map['id'], map['title'], map['location'],
-                  map['description'], map['capacity'], map['fee'], isSaved));
+                  map['description'], map['capacity'], map['fee'], isSaved,
+                  map['eventCreationDate']));
       }
     }
     return eventList;
@@ -85,7 +86,9 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                 itemCount: snapshot.data?.length??0,
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, curItem.isSaved);
+                  Event e = Event(curItem.eventId, curItem.title,
+                      curItem.location, "", 0, 0, curItem.isSaved,
+                      curItem.eventCreationTimestamp);
                   return EventTile(event: e);
                   // return EventCard(event: e,);
                 }

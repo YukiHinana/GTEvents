@@ -35,7 +35,8 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
     for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
       Map<String, dynamic> map = Map<String, dynamic>.from(i);
       eventList.add(Event(map['id'], map['title'], map['location'],
-          map['description'], map['capacity'], map['fee'], true));
+          map['description'], map['capacity'], map['fee'], true,
+          map['eventCreationDate']));
     }
   }
   return eventList;
@@ -71,7 +72,9 @@ class _SavedEventsPage extends State<SavedEventsPage> {
                 itemCount: snapshot.data?.length??0,
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title, curItem.location, "", 0, 0, true);
+                  Event e = Event(curItem.eventId, curItem.title,
+                      curItem.location, "", 0, 0, true,
+                      curItem.eventCreationTimestamp);
                   return EventCard(event: e,);
                 }
             );
