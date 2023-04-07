@@ -179,6 +179,11 @@ public class EventController {
         if (!a.getUsername().equals(result.get().getAuthor().getUsername())) {
             throw new InvalidRequestException("can't delete the event");
         }
+        List<Account> list = accountRepository.findAllBySavedEvents(result.get());
+        for (Account account : list) {
+            account.getSavedEvents().remove(result.get());
+            accountRepository.save(account);
+        }
         eventRepository.delete(result.get());
         return new ResponseWrapper<>("successfully delete the event");
     }
@@ -197,8 +202,9 @@ public class EventController {
     public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new InvalidRequestException("can't find this event"));
-        a.getSavedEvents().add(event);
-        accountRepository.save(a);
+        Account account = accountRepository.findById(a.getId()).get();
+        eventService.getSavedEvents(account).add(event);
+        accountRepository.save(account);
         return new ResponseWrapper<>("success");
     }
 
@@ -219,7 +225,8 @@ public class EventController {
     @GetMapping("/saved")
     @RequireAuth
     public ResponseWrapper<?> getSavedEvents(Account a) {
-        return new ResponseWrapper<>(a.getSavedEvents());
+        Account account = accountRepository.findById(a.getId()).get();
+        return new ResponseWrapper<>(eventService.getSavedEvents(account));
     }
 
 //    @GetMapping("/saved")
@@ -234,7 +241,6 @@ public class EventController {
     @GetMapping("/created")
     @RequireAuth
     public ResponseWrapper<?> getCreatedEvents(Account a) {
-
         Account account = accountRepository.findById(a.getId()).get();
         return new ResponseWrapper<>(eventService.getCreatedEvents(account));
     }

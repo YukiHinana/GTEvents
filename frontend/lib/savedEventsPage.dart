@@ -35,9 +35,9 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
     for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
       Map<String, dynamic> map = Map<String, dynamic>.from(i);
       eventList.add(Event(map['id'], map['title'], map['location'],
-          map['description'], map['eventDate'], map['capacity'],
+          map['description'], map['eventDate']??0, map['capacity'],
           map['fee'], true,
-          map['eventCreationDate']));
+          map['eventCreationDate']??0));
     }
   }
   return eventList;

@@ -16,4 +16,10 @@ public class EventService {
         Hibernate.initialize(a.getCreatedEvents());
         return a.getCreatedEvents();
     }
+
+    @Transactional(readOnly = true)
+    public Set<Event> getSavedEvents(Account a) {
+        Hibernate.initialize(a.getSavedEvents());
+        return a.getSavedEvents();
+    }
 }

@@ -1,11 +1,14 @@
 
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:GTEvents/component/eventMenu.dart';
 import 'package:GTEvents/component/eventTile.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'component/eventCard.dart';
 import 'config.dart';
 import 'createEvent.dart';
@@ -51,8 +54,8 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
           }
         }
         eventList.add(Event(map['id'], map['title'], map['location'],
-                  map['description'], map['eventDate'], map['capacity'], map['fee'], isSaved,
-                  map['eventCreationDate']));
+                  map['description'], map['eventDate']??0, map['capacity'],
+                  map['fee'], isSaved, map['eventCreationDate']??0));
       }
     }
     return eventList;
@@ -90,8 +93,35 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                       curItem.location, curItem.description,
                       curItem.eventDateTimestamp, 0, 0, curItem.isSaved,
                       curItem.eventCreationTimestamp);
-                  return EventTile(event: e);
-                  // return EventCard(event: e,);
+                  return Column(
+                    children: [
+                      const Divider(
+                        indent: 1,
+                        endIndent: 1,
+                        thickness: 1,
+                        color: Colors.black54,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                  "event created on ${
+                                      DateFormat('MM/dd/yyyy, HH:mm').format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              curItem.eventCreationTimestamp * 1000))
+                                  }"
+                              ),
+                            ),
+                            EventMenu(eventId: curItem.eventId,),
+                          ],
+                        )
+                      ),
+                      EventTile(event: e),
+                    ],
+                  );
                 }
             );
           }

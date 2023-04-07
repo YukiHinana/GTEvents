@@ -24,7 +24,7 @@ class _EventTileState extends State<EventTile> {
   late String title;
   late String location;
   late String creationDate;
-  late double reverse;
+  late String eventDate;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
@@ -35,9 +35,12 @@ class _EventTileState extends State<EventTile> {
     eventId = widget.event.eventId;
     title = widget.event.title;
     location = widget.event.location;
-    creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(DateTime.fromMillisecondsSinceEpoch(widget.event.eventCreationTimestamp * 1000));
-    // reverse = DateTime.parse(creationDate).toUtc().millisecondsSinceEpoch / 1000;
-    reverse = 0;
+    creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(
+            widget.event.eventCreationTimestamp * 1000));
+    eventDate = DateFormat('MM/dd/yyyy, HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(
+            widget.event.eventDateTimestamp * 1000));
   }
 
   @override
@@ -53,8 +56,8 @@ class _EventTileState extends State<EventTile> {
                 "eventTitle": value["title"]!,
                 "eventLocation": value["location"]!,
                 "eventDescription": value["description"]!,
-                "eventDate": value["eventDate"].toString(),
-                "eventCreationDate": value["eventCreationDate"].toString(),
+                "eventDate": (value["eventDate"]??0).toString(),
+                "eventCreationDate": (value["eventCreationDate"]??0).toString(),
                 "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
               });
@@ -87,7 +90,7 @@ class _EventTileState extends State<EventTile> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "created on $creationDate"
+                      "event date: $eventDate"
                     ),
                   )
                 ],

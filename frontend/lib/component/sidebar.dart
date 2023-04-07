@@ -53,7 +53,7 @@ class _UserSideBar extends State<UserSideBar> {
                   title: appState.token == null ? const Text('Login') : const Text('View Profile'),
                   onTap: () {
                     if (appState.token == null) {
-                      context.pushReplacement('/login');
+                      context.push('/login');
                     }
                   },
                 ),
