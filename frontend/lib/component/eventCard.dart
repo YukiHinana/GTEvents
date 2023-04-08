@@ -26,12 +26,10 @@ Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
 }
 
 class _EventCardState extends State<EventCard> {
-  // bool eventIsSaved = false;
   late bool eventIsSaved;
   late int eventId;
   late String title;
   late String location;
-  // final bool isSaved;
 
   final Widget _eventImgCard = Container(
     height: 250,

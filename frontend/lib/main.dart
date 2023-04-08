@@ -2,6 +2,7 @@
 import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
+import 'package:GTEvents/eventPreview.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:GTEvents/searchPage.dart';
@@ -121,6 +122,20 @@ final GoRouter _router = GoRouter(
             builder: (BuildContext context, GoRouterState state) {
               return const SavedEventsPage();
             }
+        ),
+        GoRoute(
+          name: "eventPreview",
+          path: 'preview',
+          builder: (context, state) {
+            return EventPreview(
+              eventTitle: state.queryParams["eventTitle"]??"",
+              eventLocation: state.queryParams["eventLocation"]??"",
+              eventDescription: state.queryParams["eventDescription"]??"",
+              eventDate: state.queryParams["eventDate"]??"0",
+              eventCreationDate: state.queryParams["eventCreationDate"]??"0",
+              tagName: state.queryParams["tagName"]??"",
+            );
+          } ,
         ),
         GoRoute(
           name: "eventDetails",

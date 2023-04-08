@@ -18,13 +18,9 @@ class CreateEvent extends StatefulWidget{
 
 class _CreateEventState extends State<CreateEvent> {
   // tag value
-  int? value;
+  int? tagValue;
 
-  late DateTime dateTime;
-  //DateTime currentDate = DateTime.now();
-  // final hours = dateTime.hour.toString().padLeft(2, '0');
-  // final minutes = dateTime.minute.toString().padLeft(2, '0');
-
+  late DateTime eventDateTime;
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
@@ -39,7 +35,7 @@ class _CreateEventState extends State<CreateEvent> {
     _eventDescriptionController = TextEditingController();
     _eventCapacityController = TextEditingController();
     _eventFeeController = TextEditingController();
-    dateTime = DateTime.now();
+    eventDateTime = DateTime.now();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
@@ -48,11 +44,10 @@ class _CreateEventState extends State<CreateEvent> {
           'title': _eventTitleController.text,
           'location': _eventLocationController.text,
           'description': _eventDescriptionController.text,
-          'eventDate': dateTime.toUtc().millisecondsSinceEpoch/1000,
-          'tagIds': value == null ? [] : [value]
+          'eventDate': eventDateTime.toUtc().millisecondsSinceEpoch/1000,
+          'tagIds': tagValue == null ? [] : [tagValue]
         }
     );
-    print(dateTime.toUtc().millisecondsSinceEpoch/1000);
     var response = await http.post(
         Uri.parse('${Config.baseURL}/events/events'),
         headers: {
@@ -95,7 +90,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 24),
           buildEventFeeField(),
           const SizedBox(height: 24),
-          previewCreateEvent(),
+          previewCreatedEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
         ],
@@ -161,14 +156,14 @@ class _CreateEventState extends State<CreateEvent> {
             return DropdownButton<int>(
                 isExpanded: true,
                 hint: const Text('Pick Category'),
-                value: value,
+                value: tagValue,
                 items: snapshot.data?.map((e) =>
                     DropdownMenuItem<int>(
                       value: e.tagId,
                       child: Text(e.name),
                     )).toList(),
                 onChanged: (selectedValue) {
-                  setState(() => value = selectedValue);
+                  setState(() => tagValue = selectedValue);
                 }
             );
           }
@@ -196,7 +191,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   Widget buildDatePicker() =>
       ElevatedButton(
-        child: Text('${dateTime.month}/${dateTime.day}/${dateTime.year}'),
+        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime.year}'),
         onPressed: () async {
           final date = await pickDate();
           if (date == null) {
@@ -206,11 +201,11 @@ class _CreateEventState extends State<CreateEvent> {
             date.year,
             date.month,
             date.day,
-            dateTime.hour,
-            dateTime.minute,
+            eventDateTime.hour,
+            eventDateTime.minute,
           );
           setState(() {
-            dateTime = newDateTime;
+            eventDateTime = newDateTime;
           });
         },
       );
@@ -218,28 +213,28 @@ class _CreateEventState extends State<CreateEvent> {
   Future<DateTime?> pickDate() =>
       showDatePicker(
         context: context,
-        initialDate: dateTime,
+        initialDate: eventDateTime,
         firstDate: DateTime(2021),
         lastDate: DateTime(2100),
       );
 
   Widget buildTimePicker() =>
       ElevatedButton(
-        child: Text('${dateTime.hour}:${dateTime.minute}'),
+        child: Text('${eventDateTime.hour}:${eventDateTime.minute}'),
         onPressed: () async {
           final time = await pickTime();
           if (time == null) {
             return;
           }
           final newDateTime = DateTime(
-            dateTime.year,
-            dateTime.month,
-            dateTime.day,
+            eventDateTime.year,
+            eventDateTime.month,
+            eventDateTime.day,
             time.hour,
             time.minute,
           );
           setState(() {
-            dateTime = newDateTime;
+            eventDateTime = newDateTime;
           });
         },
       );
@@ -247,7 +242,7 @@ class _CreateEventState extends State<CreateEvent> {
   Future<TimeOfDay?> pickTime() =>
       showTimePicker(
         context: context,
-        initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+        initialTime: TimeOfDay(hour: eventDateTime.hour, minute: eventDateTime.minute),
       );
 
   Widget buildEventCapacityField() =>
@@ -268,10 +263,23 @@ class _CreateEventState extends State<CreateEvent> {
         controller: _eventFeeController,
       );
 
-  Widget previewCreateEvent() =>
+  Widget previewCreatedEvent() =>
       FloatingActionButton.extended(
           heroTag: "preview",
-          onPressed: () {},
+          onPressed: () {
+            print((eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString().runtimeType);
+            context.pushNamed("eventPreview",
+                queryParams: {
+                  "eventTitle": _eventTitleController.text,
+                  "eventLocation": _eventLocationController.text,
+                  "eventDescription": _eventDescriptionController.text,
+                  // "eventDate": "0",
+                  "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
+                  "tagName": tagValue == null ? [] : [tagValue],
+                  "isSaved": false.toString(),
+                }
+            );
+          },
           label: const Text("Preview")
       );
 
@@ -306,6 +314,21 @@ class _CreateEventState extends State<CreateEvent> {
                                         "isSaved": false.toString(),
                                       }
                                   );
+                                },
+                                child: const Text('OK'))
+                          ],
+                        )
+                );
+              } else {
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          content: const Text("Failed to create event, try again"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  context.pop();
                                 },
                                 child: const Text('OK'))
                           ],

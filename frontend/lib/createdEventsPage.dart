@@ -25,12 +25,6 @@ class CreatedEventsPage extends StatefulWidget {
 }
 
 class _CreatedEventsPage extends State<CreatedEventsPage> {
-  void navigateEventCreation(BuildContext ctx) {
-    Navigator.of(ctx).push(MaterialPageRoute(builder: (_){
-      return const CreateEvent();
-    }));
-  }
-
   Future<List<Event>> fetchCreatedEvents(String? token) async {
     List<Event> eventList = [];
     if (token == null) {
