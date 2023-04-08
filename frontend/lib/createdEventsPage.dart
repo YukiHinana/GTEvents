@@ -9,9 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'component/eventCard.dart';
 import 'config.dart';
-import 'createEvent.dart';
 import 'package:http/http.dart' as http;
 
 import 'component/sidebar.dart';
@@ -80,12 +78,18 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
               );
             }
             return ListView.builder(
-                itemCount: snapshot.data?.length??0,
+                itemCount: snapshot.data?.length ?? 0,
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title,
-                      curItem.location, curItem.description,
-                      curItem.eventDateTimestamp, 0, 0, curItem.isSaved,
+                  Event e = Event(
+                      curItem.eventId,
+                      curItem.title,
+                      curItem.location,
+                      curItem.description,
+                      curItem.eventDateTimestamp,
+                      0,
+                      0,
+                      curItem.isSaved,
                       curItem.eventCreationTimestamp);
                   return Column(
                     children: [
@@ -96,22 +100,28 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                         color: Colors.black54,
                       ),
                       Align(
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                  "event created on ${
-                                      DateFormat('MM/dd/yyyy, HH:mm').format(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        5, 0, 0, 0),
+                                    child: Text(
+                                        "event created on ${
+                                          DateFormat('MM/dd/yyyy, HH:mm').format(
                                           DateTime.fromMillisecondsSinceEpoch(
-                                              curItem.eventCreationTimestamp * 1000))
-                                  }"
+                                          curItem.eventCreationTimestamp * 1000))}"
+                                    ),
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    0, 0, 10, 0),
+                                child: EventMenu(eventId: curItem.eventId,),
                               ),
-                            ),
-                            EventMenu(eventId: curItem.eventId,),
-                          ],
-                        )
+                            ],
+                          )
                       ),
                       EventTile(event: e),
                     ],

@@ -61,6 +61,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   @override
   Widget build(BuildContext context) {
+    // can't save draft
     return Scaffold(
       appBar: AppBar(title: const Text('Create Event')),
       body: ListView(
@@ -179,7 +180,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 5),
           TextField(
             decoration: const InputDecoration(
-              labelText: 'Enter Event Description',
+              labelText: 'Enter Event Details',
               border: OutlineInputBorder(),
             ),
             controller: _eventDescriptionController,
@@ -245,35 +246,54 @@ class _CreateEventState extends State<CreateEvent> {
         initialTime: TimeOfDay(hour: eventDateTime.hour, minute: eventDateTime.minute),
       );
 
-  Widget buildEventCapacityField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Capacity',
-          border: OutlineInputBorder(),
+  Widget buildEventCapacityField() {
+    return Column(
+      children: [
+        const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Capacity: (optional)", style: TextStyle(fontSize: 16),)
         ),
-        controller: _eventCapacityController,
-      );
+        const SizedBox(height: 5),
+        TextField(
+          decoration: const InputDecoration(
+            labelText: 'Enter Capacity',
+            border: OutlineInputBorder(),
+          ),
+          controller: _eventCapacityController,
+        ),
+      ],
+    );
+  }
 
   Widget buildEventFeeField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Fees',
-          border: OutlineInputBorder(),
-        ),
-        controller: _eventFeeController,
+      Column(
+        children: [
+          const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Fee: (optional)", style: TextStyle(fontSize: 16),)
+          ),
+          const SizedBox(height: 5),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Event Fees',
+              border: OutlineInputBorder(),
+            ),
+            controller: _eventFeeController,
+          ),
+        ],
       );
 
   Widget previewCreatedEvent() =>
       FloatingActionButton.extended(
           heroTag: "preview",
           onPressed: () {
-            print((eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString().runtimeType);
             context.pushNamed("eventPreview",
                 queryParams: {
                   "eventTitle": _eventTitleController.text,
                   "eventLocation": _eventLocationController.text,
                   "eventDescription": _eventDescriptionController.text,
-                  // "eventDate": "0",
                   "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
                   "tagName": tagValue == null ? [] : [tagValue],
                   "isSaved": false.toString(),

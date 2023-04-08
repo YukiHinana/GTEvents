@@ -36,14 +36,14 @@ class _EventMenu extends State<EventMenu> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-        offset: Offset(-15, 40),
+        offset: const Offset(-6, 22),
         initialValue: selectedOption,
         onSelected: (Option item) {
           setState(() {
             selectedOption = item;
           });
         },
-        child: Icon(Icons.more_horiz),
+        child: const Icon(Icons.more_horiz),
         itemBuilder: (BuildContext context) =>
         <PopupMenuEntry<Option>>[
           PopupMenuItem<Option>(
