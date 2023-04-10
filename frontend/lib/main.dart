@@ -4,6 +4,7 @@ import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/eventPreview.dart';
 import 'package:GTEvents/homeScreen.dart';
+import 'package:GTEvents/profilePage.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:GTEvents/searchPage.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +89,13 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const MySignupPage();
       }
+    ),
+    GoRoute(
+        name: "userProfile",
+        path: '/user/profile',
+        builder: (BuildContext context, GoRouterState state) {
+          return const ProfilePage();
+        }
     ),
     GoRoute(
         name: "search",

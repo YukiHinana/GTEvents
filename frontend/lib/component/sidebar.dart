@@ -54,6 +54,8 @@ class _UserSideBar extends State<UserSideBar> {
                   onTap: () {
                     if (appState.token == null) {
                       context.push('/login');
+                    } else {
+                      context.push("/user/profile");
                     }
                   },
                 ),
