@@ -44,7 +44,7 @@ class _EventsPage extends State<EventsPage> {
     List<Event> newEventList = [];
     var response = await http.get(
       Uri.parse(
-          '${Config.baseURL}/events/events?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
+          '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
       headers: {"Content-Type": "application/json"},
     );
     if (response.statusCode == 200) {

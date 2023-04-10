@@ -65,6 +65,12 @@ public class EventController {
         return new ResponseWrapper<>(eventRepository.findAll(aa));
     }
 
+    @GetMapping("/events/sort/event-date")
+    public ResponseWrapper<?> sortEventsByEventDate(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        Pageable aa = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Order.desc("eventDate").ignoreCase()));
+        return new ResponseWrapper<>(eventRepository.findAll(aa));
+    }
+
     @GetMapping("/events/search")
     public ResponseWrapper<?> getEventsByKeyword(@RequestParam String keyword,
                                                  @RequestParam int pageNumber, @RequestParam int pageSize) {

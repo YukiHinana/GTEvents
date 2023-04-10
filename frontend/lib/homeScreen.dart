@@ -43,6 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.search))
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: (){},
+          label: const Text("filter"),
+          icon: const Icon(Icons.filter_list_alt),
+      ),
       body: StoreConnector<AppState, AppState>(
         converter: (store) {
           return store.state;
