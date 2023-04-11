@@ -56,18 +56,32 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: FutureBuilder(
-        future: appInit(store),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          future: appInit(store),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return MaterialApp.router(
+                title: 'hello',
+                routerConfig: _router,
+                theme: ThemeData(
+                    colorScheme: ColorScheme.fromSwatch().copyWith(
+                      primary: Color(0xffADC178),
+                      // primary: Color(0xffa98467),
+                      secondary: Color(0xff606c38),
+                    ),
+                  scaffoldBackgroundColor: Color(0xffFEFAE0),
+                  fontFamily: 'Georgia',
+                  textTheme: const TextTheme(
+                    displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
+                    titleLarge: TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic),
+                    bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'Google Sans'),
+                  ),
+                )
             );
           }
-          return MaterialApp.router(
-            title: 'hello',
-            routerConfig: _router,
-          );
-        }
       ),
     );
   }

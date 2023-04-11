@@ -103,6 +103,7 @@ Widget showEventDetails(String eventTitle, String eventDate,
 
 DateTime date = DateTime.now();
 class _EventDetailPageState extends State<EventDetailPage> {
+  bool isSaved = false;
 
   @override
   Widget build(BuildContext context) {
@@ -111,13 +112,23 @@ class _EventDetailPageState extends State<EventDetailPage> {
         title: const Text("Event Content"),
         actions: <Widget>[
           IconButton(
-              onPressed: () {},
-              icon: widget.isSaved
+              //TODO
+              onPressed: () {
+                setState(() {
+                  isSaved = !isSaved;
+                });
+              },
+              icon: isSaved
                   ? const Icon(Icons.star, color: Colors.yellow,)
                   : const Icon(Icons.star_border)),
         ],),
       body: showEventDetails(widget.eventTitle, widget.eventDate,
           widget.eventLocation, widget.eventDescription, widget.tagName),
     );
+  }
+
+  @override
+  void initState() {
+    isSaved = widget.isSaved;
   }
 }

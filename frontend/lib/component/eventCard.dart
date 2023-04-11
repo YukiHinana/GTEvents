@@ -116,7 +116,7 @@ class _EventCardState extends State<EventCard> {
                   bottomLeft: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0),
                 ),
-                color: Colors.white60,
+                color: Colors.white70,
               ),
               child: Row(
                 children: [
@@ -127,12 +127,12 @@ class _EventCardState extends State<EventCard> {
                         padding: const EdgeInsets.only(bottom: 7.0),
                         child: Text(
                           title,
-                          style: const TextStyle(fontSize: 25),
+                          style: const TextStyle(fontSize: 25, fontFamily: "Google Sans"),
                         ),
                       ),
                       subtitle: Text(
                         "location: $location",
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15, color: Color(0xff01012d)),
                       ),
                     ),
                   ),

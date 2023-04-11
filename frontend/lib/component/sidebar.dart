@@ -40,57 +40,60 @@ class _UserSideBar extends State<UserSideBar> {
         converter: (store) => store.state,
         builder: (context, appState) {
           return Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+            child: Container(
+              color: Color(0xffeaeecf),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    decoration: const BoxDecoration(
+                      color: Color(0xffc5d790),
+                    ),
+                    child: Text(appState.userInfo?.username??""),
                   ),
-                  child: Text(appState.userInfo?.username??""),
-                ),
-                ListTile(
-                  title: appState.token == null ? const Text('Login') : const Text('View Profile'),
-                  onTap: () {
-                    if (appState.token == null) {
-                      context.push('/login');
-                    } else {
-                      context.push("/user/profile");
-                    }
-                  },
-                ),
-                ListTile(
-                  title: const Text('Created Events'),
-                  onTap: () {
-                    context.pop();
-                    context.push('/events/created');
-                  },
-                ),
-                ListTile(
-                  title: const Text('Saved Events'),
-                  onTap: () {
-                    context.pop();
-                    context.push('/events/saved');
-                  },
-                ),
-                if (StoreProvider.of<AppState>(context).state.token != null)
                   ListTile(
-                    title: const Text('Logout'),
+                    title: appState.token == null ? const Text('Login') : const Text('View Profile'),
                     onTap: () {
-                      Future<http.Response> re = handleLogoutRequest();
-                      re.then((value) async {
-                        if (value.statusCode == 200) {
-                          StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
-                          StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
-                          final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-                          (await prefs).setString("token", "");
-                          // TODO: change this
-                          context.pushReplacement("/events");
-                        }
-                      });
+                      if (appState.token == null) {
+                        context.push('/login');
+                      } else {
+                        context.push("/user/profile");
+                      }
                     },
-                  )
-              ],
+                  ),
+                  ListTile(
+                    title: const Text('Created Events'),
+                    onTap: () {
+                      context.pop();
+                      context.push('/events/created');
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Saved Events'),
+                    onTap: () {
+                      context.pop();
+                      context.push('/events/saved');
+                    },
+                  ),
+                  if (StoreProvider.of<AppState>(context).state.token != null)
+                    ListTile(
+                      title: const Text('Logout'),
+                      onTap: () {
+                        Future<http.Response> re = handleLogoutRequest();
+                        re.then((value) async {
+                          if (value.statusCode == 200) {
+                            StoreProvider.of<AppState>(context).dispatch(SetTokenAction(null));
+                            StoreProvider.of<AppState>(context).dispatch(SetUsernameAction(null));
+                            final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+                            (await prefs).setString("token", "");
+                            // TODO: change this
+                            context.pushReplacement("/events");
+                          }
+                        });
+                      },
+                    )
+                ],
+              ),
             ),
           );
         }

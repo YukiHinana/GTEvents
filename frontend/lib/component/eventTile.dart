@@ -52,9 +52,12 @@ class _EventTileState extends State<EventTile> {
                 "eventTitle": value["title"]!,
                 "eventLocation": value["location"]!,
                 "eventDescription": value["description"]!,
-                "eventDate": (value["eventDate"]??0).toString(),
-                "eventCreationDate": (value["eventCreationDate"]??0).toString(),
-                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
+                "eventDate": (value["eventDate"] ?? 0).toString(),
+                "eventCreationDate": (value["eventCreationDate"] ?? 0)
+                    .toString(),
+                "tagName": value["tags"].length == 0
+                    ? ""
+                    : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
               });
         });
@@ -66,32 +69,33 @@ class _EventTileState extends State<EventTile> {
         child: Stack(
           children: [
             ListTile(
-              title: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Text(
-                  title,
-                  style: const TextStyle(fontSize: 25),
+                title: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 25),
+                  ),
                 ),
-              ),
-              subtitle: Column(
-                children: [
-                  // Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Text(
-                  //     "hi",
-                  //     // "location: ${DateFormat('MM/dd/yyyy, HH:mm').parse(creationDate).toUtc().millisecondsSinceEpoch/1000}",
-                  //     style: const TextStyle(fontSize: 15),
-                  //   ),
-                  // ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "event date: $eventDate"
-                    ),
-                  )
-                ],
-              )
+                subtitle: Column(
+                  children: [
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     "hi",
+                    //     // "location: ${DateFormat('MM/dd/yyyy, HH:mm').parse(creationDate).toUtc().millisecondsSinceEpoch/1000}",
+                    //     style: const TextStyle(fontSize: 15),
+                    //   ),
+                    // ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          "event date: $eventDate"
+                      ),
+                    )
+                  ],
+                )
             ),
+
             Row(
               children: [
                 const Spacer(),
@@ -99,7 +103,8 @@ class _EventTileState extends State<EventTile> {
                   shaderCallback: (rect) {
                     return const LinearGradient(
                         colors: [Colors.transparent, Colors.black,]
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    ).createShader(
+                        Rect.fromLTRB(0, 0, rect.width, rect.height));
                   },
                   blendMode: BlendMode.dstIn,
                   child: Container(
