@@ -26,6 +26,8 @@ public class Account {
     @JsonIgnore
     private boolean isOrganizer;
 
+    private String avatarKey;
+
     @OneToMany(mappedBy = "author")
     @JsonIgnore
     private Set<Event> createdEvents = new LinkedHashSet<>();
@@ -39,10 +41,11 @@ public class Account {
     public Account() {
     }
 
-    public Account(String username, String password, boolean isOrganizer) {
+    public Account(String username, String password, boolean isOrganizer, String avatarKey) {
         this.username = username;
         this.password = password;
         this.isOrganizer = isOrganizer;
+        this.avatarKey = avatarKey;
     }
 
     public long getId() {
@@ -87,5 +90,13 @@ public class Account {
 
     public void setSavedEvents(Set<Event> savedEvents) {
         this.savedEvents = savedEvents;
+    }
+
+    public String getAvatarKey() {
+        return avatarKey;
+    }
+
+    public void setAvatarKey(String avatarKey) {
+        this.avatarKey = avatarKey;
     }
 }

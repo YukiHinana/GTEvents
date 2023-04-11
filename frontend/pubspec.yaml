@@ -50,6 +50,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   intl: ^0.18.0
   image_cropper: ^3.0.2
+  dio: ^5.1.1
 
 dev_dependencies:
   flutter_test:

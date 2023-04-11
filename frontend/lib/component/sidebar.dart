@@ -45,7 +45,7 @@ class _UserSideBar extends State<UserSideBar> {
               children: <Widget>[
                 DrawerHeader(
                   decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: Colors.blue,
                   ),
                   child: Text(appState.userInfo?.username??""),
                 ),

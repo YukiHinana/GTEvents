@@ -60,7 +60,6 @@ public class EventController {
 
     @GetMapping("/events")
     public ResponseWrapper<?> getEvents(@RequestParam int pageNumber, @RequestParam int pageSize) {
-//        Pageable aa = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "id");
         Pageable aa = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Order.desc("id").ignoreCase()));
         return new ResponseWrapper<>(eventRepository.findAll(aa));
     }

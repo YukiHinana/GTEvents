@@ -2,8 +2,13 @@
 import 'dart:io';
 
 import 'package:GTEvents/component/imageSelector.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:http/http.dart' as http;
+
+import 'config.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,15 +21,18 @@ class _ProfilePage extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("profile"),),
-      // body: ListView(
-      //   padding: const EdgeInsets.symmetric(
-      //     vertical: 80,
-      //     horizontal: 20,
-      //   ),
-      //   children: [ProfilePage(),],
-      // ),
-      body: ProfileImage(),
+      appBar: AppBar(
+        title: const Text("profile"),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () => context.pushReplacement('/events'),
+              icon: const Icon(Icons.home))
+        ],
+      ),
+      body: const Padding(
+        padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+        child: ProfileImage(),
+      ),
     );
   }
 }
@@ -42,8 +50,26 @@ class _ProfileImage extends State<ProfileImage> {
   File? _image;
   ImageSelector imageSelector = ImageSelector();
 
+  Future<void> setAvatarRequest(File img, String? token) async {
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(img.path),
+    });
+    Dio dio = new Dio();
+    var response = await dio.post(
+        '${Config.baseURL}/account/avatar',
+        data: formData,
+        options: Options(headers: {
+          "Authorization": token??"",
+          // "Content-type": "multipart/form-data",
+        }),
+    );
+    print(response);
+  }
+
   @override
   Widget build(BuildContext context) {
+    String croppedImgPath = "";
+
     return Column(
       children: [
         Center(
@@ -56,7 +82,7 @@ class _ProfileImage extends State<ProfileImage> {
             ),
           ),
         ),
-        const SizedBox(height: 16,),
+        const SizedBox(height: 5,),
         TextButton(
             onPressed: () async {
               final imgs = await imageSelector.pickImage();
@@ -66,14 +92,25 @@ class _ProfileImage extends State<ProfileImage> {
                   cropStyle: CropStyle.circle,
                 );
                 if (croppedImg != null) {
+                  print(croppedImg.path);
+                  print(File(croppedImg.path).lengthSync());
                   setState(() {
                     _image = File(croppedImg.path);
+                    setAvatarRequest(File(croppedImg.path), "8d673738-d084-4e23-aa87-203462064662");
+                    croppedImgPath = croppedImg.path;
                   });
                 }
               }
             },
-            child: const Text("Select image"),
+            child: const Text("Change Avatar"),
         ),
+        // const SizedBox(height: 10,),
+        // TextButton(
+        //     onPressed: () async {
+        //       await setAvatarRequest("/Users/fengfeng/Library/Developer/CoreSimulator/Devices/19DBF72D-AAC8-4BBA-B2BF-48BCEFDDA3BC/data/Containers/Data/Application/85E00656-4FCD-4C7B-B359-161B33B21297/tmp/image_cropper_868AD0E5-0234-4E28-92F9-AB2C02F3C5AA-26448-000018FA03BCB93B.jpg", "8d673738-d084-4e23-aa87-203462064662");
+        //     },
+        //     child: const Text("save")
+        // ),
       ],
     );
   }
