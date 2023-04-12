@@ -82,6 +82,33 @@ class MyApp extends StatelessWidget {
                 )
             );
           }
+<<<<<<< Updated upstream
+=======
+          return MaterialApp.router(
+            title: 'hello',
+            routerConfig: _router,
+              theme: ThemeData(
+              // Define the default brightness and colors.
+              //   brightness: Brightness.dark,
+                colorScheme: ColorScheme.fromSwatch().copyWith(
+                  primary: const Color(0xFFADC178),
+                  secondary: const Color(0xffA98467),
+                  background: const Color(0xFF8ecae6),
+                ),
+          //     // Define the default font family.
+          //     fontFamily: 'Georgia',
+          //
+          //     // Define the default `TextTheme`. Use this to specify the default
+          //     // text styling for headlines, titles, bodies of text, and more.
+          //     textTheme: const TextTheme(
+          //     displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          // titleLarge: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+          // bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          ),
+
+          );
+        }
+>>>>>>> Stashed changes
       ),
     );
   }

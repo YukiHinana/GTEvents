@@ -40,6 +40,7 @@ class _UserSideBar extends State<UserSideBar> {
         converter: (store) => store.state,
         builder: (context, appState) {
           return Drawer(
+<<<<<<< Updated upstream
             child: Container(
               color: Color(0xffeaeecf),
               child: ListView(
@@ -50,6 +51,14 @@ class _UserSideBar extends State<UserSideBar> {
                       color: Color(0xffc5d790),
                     ),
                     child: Text(appState.userInfo?.username??""),
+=======
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: const BoxDecoration(
+
+>>>>>>> Stashed changes
                   ),
                   ListTile(
                     title: appState.token == null ? const Text('Login') : const Text('View Profile'),
