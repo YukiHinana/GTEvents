@@ -38,8 +38,6 @@ class _ProfilePage extends State<ProfilePage> {
 }
 
 class ProfileImage extends StatefulWidget {
-  // final String username;
-  // const ProfileImage({super.key, required this.username});
   const ProfileImage({super.key});
 
   @override
@@ -60,7 +58,6 @@ class _ProfileImage extends State<ProfileImage> {
         data: formData,
         options: Options(headers: {
           "Authorization": token??"",
-          // "Content-type": "multipart/form-data",
         }),
     );
     print(response);
@@ -92,8 +89,6 @@ class _ProfileImage extends State<ProfileImage> {
                   cropStyle: CropStyle.circle,
                 );
                 if (croppedImg != null) {
-                  print(croppedImg.path);
-                  print(File(croppedImg.path).lengthSync());
                   setState(() {
                     _image = File(croppedImg.path);
                     setAvatarRequest(File(croppedImg.path), "8d673738-d084-4e23-aa87-203462064662");
@@ -104,13 +99,6 @@ class _ProfileImage extends State<ProfileImage> {
             },
             child: const Text("Change Avatar"),
         ),
-        // const SizedBox(height: 10,),
-        // TextButton(
-        //     onPressed: () async {
-        //       await setAvatarRequest("/Users/fengfeng/Library/Developer/CoreSimulator/Devices/19DBF72D-AAC8-4BBA-B2BF-48BCEFDDA3BC/data/Containers/Data/Application/85E00656-4FCD-4C7B-B359-161B33B21297/tmp/image_cropper_868AD0E5-0234-4E28-92F9-AB2C02F3C5AA-26448-000018FA03BCB93B.jpg", "8d673738-d084-4e23-aa87-203462064662");
-        //     },
-        //     child: const Text("save")
-        // ),
       ],
     );
   }

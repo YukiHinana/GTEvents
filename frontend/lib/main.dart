@@ -69,15 +69,14 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData(
                     colorScheme: ColorScheme.fromSwatch().copyWith(
                       primary: Color(0xffADC178),
-                      // primary: Color(0xffa98467),
                       secondary: Color(0xff606c38),
                     ),
                   scaffoldBackgroundColor: Color(0xffFEFAE0),
-                  fontFamily: 'Georgia',
+                  fontFamily: 'San Francisco',
                   textTheme: const TextTheme(
                     displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
-                    titleLarge: TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic),
-                    bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'Google Sans'),
+                    titleLarge: TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic, fontFamily: 'Georgia'),
+                    bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'San Francisco'),
                   ),
                 )
             );

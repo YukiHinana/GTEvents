@@ -33,7 +33,7 @@ class _EventCardState extends State<EventCard> {
 
   final Widget _eventImgCard = Container(
     height: 250,
-    decoration:  const BoxDecoration(
+    decoration: const BoxDecoration(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(10.0),
         topRight: Radius.circular(10.0),
