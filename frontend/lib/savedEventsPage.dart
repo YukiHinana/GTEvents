@@ -77,7 +77,8 @@ class _SavedEventsPage extends State<SavedEventsPage> {
                       curItem.location, curItem.description,
                       curItem.eventDateTimestamp, 0, 0, true,
                       curItem.eventCreationTimestamp, curItem.organizer);
-                  return EventCard(event: e,);
+                  // return EventCard(event: e,);
+                  return Container();
                 }
             );
           }
