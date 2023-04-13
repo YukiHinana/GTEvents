@@ -105,6 +105,7 @@ class _EventsPage extends State<EventsPage> {
           // Fetch succeed, update state and trigger re-render
           setState(() {
             eventList = result.items;
+            tagMap = result.tagItems;
             totalPages = result.totalPages;
             curScrollPage = result.pageNumber;
 
