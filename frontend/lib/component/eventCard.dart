@@ -28,28 +28,13 @@ Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
 class _EventCardState extends State<EventCard> {
   late bool eventIsSaved;
   late int eventId;
-  late String title;
+  late String eventTitle;
   late String location;
-
-  final Widget _eventImgCard = Container(
-    height: 250,
-    decoration: const BoxDecoration(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10.0),
-        topRight: Radius.circular(10.0),
-      ),
-      image: DecorationImage(
-        opacity: 0.3,
-        fit: BoxFit.fill,
-        image: NetworkImage(
-            'https://picsum.photos/250?image=9'
-        ),
-      ),
-    ),
-  );
+  late String organizer;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
+
   @override
   void initState() {
     super.initState();
@@ -59,22 +44,30 @@ class _EventCardState extends State<EventCard> {
     }
     eventIsSaved = widget.event.isSaved;
     eventId = widget.event.eventId;
-    title = widget.event.title;
+    eventTitle = widget.event.title;
     location = widget.event.location;
+    organizer = widget.event.organizer;
   }
 
-  Future<http.Response> saveEventRequest(int eventId, String? token) async{
+  Future<http.Response> saveEventRequest(int eventId, String? token) async {
     var response = await http.post(
       Uri.parse('${Config.baseURL}/events/saved/$eventId'),
-      headers: {"Content-Type": "application/json", "Authorization": token??""},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token ?? ""
+      },
     );
     return response;
   }
 
-  Future<http.Response> deleteSavedEventRequest(int eventId, String? token) async{
+  Future<http.Response> deleteSavedEventRequest(int eventId,
+      String? token) async {
     var response = await http.delete(
       Uri.parse('${Config.baseURL}/events/saved/$eventId'),
-      headers: {"Content-Type": "application/json", "Authorization": token??""},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token ?? ""
+      },
     );
     return response;
   }
@@ -92,9 +85,12 @@ class _EventCardState extends State<EventCard> {
                 "eventTitle": value["title"]!,
                 "eventLocation": value["location"]!,
                 "eventDescription": value["description"]!,
-                "eventDate": (value["eventDate"]??0).toString(),
-                "eventCreationDate": (value["eventCreationDate"]??0).toString(),
-                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
+                "eventDate": (value["eventDate"] ?? 0).toString(),
+                "eventCreationDate": (value["eventCreationDate"] ?? 0)
+                    .toString(),
+                "tagName": value["tags"].length == 0
+                    ? ""
+                    : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
               });
         });
@@ -108,7 +104,24 @@ class _EventCardState extends State<EventCard> {
         ),
         child: Column(
           children: [
-            _eventImgCard,
+            // event image
+            Container(
+              height: 250,
+              decoration: const BoxDecoration(
+                // borderRadius: BorderRadius.only(
+                //   topLeft: Radius.circular(10.0),
+                //   topRight: Radius.circular(10.0),
+                // ),
+                image: DecorationImage(
+                  opacity: 0.3,
+                  fit: BoxFit.fill,
+                  image: NetworkImage(
+                      'https://picsum.photos/250?image=9'
+                  ),
+                ),
+              ),
+            ),
+            // event other info
             Container(
               height: 100,
               decoration: const BoxDecoration(
@@ -116,33 +129,36 @@ class _EventCardState extends State<EventCard> {
                   bottomLeft: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0),
                 ),
-                color: Colors.white70,
+                // color: Colors.white70,
+                color: Colors.orange,
               ),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 350,
-                    child: ListTile(
-                      title: Padding(
-                        padding: const EdgeInsets.only(bottom: 7.0),
-                        child: Text(
-                          title,
-                          style: const TextStyle(fontSize: 25, fontFamily: "Google Sans"),
-                        ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
+                        child: Text("Location: $location",
+                          style: const TextStyle(fontSize: 17),),
                       ),
-                      subtitle: Text(
-                        "location: $location",
-                        style: const TextStyle(fontSize: 15, color: Color(0xff01012d)),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 3, 0, 3),
+                        child: Text("Organizer: $organizer",
+                            style: const TextStyle(fontSize: 17)),
                       ),
-                    ),
+                    ],
                   ),
                   Expanded(
                     child: Align(
                       alignment: Alignment.topRight,
                       child: IconButton(
-                        padding: const EdgeInsets.fromLTRB(0, 5.0, 10.0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 15.0, 10.0, 0),
                         onPressed: () {
-                          var token = StoreProvider.of<AppState>(context).state.token;
+                          var token = StoreProvider
+                              .of<AppState>(context)
+                              .state
+                              .token;
                           setState(() {
                             eventIsSaved = !eventIsSaved;
                             if (eventIsSaved) {
@@ -156,7 +172,8 @@ class _EventCardState extends State<EventCard> {
                             }
                           });
                         },
-                        icon: eventIsSaved ? const Icon(Icons.star, size: 40, color: Colors.yellow,) :
+                        icon: eventIsSaved ? const Icon(
+                          Icons.star, size: 40, color: Colors.yellow,) :
                         const Icon(Icons.star_border, size: 40,),
                       ),
                     ),

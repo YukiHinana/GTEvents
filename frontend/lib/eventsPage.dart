@@ -67,7 +67,7 @@ class _EventsPage extends State<EventsPage> {
         newEventList.add(Event(info['id'], info['title'], info['location'],
             info['description'], info['eventDate']??0, info['capacity'],
             info['fee'], isSaved,
-            info['eventCreationDate']??0));
+            info['eventCreationDate']??0, info['author']['username']));
       }
       result.items = newEventList;
       return result;

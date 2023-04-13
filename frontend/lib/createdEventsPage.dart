@@ -47,7 +47,7 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
         }
         eventList.add(Event(map['id'], map['title'], map['location'],
                   map['description'], map['eventDate']??0, map['capacity'],
-                  map['fee'], isSaved, map['eventCreationDate']??0));
+                  map['fee'], isSaved, map['eventCreationDate']??0, map['author']['username']));
       }
     }
     return eventList;
@@ -90,7 +90,8 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
                       0,
                       0,
                       curItem.isSaved,
-                      curItem.eventCreationTimestamp);
+                      curItem.eventCreationTimestamp,
+                  curItem.organizer);
                   return Column(
                     children: [
                       const Divider(

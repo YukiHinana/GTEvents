@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'event.dart';
+
 //Event details page
 class EventDetailPage extends StatefulWidget {
   final String eventTitle;
@@ -18,64 +20,6 @@ class EventDetailPage extends StatefulWidget {
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
-}
-
-String convertTimestampToDate(String str) {
-  return DateFormat('MM/dd/yyyy, HH:mm').format(
-      DateTime.fromMillisecondsSinceEpoch((double.parse(str) * 1000).toInt()));
-}
-
-String mapMonth(String month) {
-  switch (month) {
-    case "01": {
-      return "Jan";
-    }
-    break;
-    case "02": {
-      return "Feb";
-    }
-    break;
-    case "03": {
-      return "Mar";
-    }
-    break;
-    case "04": {
-      return "Apr";
-    }
-    break;
-    case "05": {
-      return "May";
-    }
-    break;
-    case "06": {
-      return "Jun";
-    }
-    break;
-    case "07": {
-      return "Jul";
-    }
-    break;
-    case "08": {
-      return "Aug";
-    }
-    break;
-    case "09": {
-      return "Sep";
-    }
-    break;
-    case "10": {
-      return "Oct";
-    }
-    break;
-    case "11": {
-      return "Nov";
-    }
-    break;
-    default: {
-      return "Dec";
-    }
-    break;
-  }
 }
 
 Widget showEventDetails(String eventTitle, String eventDate,

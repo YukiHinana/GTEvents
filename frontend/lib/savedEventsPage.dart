@@ -37,7 +37,7 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
       eventList.add(Event(map['id'], map['title'], map['location'],
           map['description'], map['eventDate']??0, map['capacity'],
           map['fee'], true,
-          map['eventCreationDate']??0));
+          map['eventCreationDate']??0, map['author']['username']));
     }
   }
   return eventList;
@@ -76,7 +76,7 @@ class _SavedEventsPage extends State<SavedEventsPage> {
                   Event e = Event(curItem.eventId, curItem.title,
                       curItem.location, curItem.description,
                       curItem.eventDateTimestamp, 0, 0, true,
-                      curItem.eventCreationTimestamp);
+                      curItem.eventCreationTimestamp, curItem.organizer);
                   return EventCard(event: e,);
                 }
             );
