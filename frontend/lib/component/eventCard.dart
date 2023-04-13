@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:GTEvents/component/tagCard.dart';
+import 'package:GTEvents/eventDetailPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +30,7 @@ Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
 }
 
 class _EventCardState extends State<EventCard> {
-  List<String> tags = [];
+  List<Tag> tags = [];
   late bool eventIsSaved;
   late int eventId;
   late String eventTitle;
@@ -52,9 +54,10 @@ class _EventCardState extends State<EventCard> {
     location = widget.event.location;
     organizer = widget.event.organizer;
     eventDate = widget.event.eventDateTimestamp;
-    for (Tag t in widget.tagList) {
-      tags.add(t.name);
-    }
+    tags = widget.tagList;
+    // for (Tag t in widget.tagList) {
+    //   tags.add(t.name);
+    // }
   }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async {
@@ -98,13 +101,7 @@ class _EventCardState extends State<EventCard> {
       List<Widget> list = [];
       for (int i = 0; i < tags.length; i++) {
         list.add(
-            Card(
-              color: const Color(0xffe8f8c1),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(tags[i]),
-              ),
-            )
+          TagCard(tag: tags[i])
         );
       }
       return list;
@@ -113,22 +110,10 @@ class _EventCardState extends State<EventCard> {
     return GestureDetector(
       onTap: () {
         fetchEventDetails(eventId).then((value) {
-          context.pushNamed("eventDetails",
-              params: {
-                "id": eventId.toString(),
-              },
-              queryParams: {
-                "eventTitle": value["title"]!,
-                "eventLocation": value["location"]!,
-                "eventDescription": value["description"]!,
-                "eventDate": (value["eventDate"] ?? 0).toString(),
-                "eventCreationDate": (value["eventCreationDate"] ?? 0)
-                    .toString(),
-                "tagName": value["tags"].length == 0
-                    ? ""
-                    : value["tags"][0]["name"],
-                "isSaved": eventIsSaved.toString(),
-              });
+          Map<String, dynamic> paramMap = <String, dynamic>{};
+          paramMap.putIfAbsent("event", () => widget.event);
+          paramMap.putIfAbsent("tagList", () => widget.tagList);
+          context.pushNamed("eventDetails", extra: paramMap);
         });
       },
       child: Column(
@@ -153,9 +138,7 @@ class _EventCardState extends State<EventCard> {
                           .width * 0.7,
                     ),
                     decoration: const BoxDecoration(
-                      // color: Color(0xffD4A373),
-                      // color: Color(0xffbfd8bd),
-                      color: Color(0xff96be8c),
+                      color: Color(0xffa8dcda),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10.0),
                         topRight: Radius.circular(10.0),
@@ -165,7 +148,7 @@ class _EventCardState extends State<EventCard> {
                       padding: const EdgeInsets.fromLTRB(5, 4, 5, 2),
                       child: Text(
                         eventTitle,
-                        style: const TextStyle(fontSize: 22),
+                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -179,17 +162,16 @@ class _EventCardState extends State<EventCard> {
                     topRight: Radius.circular(8.0),
                   ),
                 ),
-                // color: Color(0xff432818),
-                color: const Color(0xff606c38),
+                color: const Color(0xff7e6352),
                 margin: const EdgeInsets.all(0),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
                   child: Column(
                     children: [
-                      Text("$month ", style: const TextStyle(
+                      // TODO: convert 24 hour time to AM/PM
+                      Text("$month.$date", style: const TextStyle(
                           fontSize: 17, color: Color(0xffe9f5db)),),
-                      Text(date, style: const TextStyle(
-                          fontSize: 15, color: Color(0xffe9f5db)),),
+                      const SizedBox(height: 4,),
                       Text("@ $time", style: const TextStyle(
                           fontSize: 15, color: Color(0xffe9f5db)),),
                     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'event.dart';
 import 'eventDetailPage.dart';
 
 //Event details page
@@ -10,12 +11,12 @@ class EventPreview extends StatefulWidget {
   final String eventDescription;
   final String eventDate;
   final String eventCreationDate;
-  final String tagName;
+  final List<Tag> tagNameList;
 
   const EventPreview({super.key, required this.eventTitle,
     required this.eventLocation, required this.eventDescription,
     required this.eventDate, required this.eventCreationDate,
-    required this.tagName});
+    required this.tagNameList});
 
   @override
   State<EventPreview> createState() => _EventPreviewState();
@@ -31,7 +32,7 @@ class _EventPreviewState extends State<EventPreview> {
         title: const Text("Event Preview"),
       ),
       body: showEventDetails(widget.eventTitle, widget.eventDate,
-          widget.eventLocation, widget.eventDescription, widget.tagName),
+          widget.eventLocation, widget.eventDescription, widget.tagNameList),
     );
   }
 }

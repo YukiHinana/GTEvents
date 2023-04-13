@@ -5,25 +5,28 @@ import 'event.dart';
 
 //Event details page
 class EventDetailPage extends StatefulWidget {
-  final String eventTitle;
-  final String eventLocation;
-  final String eventDescription;
-  final String eventDate;
-  final String eventCreationDate;
-  final String tagName;
-  final bool isSaved;
+  Event event;
+  List<Tag> tagList;
+  // final String eventTitle;
+  // final String eventLocation;
+  // final String eventDescription;
+  // final String eventDate;
+  // final String eventCreationDate;
+  // final List<String> tagNameList;
+  // final bool isSaved;
 
-  const EventDetailPage({super.key, required this.eventTitle,
-    required this.eventLocation, required this.eventDescription,
-    required this.eventDate, required this.eventCreationDate,
-    required this.tagName, required this.isSaved});
+  // const EventDetailPage({super.key, required this.eventTitle,
+  //   required this.eventLocation, required this.eventDescription,
+  //   required this.eventDate, required this.eventCreationDate,
+  //   required this.tagNameList, required this.isSaved});
+  EventDetailPage({super.key, required this.event, required this.tagList});
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
 
 Widget showEventDetails(String eventTitle, String eventDate,
-    String eventLocation, String eventDescription, String tagName) {
+    String eventLocation, String eventDescription, List<Tag> tagList) {
   String month = "";
   String date = "";
   if (eventDate != "0") {
@@ -127,10 +130,10 @@ Widget showEventDetails(String eventTitle, String eventDate,
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          tagName == "" ? "None" : tagName,
-          style: const TextStyle(fontSize: 16),
-        ),
+        // child: Text(
+        //   tagName == "" ? "None" : tagName,
+        //   style: const TextStyle(fontSize: 16),
+        // ),
       ),
     ],
   );
@@ -138,10 +141,13 @@ Widget showEventDetails(String eventTitle, String eventDate,
 
 DateTime date = DateTime.now();
 class _EventDetailPageState extends State<EventDetailPage> {
-  bool isSaved = false;
+  // bool isSaved = false;
+  late Event event;
+  List<Tag> tagList = [];
 
   @override
   Widget build(BuildContext context) {
+    // print(tagList);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Event Content"),
@@ -150,20 +156,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
               //TODO
               onPressed: () {
                 setState(() {
-                  isSaved = !isSaved;
+                  // isSaved = !isSaved;
                 });
               },
-              icon: isSaved
+              icon: event.isSaved
                   ? const Icon(Icons.star, color: Colors.yellow,)
                   : const Icon(Icons.star_border)),
         ],),
-      body: showEventDetails(widget.eventTitle, widget.eventDate,
-          widget.eventLocation, widget.eventDescription, widget.tagName),
+      body: showEventDetails(event.title, event.eventDateTimestamp.toString(),
+          event.location, event.description, tagList),
     );
   }
 
   @override
   void initState() {
-    isSaved = widget.isSaved;
+    // isSaved = widget.isSaved;
+    event = widget.event;
+    tagList = widget.tagList;
   }
 }
