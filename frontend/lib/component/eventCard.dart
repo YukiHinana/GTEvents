@@ -31,6 +31,7 @@ class _EventCardState extends State<EventCard> {
   late String eventTitle;
   late String location;
   late String organizer;
+  late int eventDate;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
@@ -47,6 +48,7 @@ class _EventCardState extends State<EventCard> {
     eventTitle = widget.event.title;
     location = widget.event.location;
     organizer = widget.event.organizer;
+    eventDate = widget.event.eventDateTimestamp;
   }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async {
@@ -74,6 +76,17 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
+    String month = "";
+    String date = "";
+    String time = "";
+    if (eventDate != 0) {
+      List<String> eventTimeList = convertTimestampToDate(eventDate.toString()).split('/');
+      month = mapMonth(eventTimeList[0]);
+      date = eventTimeList[1];
+      //split year and time
+      time = eventTimeList[2].split(', ')[1];
+    }
+
     return GestureDetector(
       onTap: () {
         fetchEventDetails(eventId).then((value) {
@@ -95,94 +108,150 @@ class _EventCardState extends State<EventCard> {
               });
         });
       },
-      child: Card(
-        elevation: 10,
-        shadowColor: Colors.black,
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Column(
-          children: [
-            // event image
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(
-                // borderRadius: BorderRadius.only(
-                //   topLeft: Radius.circular(10.0),
-                //   topRight: Radius.circular(10.0),
-                // ),
-                image: DecorationImage(
-                  opacity: 0.3,
-                  fit: BoxFit.fill,
-                  image: NetworkImage(
-                      'https://picsum.photos/250?image=9'
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Card(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0),
+                    ),
                   ),
-                ),
+                  margin: const EdgeInsets.all(0),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                    decoration: const BoxDecoration(
+                      // color: Color(0xffD4A373),
+                      color: Color(0xffD4A373),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.0),
+                        topRight: Radius.circular(10.0),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 4, 5, 2),
+                      child: Text(
+                        eventTitle,
+                        style: const TextStyle(fontSize: 22),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
               ),
-            ),
-            // event other info
-            Container(
-              height: 100,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                ),
-                // color: Colors.white70,
-                color: Colors.orange,
-              ),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              Spacer(),
+              Card(
+                color: Color(0xff432818),
+                margin: const EdgeInsets.all(0),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
-                        child: Text("Location: $location",
-                          style: const TextStyle(fontSize: 17),),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 3, 0, 3),
-                        child: Text("Organizer: $organizer",
-                            style: const TextStyle(fontSize: 17)),
-                      ),
+                      Text("$month ", style: TextStyle(fontSize: 17, color: Color(0xffe9edc9)),),
+                      Text(date, style: TextStyle(fontSize: 15, color: Color(0xffe9edc9)),),
+                      Text("@ $time", style: TextStyle(fontSize: 15, color: Color(0xffe9edc9)),),
                     ],
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        padding: const EdgeInsets.fromLTRB(0, 15.0, 10.0, 0),
-                        onPressed: () {
-                          var token = StoreProvider
-                              .of<AppState>(context)
-                              .state
-                              .token;
-                          setState(() {
-                            eventIsSaved = !eventIsSaved;
-                            if (eventIsSaved) {
-                              iconBtnState = Icons.star;
-                              iconColorState = Colors.yellow;
-                              saveEventRequest(eventId, token);
-                            } else {
-                              iconBtnState = Icons.star_border;
-                              iconColorState = Colors.black;
-                              deleteSavedEventRequest(eventId, token);
-                            }
-                          });
-                        },
-                        icon: eventIsSaved ? const Icon(
-                          Icons.star, size: 40, color: Colors.yellow,) :
-                        const Icon(Icons.star_border, size: 40,),
+                ),
+              )
+            ],
+          ),
+          Card(
+            elevation: 10,
+            shadowColor: Colors.black,
+            margin: const EdgeInsets.all(0),
+            // margin: EdgeInsets.fromLTRB(0, 0, 10, 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              children: [
+                // event image
+                Container(
+                  height: 250,
+                  decoration: const BoxDecoration(
+                    // borderRadius: BorderRadius.only(
+                    //   topLeft: Radius.circular(10.0),
+                    //   topRight: Radius.circular(10.0),
+                    // ),
+                    image: DecorationImage(
+                      opacity: 0.3,
+                      fit: BoxFit.fill,
+                      image: NetworkImage(
+                          'https://picsum.photos/250?image=9'
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                // event other info
+                Container(
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0),
+                    ),
+                    color: Colors.white70,
+                    // color: Colors.orange,
+                  ),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 5, 0, 0),
+                            child: Text("Location: $location",
+                              style: const TextStyle(fontSize: 17),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 3, 0, 3),
+                            child: Text("Organizer: $organizer",
+                                style: const TextStyle(fontSize: 17)),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            padding: const EdgeInsets.fromLTRB(
+                                0, 15.0, 10.0, 0),
+                            onPressed: () {
+                              var token = StoreProvider
+                                  .of<AppState>(context)
+                                  .state
+                                  .token;
+                              setState(() {
+                                eventIsSaved = !eventIsSaved;
+                                if (eventIsSaved) {
+                                  iconBtnState = Icons.star;
+                                  iconColorState = Colors.yellow;
+                                  saveEventRequest(eventId, token);
+                                } else {
+                                  iconBtnState = Icons.star_border;
+                                  iconColorState = Colors.black;
+                                  deleteSavedEventRequest(eventId, token);
+                                }
+                              });
+                            },
+                            icon: eventIsSaved ? const Icon(
+                              Icons.star, size: 40, color: Colors.yellow,) :
+                            const Icon(Icons.star_border, size: 40,),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

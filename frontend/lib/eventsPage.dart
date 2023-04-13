@@ -130,7 +130,7 @@ class _EventsPage extends State<EventsPage> {
           itemBuilder: (context, index) {
             return Container(
               key: Key("${eventList[index].eventId}"),
-              padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+              padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
               child: EventCard(
                 event: eventList[index],
               ),
