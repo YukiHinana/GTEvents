@@ -29,6 +29,16 @@ Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
   return map;
 }
 
+List<Widget> getTagCards(List<Tag> tags) {
+  List<Widget> list = [];
+  for (int i = 0; i < tags.length; i++) {
+    list.add(
+        TagCard(tag: tags[i])
+    );
+  }
+  return list;
+}
+
 class _EventCardState extends State<EventCard> {
   List<Tag> tags = [];
   late bool eventIsSaved;
@@ -55,9 +65,6 @@ class _EventCardState extends State<EventCard> {
     organizer = widget.event.organizer;
     eventDate = widget.event.eventDateTimestamp;
     tags = widget.tagList;
-    // for (Tag t in widget.tagList) {
-    //   tags.add(t.name);
-    // }
   }
 
   Future<http.Response> saveEventRequest(int eventId, String? token) async {
@@ -95,16 +102,6 @@ class _EventCardState extends State<EventCard> {
       date = eventTimeList[1];
       //split year and time
       time = eventTimeList[2].split(', ')[1];
-    }
-
-    List<Widget> getTags() {
-      List<Widget> list = [];
-      for (int i = 0; i < tags.length; i++) {
-        list.add(
-          TagCard(tag: tags[i])
-        );
-      }
-      return list;
     }
 
     return GestureDetector(
@@ -231,7 +228,7 @@ class _EventCardState extends State<EventCard> {
                           ),
                           // list event tags
                           Row(
-                            children: getTags(),
+                            children: getTagCards(tags),
                           )
                         ],
                       ),

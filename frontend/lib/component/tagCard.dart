@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../event.dart';
 
 class TagCard extends StatefulWidget {
-  Tag tag;
-  TagCard({super.key, required this.tag});
+  final Tag tag;
+  const TagCard({super.key, required this.tag});
 
   @override
   State<TagCard> createState() => _TagCardState();

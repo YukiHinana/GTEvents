@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
+import 'component/eventCard.dart';
 import 'event.dart';
 
 //Event details page
 class EventDetailPage extends StatefulWidget {
-  Event event;
-  List<Tag> tagList;
-  // final String eventTitle;
-  // final String eventLocation;
-  // final String eventDescription;
-  // final String eventDate;
-  // final String eventCreationDate;
-  // final List<String> tagNameList;
-  // final bool isSaved;
-
-  // const EventDetailPage({super.key, required this.eventTitle,
-  //   required this.eventLocation, required this.eventDescription,
-  //   required this.eventDate, required this.eventCreationDate,
-  //   required this.tagNameList, required this.isSaved});
-  EventDetailPage({super.key, required this.event, required this.tagList});
+  final Event event;
+  final List<Tag> tagList;
+  const EventDetailPage({super.key, required this.event, required this.tagList});
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
@@ -58,7 +46,7 @@ Widget showEventDetails(String eventTitle, String eventDate,
             ),
             child: Row(
               children: [
-                Icon(Icons.calendar_today, size: 35),
+                const Icon(Icons.calendar_today, size: 35),
                 Column(
                   children: [
                     SizedBox(
@@ -130,10 +118,9 @@ Widget showEventDetails(String eventTitle, String eventDate,
       ),
       Container(
         padding: const EdgeInsets.all(8.0),
-        // child: Text(
-        //   tagName == "" ? "None" : tagName,
-        //   style: const TextStyle(fontSize: 16),
-        // ),
+        child: Row(
+          children: [...getTagCards(tagList)],
+        )
       ),
     ],
   );
@@ -170,7 +157,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
 
   @override
   void initState() {
-    // isSaved = widget.isSaved;
+    super.initState();
     event = widget.event;
     tagList = widget.tagList;
   }
