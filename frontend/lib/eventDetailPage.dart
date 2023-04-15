@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 import 'component/eventCard.dart';
+import 'config.dart';
 import 'event.dart';
 
 //Event details page
@@ -150,8 +152,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
           IconButton(
               //TODO
               onPressed: () {
+                var token = StoreProvider
+                    .of<AppState>(context)
+                    .state
+                    .token;
                 setState(() {
-                  // isSaved = !isSaved;
+                  event.isSaved = !(event.isSaved);
+                  if (event.isSaved) {
+                    saveEventRequest(event.eventId, token);
+                  } else {
+                    deleteSavedEventRequest(event.eventId, token);
+                  }
                 });
               },
               icon: event.isSaved

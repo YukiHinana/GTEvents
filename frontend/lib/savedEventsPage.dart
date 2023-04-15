@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:GTEvents/component/eventCard.dart';
+import 'package:GTEvents/component/eventTile.dart';
 import 'package:GTEvents/component/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -11,7 +12,6 @@ import 'package:http/http.dart' as http;
 import 'config.dart';
 import 'event.dart';
 
-//SavedEventsPage
 class SavedEventsPage extends StatefulWidget {
   const SavedEventsPage({super.key});
 
@@ -43,7 +43,6 @@ Future<List<Event>> fetchSavedEvents(String? token) async {
   return eventList;
 }
 
-//SavedEventsPage interface
 class _SavedEventsPage extends State<SavedEventsPage> {
 
   @override
@@ -77,8 +76,7 @@ class _SavedEventsPage extends State<SavedEventsPage> {
                       curItem.location, curItem.description,
                       curItem.eventDateTimestamp, 0, 0, true,
                       curItem.eventCreationTimestamp, curItem.organizer);
-                  // return EventCard(event: e,);
-                  return Container();
+                  return EventTile(event: e);
                 }
             );
           }

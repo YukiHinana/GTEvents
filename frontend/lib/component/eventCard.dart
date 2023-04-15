@@ -14,21 +14,12 @@ class EventCard extends StatefulWidget {
   Event event;
   List<Tag> tagList;
   EventCard({super.key, required this.event, required this.tagList});
-  // EventCard({super.key, required this.event});
 
   @override
   State<EventCard> createState() => _EventCardState();
 }
 
-Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
-  var response = await http.get(
-    Uri.parse('${Config.baseURL}/events/events/$eventId'),
-    headers: {"Content-Type": "application/json"},
-  );
-  Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
-  return map;
-}
-
+// return list of TagCard widget of an event
 List<Widget> getTagCards(List<Tag> tags) {
   List<Widget> list = [];
   for (int i = 0; i < tags.length; i++) {
@@ -40,6 +31,7 @@ List<Widget> getTagCards(List<Tag> tags) {
 }
 
 class _EventCardState extends State<EventCard> {
+  late Event event;
   List<Tag> tags = [];
   late bool eventIsSaved;
   late int eventId;
@@ -54,10 +46,7 @@ class _EventCardState extends State<EventCard> {
   @override
   void initState() {
     super.initState();
-    if (widget.event.isSaved) {
-      iconBtnState = Icons.star;
-      iconColorState = Colors.yellow;
-    }
+    event = widget.event;
     eventIsSaved = widget.event.isSaved;
     eventId = widget.event.eventId;
     eventTitle = widget.event.title;
@@ -65,29 +54,6 @@ class _EventCardState extends State<EventCard> {
     organizer = widget.event.organizer;
     eventDate = widget.event.eventDateTimestamp;
     tags = widget.tagList;
-  }
-
-  Future<http.Response> saveEventRequest(int eventId, String? token) async {
-    var response = await http.post(
-      Uri.parse('${Config.baseURL}/events/saved/$eventId'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token ?? ""
-      },
-    );
-    return response;
-  }
-
-  Future<http.Response> deleteSavedEventRequest(int eventId,
-      String? token) async {
-    var response = await http.delete(
-      Uri.parse('${Config.baseURL}/events/saved/$eventId'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token ?? ""
-      },
-    );
-    return response;
   }
 
   @override
@@ -244,19 +210,15 @@ class _EventCardState extends State<EventCard> {
                                   .state
                                   .token;
                               setState(() {
-                                eventIsSaved = !eventIsSaved;
-                                if (eventIsSaved) {
-                                  iconBtnState = Icons.star;
-                                  iconColorState = Colors.yellow;
+                                event.setIsSaved(!(event.isSaved));
+                                if (event.isSaved == true) {
                                   saveEventRequest(eventId, token);
                                 } else {
-                                  iconBtnState = Icons.star_border;
-                                  iconColorState = Colors.black;
                                   deleteSavedEventRequest(eventId, token);
                                 }
                               });
                             },
-                            icon: eventIsSaved ? const Icon(
+                            icon: event.isSaved ? const Icon(
                               Icons.star, size: 40, color: Colors.yellow,) :
                             const Icon(Icons.star_border, size: 40,),
                           ),

@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'config.dart';
 
 class Event {
   int eventId;
@@ -26,6 +32,10 @@ class Event {
     );
   }
 
+  void setIsSaved(bool isSaved) {
+    this.isSaved = isSaved;
+  }
+
   @override
   String toString() {
     return'{$eventId, $title, $location, $description, $capacity, $fee}';
@@ -46,6 +56,39 @@ class Tag {
   String toString() {
     return'{$tagId, $name}';
   }
+}
+
+Future<Map<String, dynamic>> fetchEventDetails(int eventId) async {
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/events/events/$eventId'),
+    headers: {"Content-Type": "application/json"},
+  );
+  Map<String, dynamic> map = Map<String, dynamic>.from(jsonDecode(utf8.decode(response.bodyBytes))['data']);
+  return map;
+}
+
+Future<http.Response> saveEventRequest(int eventId, String? token) async {
+  var response = await http.post(
+    Uri.parse('${Config.baseURL}/events/saved/$eventId'),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ?? ""
+    },
+  );
+  print(response);
+  return response;
+}
+
+Future<http.Response> deleteSavedEventRequest(int eventId,
+    String? token) async {
+  var response = await http.delete(
+    Uri.parse('${Config.baseURL}/events/saved/$eventId'),
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ?? ""
+    },
+  );
+  return response;
 }
 
 String convertTimestampToDate(String str) {
