@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
                       // secondary: Color(0xff606c38),
                       secondary: Color(0xff432818),
                     ),
-                  scaffoldBackgroundColor: Color(0xffFEFAE0),
+                  scaffoldBackgroundColor: Color(0xfffffbe7),
                   fontFamily: 'San Francisco',
                   textTheme: const TextTheme(
                     displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
@@ -151,9 +151,6 @@ final GoRouter _router = GoRouter(
           name: "eventDetails",
           path: 'view',
           builder: (context, state) {
-            // Event e = state.extra as Event;
-            // List<Tag> tList = state.extra as List<Tag>;
-            // return EventDetailPage(event: e, tagList: tList);
             Map<String, dynamic> map = state.extra as Map<String, dynamic>;
             return EventDetailPage(event: map["event"], tagList: map["tagList"]);
           } ,
@@ -172,22 +169,6 @@ final GoRouter _router = GoRouter(
         //     );
         //   } ,
         // ),
-        // GoRoute(
-        //   name: "eventDetails",
-        //   path: ':id',
-        //   builder: (context, state) {
-        //     return EventDetailPage(
-        //       eventTitle: state.queryParams["eventTitle"]??"",
-        //       eventLocation: state.queryParams["eventLocation"]??"",
-        //       eventDescription: state.queryParams["eventDescription"]??"",
-        //       eventDate: state.queryParams["eventDate"]??"0",
-        //       eventCreationDate: state.queryParams["eventCreationDate"]??"0",
-        //       tagNameList: state.queryParams["tagNameList"],
-        //       isSaved: state.queryParams["isSaved"] == "true" ? true : false,
-        //     );
-        //   } ,
-        // ),
-
       ],
     ),
   ],

@@ -33,54 +33,62 @@ Widget showEventDetails(String eventTitle, String eventDate,
           style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
       ),
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          height: 100,
-          width: 120,
-          child: Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.calendar_today, size: 35),
-                Column(
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      height: 40,
+      Row(
+        children: [
+          // event date
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              height: 90,
+              width: 85,
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                color: const Color(0xffc0a486),
+                child: Padding(
+                      padding: EdgeInsets.all(8),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            child: Text(month, style: TextStyle(fontSize: 18),),
+                            child: Text(month, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700),),
                           ),
                           Container(
-                            child: Text(date, style: TextStyle(fontSize: 16),),
+                            child: Text(date, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
                           )
                         ],
                       ),
                     ),
-                  ],
+              ),
+            ),
+          ),
+          // event time and location
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Icon(Icons.calendar_today, size: 35),
+                ),
+                eventDate == "0" ?
+                const Text("Event date here",
+                    style: TextStyle(fontSize: 16))
+                    :
+                Text(
+                  convertTimestampToDate(eventDate),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
+
           ),
-        ),
+        ],
       ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        child: eventDate == "0" ?
-        const Text("Event date here",
-            style: TextStyle(fontSize: 16))
-            :
-        Text(
-          convertTimestampToDate(eventDate),
-          style: const TextStyle(fontSize: 16),
-        ),
-      ),
+
       Container(
         padding: const EdgeInsets.all(8.0),
         child: const Text(

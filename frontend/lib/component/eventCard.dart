@@ -135,7 +135,7 @@ class _EventCardState extends State<EventCard> {
                           .width * 0.7,
                     ),
                     decoration: const BoxDecoration(
-                      color: Color(0xffa8dcda),
+                      color: Color(0xffb4e5cb),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10.0),
                         topRight: Radius.circular(10.0),
