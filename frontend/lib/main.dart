@@ -3,6 +3,7 @@ import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/eventPreview.dart';
+import 'package:GTEvents/filter.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/profilePage.dart';
 import 'package:GTEvents/savedEventsPage.dart';
@@ -153,7 +154,14 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             Map<String, dynamic> map = state.extra as Map<String, dynamic>;
             return EventDetailPage(event: map["event"], tagList: map["tagList"]);
-          } ,
+          },
+        ),
+        GoRoute(
+          name: "filter",
+          path: 'filter',
+          builder: (context, state) {
+            return const Filter();
+          },
         ),
         // GoRoute(
         //   name: "eventPreview",

@@ -216,13 +216,6 @@ public class EventController {
     @DeleteMapping("/saved/{eventId}")
     @RequireAuth
     public ResponseWrapper<?> deleteSavedEvent(@PathVariable Long eventId, Account a) {
-//        Iterator<Event> iter = a.getSavedEvents().iterator();
-//        while (iter.hasNext()) {
-//            if (iter.next().getId().equals(eventId)) {
-//                iter.remove();
-//                break;
-//            }
-//        }
         Event e = eventRepository.findById(eventId)
                 .orElseThrow(() -> new InvalidRequestException("can't find this event"));
         Account account = accountRepository.findById(a.getId()).get();

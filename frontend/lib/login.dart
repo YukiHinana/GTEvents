@@ -147,16 +147,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   onPressed: () => context.push('/signup'),
                 ),
               ),
-              // SizedBox(height: 30),
-              // Container(
-              //   height: 400,
-              //   width: double.infinity,
-              //   decoration: const BoxDecoration(
-              //     image: DecorationImage(
-              //         image: AssetImage("assets/background.jpg"),
-              //         fit: BoxFit.cover),
-              //   ),
-              // ),
             ]
         ),
       ),

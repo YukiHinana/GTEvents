@@ -44,7 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: (){},
+          onPressed: () {
+            context.push("/events/filter");
+          },
           label: const Text("filter", style: TextStyle(color: Color(0xfffcf3ea)),),
           icon: const Icon(Icons.filter_list_alt, color: Color(0xfffcf3ea),),
       ),
