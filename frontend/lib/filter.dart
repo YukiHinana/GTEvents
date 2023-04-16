@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:GTEvents/config.dart';
 import 'package:GTEvents/component/sidebar.dart';
+import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -31,10 +32,44 @@ class _FilterState extends State<Filter> {
   String endDate = "choose a date";
   late DateTime eventDateTime;
 
+  List<int> _eventTypeSelectedOptions = <int>[];
+  List<Tag> tagList = [];
+
+  List<Widget> eventTypeTags() {
+    List<Widget> result = [];
+    for (var i = 0; i < tagList.length; i++) {
+      result.add(FilterChip(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        label: Text(tagList[i].name, style: const TextStyle(fontSize: 17),),
+        showCheckmark: false,
+        selected: _eventTypeSelectedOptions.contains(tagList[i].tagId),
+        backgroundColor: const Color(0xffd2cdc8),
+        selectedColor: const Color(0xffb68a5e),
+        onSelected: (bool val) {
+          setState(() {
+            if (val) {
+              if (!_eventTypeSelectedOptions.contains(tagList[i].tagId)) {
+                _eventTypeSelectedOptions.add(tagList[i].tagId);
+              }
+            } else {
+              _eventTypeSelectedOptions.removeWhere((int id) {
+                return id == tagList[i].tagId;
+              });
+            }
+          });
+        },
+      )
+      );
+    }
+    return result;
+  }
 
   Widget buildDatePicker() =>
       ElevatedButton(
-        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime.year}'),
+        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime
+            .year}'),
         onPressed: () async {
           final date = await pickDate();
           if (date == null) {
@@ -64,6 +99,11 @@ class _FilterState extends State<Filter> {
   @override
   void initState() {
     super.initState();
+    getEventTags().then((value) {
+      setState(() {
+        tagList = value;
+      });
+    });
     dateRangeDropDownVal = dateRangeOptionList.first;
     startDate = "${mapMonth((curTime.month).toString())} ${curTime.day}, "
         "${curTime.year}";
@@ -83,18 +123,19 @@ class _FilterState extends State<Filter> {
                 value: dateRangeDropDownVal,
                 items: dateRangeOptionList.map<DropdownMenuItem<String>>(
                         (String val) {
-                          return DropdownMenuItem<String>(
-                              value: val,
-                              child: Text(val)
-                          );
-                }).toList(),
+                      return DropdownMenuItem<String>(
+                          value: val,
+                          child: Text(val)
+                      );
+                    }).toList(),
                 onChanged: (String? selectedValue) {
                   if (selectedValue == "Choose the range...") {
                     showDialog<String>(
                         context: context,
                         builder: (BuildContext context) =>
                             AlertDialog(
-                              title: const Text('Custom date range', style: TextStyle(fontSize: 20),),
+                              title: const Text('Custom date range',
+                                style: TextStyle(fontSize: 20),),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -119,6 +160,56 @@ class _FilterState extends State<Filter> {
                     });
                   }
                 }
+            ),
+            // DropdownButton<String>(
+            //     isExpanded: true,
+            //     value: dateRangeDropDownVal,
+            //     items: dateRangeOptionList.map<DropdownMenuItem<String>>(
+            //             (String val) {
+            //           return DropdownMenuItem<String>(
+            //               value: val,
+            //               child: Text(val)
+            //           );
+            //         }).toList(),
+            //     onChanged: (String? selectedValue) {
+            //       if (selectedValue == "Choose the range...") {
+            //         showDialog<String>(
+            //             context: context,
+            //             builder: (BuildContext context) =>
+            //                 AlertDialog(
+            //                   title: const Text('Custom date range', style: TextStyle(fontSize: 20),),
+            //                   content: Column(
+            //                     mainAxisSize: MainAxisSize.min,
+            //                     children: [
+            //                       Text("from"),
+            //                       buildDatePicker(),
+            //                       // Text(startDate),
+            //                       Text("to"),
+            //                       Text(endDate),
+            //                     ],
+            //                   ),
+            //                   actions: [
+            //                     TextButton(
+            //                         onPressed: () =>
+            //                             Navigator.pop(context, 'OK'),
+            //                         child: const Text('OK'))
+            //                   ],
+            //                 )
+            //         );
+            //       } else {
+            //         setState(() {
+            //           dateRangeDropDownVal = selectedValue!;
+            //         });
+            //       }
+            //     }
+            // ),
+            Wrap(
+              spacing: 5,
+              children: eventTypeTags(),
+            ),
+            ElevatedButton(
+                onPressed: () => context.pop(),
+                child: const Text("Apply", style: const TextStyle(fontSize: 17),)
             ),
           ],
         )

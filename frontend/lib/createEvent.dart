@@ -16,6 +16,21 @@ class CreateEvent extends StatefulWidget{
   State<CreateEvent> createState() => _CreateEventState();
 }
 
+Future<List<Tag>> getEventTags() async {
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/tags/'),
+    headers: {"Content-Type": "application/json"},
+  );
+  List<Tag> eventTagList = [];
+  if (response.statusCode == 200) {
+    for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
+      Map<String, dynamic> map = Map<String, dynamic>.from(i);
+      eventTagList.add(Tag(map['id'], map['name']));
+    }
+  }
+  return eventTagList;
+}
+
 class _CreateEventState extends State<CreateEvent> {
   // tag value
   int? tagValue;
@@ -135,24 +150,9 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-  Future<List<Tag>> _getEventTags() async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/tags/'),
-      headers: {"Content-Type": "application/json"},
-    );
-    List<Tag> eventTagList = [];
-    if (response.statusCode == 200) {
-      for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
-        Map<String, dynamic> map = Map<String, dynamic>.from(i);
-        eventTagList.add(Tag(map['id'], map['name']));
-      }
-    }
-    return eventTagList;
-  }
-
   Widget buildCategoryPicker() =>
       FutureBuilder<List<Tag>>(
-          future: _getEventTags(),
+          future: getEventTags(),
           builder: (context, snapshot) {
             return DropdownButton<int>(
                 isExpanded: true,

@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
                       // secondary: Color(0xff606c38),
                       secondary: Color(0xff432818),
                     ),
-                  scaffoldBackgroundColor: Color(0xfffffbe7),
+                  scaffoldBackgroundColor: Color(0xfffcf9ec),
                   fontFamily: 'San Francisco',
                   textTheme: const TextTheme(
                     displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
