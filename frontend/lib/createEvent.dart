@@ -21,6 +21,7 @@ class _CreateEventState extends State<CreateEvent> {
   int? tagValue;
 
   late DateTime eventDateTime;
+  late DateTime eventEndTime;
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
@@ -36,6 +37,7 @@ class _CreateEventState extends State<CreateEvent> {
     _eventCapacityController = TextEditingController();
     _eventFeeController = TextEditingController();
     eventDateTime = DateTime.now();
+    eventEndTime = DateTime.now();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
@@ -76,7 +78,7 @@ class _CreateEventState extends State<CreateEvent> {
           buildCategoryPicker(),
           const SizedBox(height: 20),
           const Text(
-            'Pick event date and time',
+            'Pick event date, start time and end time',
             style: TextStyle(fontSize: 16),
           ),
           ButtonBar(
@@ -84,6 +86,7 @@ class _CreateEventState extends State<CreateEvent> {
             children: [
               buildDatePicker(),
               buildTimePicker(),
+              buildEndTimePicker(),
             ],
           ),
           const SizedBox(height: 24),
@@ -245,7 +248,27 @@ class _CreateEventState extends State<CreateEvent> {
         context: context,
         initialTime: TimeOfDay(hour: eventDateTime.hour, minute: eventDateTime.minute),
       );
-
+  Widget buildEndTimePicker() {
+    return ElevatedButton(
+      child: Text('${eventEndTime.hour}:${eventEndTime.minute}'),
+        onPressed: () async {
+          final time = await pickTime();
+          if (time == null) {
+            return;
+          }
+          final newDateTime = DateTime(
+            eventEndTime.year,
+            eventEndTime.month,
+            eventEndTime.day,
+            time.hour,
+            time.minute,
+          );
+          setState(() {
+            eventEndTime = newDateTime;
+          });
+        },
+      );
+  }
   Widget buildEventCapacityField() {
     return Column(
       children: [
