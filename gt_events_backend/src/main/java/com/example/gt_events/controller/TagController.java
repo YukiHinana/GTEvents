@@ -52,13 +52,13 @@ public class TagController {
         return new ResponseWrapper<>(tag.get());
     }
 
-    @GetMapping("/group/{id}")
-    public ResponseWrapper<?> viewTagGroup(@PathVariable Long id) {
-        Optional<TagGroup> group = tagGroupRepository.findById(id);
+    @GetMapping("/group")
+    public ResponseWrapper<?> viewTagsUnderGroup(@RequestParam String groupName) {
+        Optional<TagGroup> group = tagGroupRepository.findTagGroupByName(groupName);
         if (group.isEmpty()) {
             throw new InvalidRequestException("Target group does not exist");
         }
-        return new ResponseWrapper<>(group.get());
+        return new ResponseWrapper<>(group.get().getTags());
     }
 
     @PostMapping("/group/create")

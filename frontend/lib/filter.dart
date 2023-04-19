@@ -2,13 +2,10 @@
 import 'dart:convert';
 
 import 'package:GTEvents/config.dart';
-import 'package:GTEvents/component/sidebar.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import 'event.dart';
@@ -33,9 +30,10 @@ class _FilterState extends State<Filter> {
   late DateTime eventDateTime;
 
   List<int> _eventTypeSelectedOptions = <int>[];
-  List<Tag> tagList = [];
+  List<Tag> eventTypeTagList = [];
+  List<Tag> degreeRestrictionTagList = [];
 
-  List<Widget> eventTypeTags() {
+  List<Widget> getEventTypeTags(List<Tag> tagList) {
     List<Widget> result = [];
     for (var i = 0; i < tagList.length; i++) {
       result.add(FilterChip(
@@ -66,6 +64,7 @@ class _FilterState extends State<Filter> {
     return result;
   }
 
+  // TODO: duplicated code
   Widget buildDatePicker() =>
       ElevatedButton(
         child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime
@@ -88,6 +87,7 @@ class _FilterState extends State<Filter> {
         },
       );
 
+  // TODO: duplicated code
   Future<DateTime?> pickDate() =>
       showDatePicker(
         context: context,
@@ -99,9 +99,14 @@ class _FilterState extends State<Filter> {
   @override
   void initState() {
     super.initState();
-    getEventTags().then((value) {
+    getEventTags("event type").then((value) {
       setState(() {
-        tagList = value;
+        eventTypeTagList = value;
+      });
+    });
+    getEventTags("degree restriction").then((value) {
+      setState(() {
+        degreeRestrictionTagList = value;
       });
     });
     dateRangeDropDownVal = dateRangeOptionList.first;
@@ -139,6 +144,7 @@ class _FilterState extends State<Filter> {
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  // TODO: apply button on press, date range on change
                                   Text("from"),
                                   buildDatePicker(),
                                   // Text(startDate),
@@ -161,51 +167,15 @@ class _FilterState extends State<Filter> {
                   }
                 }
             ),
-            // DropdownButton<String>(
-            //     isExpanded: true,
-            //     value: dateRangeDropDownVal,
-            //     items: dateRangeOptionList.map<DropdownMenuItem<String>>(
-            //             (String val) {
-            //           return DropdownMenuItem<String>(
-            //               value: val,
-            //               child: Text(val)
-            //           );
-            //         }).toList(),
-            //     onChanged: (String? selectedValue) {
-            //       if (selectedValue == "Choose the range...") {
-            //         showDialog<String>(
-            //             context: context,
-            //             builder: (BuildContext context) =>
-            //                 AlertDialog(
-            //                   title: const Text('Custom date range', style: TextStyle(fontSize: 20),),
-            //                   content: Column(
-            //                     mainAxisSize: MainAxisSize.min,
-            //                     children: [
-            //                       Text("from"),
-            //                       buildDatePicker(),
-            //                       // Text(startDate),
-            //                       Text("to"),
-            //                       Text(endDate),
-            //                     ],
-            //                   ),
-            //                   actions: [
-            //                     TextButton(
-            //                         onPressed: () =>
-            //                             Navigator.pop(context, 'OK'),
-            //                         child: const Text('OK'))
-            //                   ],
-            //                 )
-            //         );
-            //       } else {
-            //         setState(() {
-            //           dateRangeDropDownVal = selectedValue!;
-            //         });
-            //       }
-            //     }
-            // ),
+            Text("Event Type"),
             Wrap(
               spacing: 5,
-              children: eventTypeTags(),
+              children: getEventTypeTags(eventTypeTagList),
+            ),
+            Text("Degree Restriction"),
+            Wrap(
+              spacing: 5,
+              children: getEventTypeTags(degreeRestrictionTagList),
             ),
             ElevatedButton(
                 onPressed: () => context.pop(),
