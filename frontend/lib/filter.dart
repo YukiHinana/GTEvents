@@ -1,15 +1,10 @@
 
-import 'dart:convert';
 
-import 'package:GTEvents/config.dart';
 import 'package:GTEvents/createEvent.dart';
-import 'package:GTEvents/login.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 
 import 'event.dart';
-import 'eventsPage.dart';
 
 class Filter extends StatefulWidget {
   const Filter({super.key});
@@ -29,11 +24,11 @@ class _FilterState extends State<Filter> {
   String endDate = "choose a date";
   late DateTime eventDateTime;
 
-  List<int> _eventTypeSelectedOptions = <int>[];
+  List<int> _eventTypeTagSelectState = <int>[];
   List<Tag> eventTypeTagList = [];
   List<Tag> degreeRestrictionTagList = [];
 
-  List<Widget> getEventTypeTags(List<Tag> tagList) {
+  List<Widget> _getTagList(List<Tag> tagList) {
     List<Widget> result = [];
     for (var i = 0; i < tagList.length; i++) {
       result.add(FilterChip(
@@ -42,17 +37,17 @@ class _FilterState extends State<Filter> {
         ),
         label: Text(tagList[i].name, style: const TextStyle(fontSize: 17),),
         showCheckmark: false,
-        selected: _eventTypeSelectedOptions.contains(tagList[i].tagId),
-        backgroundColor: const Color(0xffd2cdc8),
-        selectedColor: const Color(0xffb68a5e),
+        selected: _eventTypeTagSelectState.contains(tagList[i].tagId),
+        backgroundColor: const Color(0xfffffdf5),
+        selectedColor: const Color(0xffdcad7d),
         onSelected: (bool val) {
           setState(() {
             if (val) {
-              if (!_eventTypeSelectedOptions.contains(tagList[i].tagId)) {
-                _eventTypeSelectedOptions.add(tagList[i].tagId);
+              if (!_eventTypeTagSelectState.contains(tagList[i].tagId)) {
+                _eventTypeTagSelectState.add(tagList[i].tagId);
               }
             } else {
-              _eventTypeSelectedOptions.removeWhere((int id) {
+              _eventTypeTagSelectState.removeWhere((int id) {
                 return id == tagList[i].tagId;
               });
             }
@@ -96,23 +91,162 @@ class _FilterState extends State<Filter> {
         lastDate: DateTime(2050),
       );
 
+  PanelState eventTypePanel = PanelState();
+  PanelState degreeRestrictionPanel = PanelState();
+
   @override
   void initState() {
     super.initState();
     getEventTags("event type").then((value) {
       setState(() {
         eventTypeTagList = value;
+        eventTypePanel = PanelState(
+            expandedValList: value,
+            headerVal: "Event Type");
       });
     });
     getEventTags("degree restriction").then((value) {
       setState(() {
         degreeRestrictionTagList = value;
+        degreeRestrictionPanel = PanelState(
+            expandedValList: value,
+            headerVal: "Degree Restriction");
       });
     });
     dateRangeDropDownVal = dateRangeOptionList.first;
     startDate = "${mapMonth((curTime.month).toString())} ${curTime.day}, "
         "${curTime.year}";
     eventDateTime = curTime;
+  }
+
+  Widget _buildPanel() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+          child: ExpansionTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            collapsedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            backgroundColor: Color(0xFFCFE5C2),
+            collapsedBackgroundColor: Color(0xFFD3E5C9),
+            title: const Text("Event Type",
+              style: TextStyle(color: Colors.black, fontSize: 18),),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Wrap(
+                    spacing: 10,
+                    alignment: WrapAlignment.start,
+                    children: _getTagList(eventTypeTagList),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+          child: ExpansionTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            collapsedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            backgroundColor: Color(0xFFCFE5C2),
+            collapsedBackgroundColor: Color(0xFFD3E5C9),
+            title: const Text("Degree Restriction",
+              style: TextStyle(color: Colors.black, fontSize: 18),),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Wrap(
+                    spacing: 10,
+                    alignment: WrapAlignment.start,
+                    children: _getTagList(degreeRestrictionTagList),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    // return ExpansionPanelList(
+    //   elevation: 4,
+    //   expandedHeaderPadding: EdgeInsets.zero,
+    //   expansionCallback: (int index, bool isExpanded) {
+    //     setState(() {
+    //       if (index == 0) {
+    //         eventTypePanel.isExpanded = !isExpanded;
+    //       } else {
+    //         degreeRestrictionPanel.isExpanded = !isExpanded;
+    //       }
+    //     });
+    //   },
+    //   children: [
+    //     ExpansionPanel(
+    //       headerBuilder: (BuildContext context, bool isExpanded) {
+    //         return ListTile(
+    //           title: Text(eventTypePanel.headerVal??"",
+    //             style: const TextStyle(fontSize: 18),),
+    //         );
+    //       },
+    //       body: Column(
+    //         children: [
+    //           Align(
+    //             alignment: Alignment.centerLeft,
+    //             child: Wrap(
+    //               spacing: 10,
+    //               alignment: WrapAlignment.start,
+    //               children: _getTagList(eventTypePanel.expandedValList??[]),
+    //             ),
+    //           ),
+    //           const SizedBox(
+    //             height: 15,
+    //           )
+    //         ],
+    //       ),
+    //       isExpanded: eventTypePanel.isExpanded,
+    //     ),
+    //     ExpansionPanel(
+    //       headerBuilder: (BuildContext context, bool isExpanded) {
+    //         return ListTile(
+    //           title: Text(degreeRestrictionPanel.headerVal??"",
+    //             style: const TextStyle(fontSize: 18),),
+    //         );
+    //       },
+    //       body: Column(
+    //         children: [
+    //           Align(
+    //             alignment: Alignment.centerLeft,
+    //             child: Wrap(
+    //               spacing: 10,
+    //               alignment: WrapAlignment.start,
+    //               children: _getTagList(degreeRestrictionPanel.expandedValList??[]),
+    //             ),
+    //           ),
+    //           const SizedBox(
+    //             height: 15,
+    //           )
+    //         ],
+    //       ),
+    //       isExpanded: degreeRestrictionPanel.isExpanded,
+    //     ),
+    //   ],
+    // );
   }
 
   @override
@@ -167,22 +301,24 @@ class _FilterState extends State<Filter> {
                   }
                 }
             ),
-            Text("Event Type"),
-            Wrap(
-              spacing: 5,
-              children: getEventTypeTags(eventTypeTagList),
-            ),
-            Text("Degree Restriction"),
-            Wrap(
-              spacing: 5,
-              children: getEventTypeTags(degreeRestrictionTagList),
-            ),
+            _buildPanel(),
             ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text("Apply", style: const TextStyle(fontSize: 17),)
+                child: const Text("Apply", style: TextStyle(fontSize: 17),)
             ),
           ],
         )
     );
   }
+}
+
+class PanelState {
+  List<Tag>? expandedValList;
+  String? headerVal;
+  bool isExpanded;
+
+  PanelState({
+    this.expandedValList,
+    this.headerVal,
+    this.isExpanded = false});
 }
