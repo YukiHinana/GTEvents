@@ -3,7 +3,7 @@ import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/eventPreview.dart';
-import 'package:GTEvents/filter.dart';
+import 'package:GTEvents/component/filter.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/profilePage.dart';
 import 'package:GTEvents/savedEventsPage.dart';

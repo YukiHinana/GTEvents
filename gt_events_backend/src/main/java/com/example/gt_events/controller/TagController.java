@@ -27,6 +27,7 @@ public class TagController {
     private final TagGroupRepository tagGroupRepository;
     private final EventRepository eventRepository;
 
+    @Autowired
     public TagController(TagRepository tagRepository,
                          TagGroupRepository tagGroupRepository,
                          EventRepository eventRepository) {
@@ -35,23 +36,7 @@ public class TagController {
         this.eventRepository = eventRepository;
     }
 
-    @Autowired
-
-
-    @GetMapping("/")
-    public ResponseWrapper<?> getTags() {
-        return new ResponseWrapper<>(tagRepository.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseWrapper<?> viewTag(@PathVariable Long id) {
-        Optional<Tag> tag = tagRepository.findById(id);
-        if (tag.isEmpty()) {
-            throw new InvalidRequestException("Target tag does not exist");
-        }
-        return new ResponseWrapper<>(tag.get());
-    }
-
+    // view all tags under a certain group
     @GetMapping("/group")
     public ResponseWrapper<?> viewTagsUnderGroup(@RequestParam String groupName) {
         Optional<TagGroup> group = tagGroupRepository.findTagGroupByName(groupName);
@@ -100,6 +85,20 @@ public class TagController {
         return new ResponseWrapper<>("Group " + result.get().getName() + " successfully deleted");
     }
 
+    @GetMapping("/")
+    public ResponseWrapper<?> getTags() {
+        return new ResponseWrapper<>(tagRepository.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseWrapper<?> viewTag(@PathVariable Long id) {
+        Optional<Tag> tag = tagRepository.findById(id);
+        if (tag.isEmpty()) {
+            throw new InvalidRequestException("Target tag does not exist");
+        }
+        return new ResponseWrapper<>(tag.get());
+    }
+
     @PostMapping("/create")
     @RequireAuth(requireOrganizer = true)
     public ResponseWrapper<?> createTag(@RequestBody @Valid CreateTagRequest request) {
@@ -112,22 +111,6 @@ public class TagController {
             return new ResponseWrapper<>(tagRepository.save(tag));
         }
     }
-
-//    @PutMapping("/{tagId}")
-//    @RequireAuth(requireOrganizer = true)
-//    public ResponseWrapper<?> editTag(@RequestBody @Valid EditTagRequest request, @PathVariable Long tagId) {
-//        Optional<Tag> result = tagRepository.findById(tagId);
-//        if (result.isEmpty()) {
-//            throw new InvalidRequestException("can't find the tag");
-//        }
-//        Tag tag = result.get();
-//        String newTagName = request.getTagName();
-//        if (tagRepository.findTagByName(newTagName).isPresent()) {
-//            throw new InvalidRequestException("tag name already exists");
-//        }
-//        tag.setName(newTagName);
-//        return new ResponseWrapper<>(tagRepository.save(tag));
-//    }
 
     // test only
     @DeleteMapping("/{tagId}")
