@@ -75,7 +75,6 @@ Future<http.Response> saveEventRequest(int eventId, String? token) async {
       "Authorization": token ?? ""
     },
   );
-  print(response);
   return response;
 }
 
@@ -97,54 +96,29 @@ String convertTimestampToDate(String str) {
 }
 
 String mapMonth(String month) {
-  switch (month) {
-    case "01": {
-      return "Jan";
-    }
-    break;
-    case "02": {
-      return "Feb";
-    }
-    break;
-    case "03": {
-      return "Mar";
-    }
-    break;
-    case "04": {
-      return "Apr";
-    }
-    break;
-    case "05": {
-      return "May";
-    }
-    break;
-    case "06": {
-      return "Jun";
-    }
-    break;
-    case "07": {
-      return "Jul";
-    }
-    break;
-    case "08": {
-      return "Aug";
-    }
-    break;
-    case "09": {
-      return "Sep";
-    }
-    break;
-    case "10": {
-      return "Oct";
-    }
-    break;
-    case "11": {
-      return "Nov";
-    }
-    break;
-    default: {
-      return "Dec";
-    }
-    break;
+  if (month == "01" || month == "1") {
+    return "Jan";
+  } else if (month == "02" || month == "2") {
+    return "Feb";
+  } else if (month == "03" || month == "3") {
+    return "Mar";
+  } else if (month == "04" || month == "4") {
+    return "Apr";
+  } else if (month == "05" || month == "5") {
+    return "May";
+  } else if (month == "06" || month == "6") {
+    return "Jun";
+  } else if (month == "07" || month == "7") {
+    return "Jul";
+  } else if (month == "08" || month == "8") {
+    return "Aug";
+  } else if (month == "09" || month == "9") {
+    return "Sep";
+  } else if (month == "10") {
+    return "Oct";
+  } else if (month == "11") {
+    return "Nov";
+  } else {
+    return "Dec";
   }
 }

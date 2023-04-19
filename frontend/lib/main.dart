@@ -3,6 +3,7 @@ import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
 import 'package:GTEvents/eventPreview.dart';
+import 'package:GTEvents/filter.dart';
 import 'package:GTEvents/homeScreen.dart';
 import 'package:GTEvents/profilePage.dart';
 import 'package:GTEvents/savedEventsPage.dart';
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
                       // secondary: Color(0xff606c38),
                       secondary: Color(0xff432818),
                     ),
-                  scaffoldBackgroundColor: Color(0xfffffbe7),
+                  scaffoldBackgroundColor: Color(0xfffffbf3),
                   fontFamily: 'San Francisco',
                   textTheme: const TextTheme(
                     displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
@@ -153,7 +154,14 @@ final GoRouter _router = GoRouter(
           builder: (context, state) {
             Map<String, dynamic> map = state.extra as Map<String, dynamic>;
             return EventDetailPage(event: map["event"], tagList: map["tagList"]);
-          } ,
+          },
+        ),
+        GoRoute(
+          name: "filter",
+          path: 'filter',
+          builder: (context, state) {
+            return const Filter();
+          },
         ),
         // GoRoute(
         //   name: "eventPreview",

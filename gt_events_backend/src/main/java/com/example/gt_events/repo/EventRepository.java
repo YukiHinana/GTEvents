@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
+import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
      Page<Event> findAll(Pageable pageable);
@@ -15,7 +16,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
      Page<Event> findByEventCreationDateBetween(Date startDate, Date endDate, Pageable pageable);
 
-//     Page<Event> findByTitleContaining(String keyword, Pageable pageable);
-
      Page<Event> findByTitleContainingOrAuthor_UsernameContaining(String keywordTitle, String keywordUsername, Pageable pageable);
+
+     List<Event> findAllByTags(Tag t);
+
 }

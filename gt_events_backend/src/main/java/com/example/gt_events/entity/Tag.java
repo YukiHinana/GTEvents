@@ -1,6 +1,8 @@
 package com.example.gt_events.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Tag {
@@ -11,11 +13,17 @@ public class Tag {
     @Column(unique = true)
     private String name;
 
+    @ManyToOne
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private TagGroup groupName;
+
     public Tag() {
     }
 
-    public Tag(String name) {
+    public Tag(String name, TagGroup groupName) {
         this.name = name;
+        this.groupName = groupName;
     }
 
     public Long getId() {
@@ -32,5 +40,13 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TagGroup getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(TagGroup groupName) {
+        this.groupName = groupName;
     }
 }

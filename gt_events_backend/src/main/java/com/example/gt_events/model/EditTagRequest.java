@@ -7,11 +7,23 @@ public class EditTagRequest {
     @NotBlank
     private String tagName;
 
+    @NotBlank
+    private String groupName;
+
     public EditTagRequest() {
     }
 
-    public EditTagRequest(String tagName) {
+    public EditTagRequest(String tagName, String groupName) {
         this.tagName = tagName;
+        this.groupName = groupName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getTagName() {
