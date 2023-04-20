@@ -10,7 +10,9 @@ import 'config.dart';
 import 'event.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({super.key});
+  List<int>? eventTypeTagSelectState;
+  List<int>? degreeTagSelectState;
+  EventsPage({super.key, this.eventTypeTagSelectState, this.degreeTagSelectState});
 
   @override
   State<EventsPage> createState() => _EventsPage();

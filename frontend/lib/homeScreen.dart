@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return store.state;
         },
         builder: (context, appState) {
-          return const EventsPage();
+          return EventsPage();
         },
       ),
       drawer: const UserSideBar(),

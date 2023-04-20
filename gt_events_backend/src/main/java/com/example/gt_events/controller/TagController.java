@@ -17,8 +17,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/tags")
@@ -120,7 +119,9 @@ public class TagController {
         if (result.isEmpty()) {
             throw new InvalidRequestException("Tag does not exist");
         }
-        List<Event> list = eventRepository.findAllByTags(result.get());
+        List<Tag> arr = new ArrayList<>();
+        arr.add(result.get());
+        List<Event> list = eventRepository.findAllByTagsIn(arr);
         for (Event e : list) {
             e.getTags().remove(result.get());
             eventRepository.save(e);

@@ -3,7 +3,9 @@
 import 'package:GTEvents/createEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
+import '../config.dart';
 import '../event.dart';
 
 class Filter extends StatefulWidget {
@@ -11,6 +13,23 @@ class Filter extends StatefulWidget {
 
   @override
   State<Filter> createState() => _FilterState();
+}
+
+Future<void> doFilter(List<int> eventTypeTagSelectState,
+    List<int> degreeTagSelectState) async {
+  String str = "";
+  for (int i in eventTypeTagSelectState) {
+    print(i);
+    str += "$i,";
+  }
+  str = str.substring(0, str.length - 1);
+  var response = await http.get(
+    Uri.parse('${Config.baseURL}/events/events/tag-ids?tagIds=$str'),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  );
+  print(response.body);
 }
 
 class _FilterState extends State<Filter> {
@@ -233,8 +252,9 @@ class _FilterState extends State<Filter> {
             ElevatedButton(
               // onPressed: () => context.pop(),
                 onPressed: () {
-                  print(_eventTypeTagSelectState);
-                  print(_degreeTagSelectState);
+                  // print(_eventTypeTagSelectState);
+                  // print(_degreeTagSelectState);
+                  doFilter();
                 },
                 child: const Text("Apply", style: TextStyle(fontSize: 17),)
             ),

@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Hibernate;
+import org.hibernate.Internal;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
@@ -200,6 +201,44 @@ public class EventController {
             throw new InvalidRequestException("can't find the event");
         }
         return new ResponseWrapper<>(result.get().getTags());
+    }
+
+    @GetMapping("/events/tag-ids")
+    public ResponseWrapper<?> getEventsByTagIds(@RequestParam String[] eventTypeTagIds,
+                                                @RequestParam String[] degreeTagIds,
+                                                @RequestParam int pageNumber,
+                                                @RequestParam int pageSize) {
+        Set<Long> eventTypeTagIdSet = new HashSet<>();
+        for (String tagId : eventTypeTagIds) {
+            eventTypeTagIdSet.add(Long.parseLong(tagId));
+        }
+        List<Tag> eventTypeTagList = tagRepository.findAllById(eventTypeTagIdSet);
+        List<Event> eventTypeEventList = eventRepository.findAllByTagsIn(eventTypeTagList);
+
+        Set<Long> degreeTagIdsIdSet = new HashSet<>();
+        for (String tagId : degreeTagIds) {
+            degreeTagIdsIdSet.add(Long.parseLong(tagId));
+        }
+        List<Tag> degreeTagIdsList = tagRepository.findAllById(degreeTagIdsIdSet);
+        List<Event> degreeEventList = eventRepository.findAllByTagsIn(degreeTagIdsList);
+
+        List<Event> result = new ArrayList<>();
+        for (Event e : degreeEventList) {
+            if (eventTypeEventList.contains(e)) {
+                result.add(e);
+            }
+        }
+        result.sort((e1, e2) -> e2.getEventDate().compareTo(e1.getEventDate()));
+
+        int totalPages = result.size() % pageSize == 0 ? result.size() / pageSize : result.size() / pageSize + 1;
+        if (pageNumber < totalPages) {
+            int endIndex = pageNumber * pageSize + pageSize;
+            if (endIndex > result.size()) {
+                endIndex = result.size();
+            }
+            return new ResponseWrapper<>(result.subList(pageNumber * pageSize, endIndex));
+        }
+        return new ResponseWrapper<>("failed");
     }
 
     @PostMapping("/saved/{eventId}")

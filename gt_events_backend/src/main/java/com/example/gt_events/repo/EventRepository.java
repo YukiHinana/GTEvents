@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
      Page<Event> findAll(Pageable pageable);
@@ -18,6 +20,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
      Page<Event> findByTitleContainingOrAuthor_UsernameContaining(String keywordTitle, String keywordUsername, Pageable pageable);
 
-     List<Event> findAllByTags(Tag t);
-
+//     List<Event> findAllByTags(Set<Tag> tags);
+     List<Event> findAllByTagsIn(List<Tag> tags);
 }
