@@ -20,9 +20,6 @@ class _EventMenu extends State<EventMenu> {
   Option? selectedOption;
 
   Future<http.Response> sendDeleteEventRequest(String? token) async {
-    // if (token == null) {
-    //   return null;
-    // }
     var response = await http.delete(
       Uri.parse('${Config.baseURL}/events/events/${widget.eventId}'),
       headers: {

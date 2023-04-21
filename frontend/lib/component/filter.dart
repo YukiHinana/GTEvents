@@ -2,15 +2,33 @@
 
 import 'package:GTEvents/createEvent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
-import 'event.dart';
+import '../config.dart';
+import '../event.dart';
 
 class Filter extends StatefulWidget {
   const Filter({super.key});
 
   @override
   State<Filter> createState() => _FilterState();
+}
+
+Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
+    List<int> degreeTagSelectState, int pageNumber, int pageSize) async {
+  String eventTypeStr = eventTypeTagSelectState.join(",");
+  String degreeStr = degreeTagSelectState.join(",");
+  var response = await http.get(
+    Uri.parse(
+        '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
+            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  );
+  return response;
 }
 
 class _FilterState extends State<Filter> {
@@ -25,29 +43,31 @@ class _FilterState extends State<Filter> {
   late DateTime eventDateTime;
 
   List<int> _eventTypeTagSelectState = <int>[];
+  List<int> _degreeTagSelectState = <int>[];
   List<Tag> eventTypeTagList = [];
-  List<Tag> degreeRestrictionTagList = [];
+  List<Tag> degreeTagList = [];
 
-  List<Widget> _getTagList(List<Tag> tagList) {
+  List<Widget> _getTagList(List<Tag> tagList, List<int> tagSelectState) {
     List<Widget> result = [];
     for (var i = 0; i < tagList.length; i++) {
+      // build filter
       result.add(FilterChip(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),
         ),
         label: Text(tagList[i].name, style: const TextStyle(fontSize: 17),),
         showCheckmark: false,
-        selected: _eventTypeTagSelectState.contains(tagList[i].tagId),
+        selected: tagSelectState.contains(tagList[i].tagId),
         backgroundColor: const Color(0xfffffdf5),
         selectedColor: const Color(0xffdcad7d),
         onSelected: (bool val) {
           setState(() {
             if (val) {
-              if (!_eventTypeTagSelectState.contains(tagList[i].tagId)) {
-                _eventTypeTagSelectState.add(tagList[i].tagId);
+              if (!tagSelectState.contains(tagList[i].tagId)) {
+                tagSelectState.add(tagList[i].tagId);
               }
             } else {
-              _eventTypeTagSelectState.removeWhere((int id) {
+              tagSelectState.removeWhere((int id) {
                 return id == tagList[i].tagId;
               });
             }
@@ -91,27 +111,22 @@ class _FilterState extends State<Filter> {
         lastDate: DateTime(2050),
       );
 
-  PanelState eventTypePanel = PanelState();
-  PanelState degreeRestrictionPanel = PanelState();
-
   @override
   void initState() {
     super.initState();
     getEventTags("event type").then((value) {
       setState(() {
         eventTypeTagList = value;
-        eventTypePanel = PanelState(
-            expandedValList: value,
-            headerVal: "Event Type");
       });
     });
     getEventTags("degree restriction").then((value) {
       setState(() {
-        degreeRestrictionTagList = value;
-        degreeRestrictionPanel = PanelState(
-            expandedValList: value,
-            headerVal: "Degree Restriction");
+        degreeTagList = value;
       });
+    });
+    Future.delayed(Duration.zero, () async {
+      _eventTypeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState;
+      _degreeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState;
     });
     dateRangeDropDownVal = dateRangeOptionList.first;
     startDate = "${mapMonth((curTime.month).toString())} ${curTime.day}, "
@@ -143,7 +158,7 @@ class _FilterState extends State<Filter> {
                   child: Wrap(
                     spacing: 10,
                     alignment: WrapAlignment.start,
-                    children: _getTagList(eventTypeTagList),
+                    children: _getTagList(eventTypeTagList, _eventTypeTagSelectState),
                   ),
                 ),
               ),
@@ -174,7 +189,7 @@ class _FilterState extends State<Filter> {
                   child: Wrap(
                     spacing: 10,
                     alignment: WrapAlignment.start,
-                    children: _getTagList(degreeRestrictionTagList),
+                    children: _getTagList(degreeTagList, _degreeTagSelectState),
                   ),
                 ),
               ),
@@ -183,70 +198,6 @@ class _FilterState extends State<Filter> {
         ),
       ],
     );
-
-    // return ExpansionPanelList(
-    //   elevation: 4,
-    //   expandedHeaderPadding: EdgeInsets.zero,
-    //   expansionCallback: (int index, bool isExpanded) {
-    //     setState(() {
-    //       if (index == 0) {
-    //         eventTypePanel.isExpanded = !isExpanded;
-    //       } else {
-    //         degreeRestrictionPanel.isExpanded = !isExpanded;
-    //       }
-    //     });
-    //   },
-    //   children: [
-    //     ExpansionPanel(
-    //       headerBuilder: (BuildContext context, bool isExpanded) {
-    //         return ListTile(
-    //           title: Text(eventTypePanel.headerVal??"",
-    //             style: const TextStyle(fontSize: 18),),
-    //         );
-    //       },
-    //       body: Column(
-    //         children: [
-    //           Align(
-    //             alignment: Alignment.centerLeft,
-    //             child: Wrap(
-    //               spacing: 10,
-    //               alignment: WrapAlignment.start,
-    //               children: _getTagList(eventTypePanel.expandedValList??[]),
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 15,
-    //           )
-    //         ],
-    //       ),
-    //       isExpanded: eventTypePanel.isExpanded,
-    //     ),
-    //     ExpansionPanel(
-    //       headerBuilder: (BuildContext context, bool isExpanded) {
-    //         return ListTile(
-    //           title: Text(degreeRestrictionPanel.headerVal??"",
-    //             style: const TextStyle(fontSize: 18),),
-    //         );
-    //       },
-    //       body: Column(
-    //         children: [
-    //           Align(
-    //             alignment: Alignment.centerLeft,
-    //             child: Wrap(
-    //               spacing: 10,
-    //               alignment: WrapAlignment.start,
-    //               children: _getTagList(degreeRestrictionPanel.expandedValList??[]),
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 15,
-    //           )
-    //         ],
-    //       ),
-    //       isExpanded: degreeRestrictionPanel.isExpanded,
-    //     ),
-    //   ],
-    // );
   }
 
   @override
@@ -302,23 +253,17 @@ class _FilterState extends State<Filter> {
                 }
             ),
             _buildPanel(),
+            // TODO: add clear all option
             ElevatedButton(
-                onPressed: () => context.pop(),
+                onPressed: () {
+                  StoreProvider.of<AppState>(context).dispatch(
+                      SetTagSelectStateAction(_eventTypeTagSelectState, _degreeTagSelectState));
+                  context.replace("/events");
+                },
                 child: const Text("Apply", style: TextStyle(fontSize: 17),)
             ),
           ],
         )
     );
   }
-}
-
-class PanelState {
-  List<Tag>? expandedValList;
-  String? headerVal;
-  bool isExpanded;
-
-  PanelState({
-    this.expandedValList,
-    this.headerVal,
-    this.isExpanded = false});
 }

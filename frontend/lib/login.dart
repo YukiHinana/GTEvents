@@ -26,14 +26,12 @@ class MyLoginPage extends StatefulWidget {
   State<MyLoginPage> createState() => _MyLoginPageState();
 }
 
-//Login Page State controllers
 class _MyLoginPageState extends State<MyLoginPage> {
   late FocusNode focusNode;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  //login request variables
   Future<http.Response> sendLoginRequest() async {
     var loginData = json.encode(
         {

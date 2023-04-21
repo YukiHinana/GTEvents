@@ -1,13 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:go_router/go_router.dart';
 
 
-import 'config.dart';
-import 'eventsPage.dart';
-
-// Search Page
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 

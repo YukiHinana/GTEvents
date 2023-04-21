@@ -138,13 +138,11 @@ Widget showEventDetails(String eventTitle, String eventDate,
 
 DateTime date = DateTime.now();
 class _EventDetailPageState extends State<EventDetailPage> {
-  // bool isSaved = false;
   late Event event;
   List<Tag> tagList = [];
 
   @override
   Widget build(BuildContext context) {
-    // print(tagList);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Event Content"),

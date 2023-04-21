@@ -1,5 +1,6 @@
 package com.example.gt_events.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,6 +17,7 @@ public class Tag {
     @ManyToOne
     @JoinColumn
     @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JsonIgnore
     private TagGroup groupName;
 
     public Tag() {

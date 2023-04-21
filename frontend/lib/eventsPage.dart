@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:GTEvents/component/eventCard.dart';
+import 'package:GTEvents/component/filter.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -42,14 +43,21 @@ class _EventsPage extends State<EventsPage> {
       RefreshController(initialRefresh: true);
 
   /// Returns a future which resolves to List<Event>?.
-  Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber) async {
+  Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber,
+      List<int> eventTypeTagSelectState,
+      List<int> degreeTagSelectState,) async {
     List<Event> newEventList = [];
     Map newTagMap = <int, List<Tag>>{};
-    var response = await http.get(
-      Uri.parse(
-          '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
-      headers: {"Content-Type": "application/json"},
-    );
+    var response;
+    if (eventTypeTagSelectState.isEmpty && degreeTagSelectState.isEmpty) {
+      response = await http.get(
+        Uri.parse(
+            '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
+        headers: {"Content-Type": "application/json"},
+      );
+    } else {
+      response = await doFilter(eventTypeTagSelectState, degreeTagSelectState, pageNumber, _PAGE_SIZE);
+    }
     if (response.statusCode == 200) {
       PagedResult<Event> result = PagedResult();
       Map<String, dynamic> map =
@@ -100,7 +108,10 @@ class _EventsPage extends State<EventsPage> {
       onRefresh: () async {
         // Call fetchEvents with 0, to get the initial page
         var result = await fetchEvents(
-            StoreProvider.of<AppState>(context).state.token, 0);
+            StoreProvider.of<AppState>(context).state.token, 0,
+            StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,
+        );
         if (result != null) {
           // Fetch succeed, update state and trigger re-render
           setState(() {
@@ -122,7 +133,9 @@ class _EventsPage extends State<EventsPage> {
           // Has next page
           var result = await fetchEvents(
               StoreProvider.of<AppState>(context).state.token,
-              curScrollPage + 1);
+              curScrollPage + 1,
+              StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+              StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,);
           if (result != null) {
             setState(() {
               eventList = [...eventList, ...result.items];
