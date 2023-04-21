@@ -204,7 +204,7 @@ public class EventController {
     }
 
     @GetMapping("/events/tag-ids")
-    public ResponseWrapper<?> getEventsByTagIds(@RequestParam String[] eventTypeTagIds,
+    public ResponseWrapper<?> getEventsByTagIds(@RequestParam(defaultValue = "") String[] eventTypeTagIds,
                                                 @RequestParam String[] degreeTagIds,
                                                 @RequestParam int pageNumber,
                                                 @RequestParam int pageSize) {
@@ -223,22 +223,28 @@ public class EventController {
         List<Event> degreeEventList = eventRepository.findAllByTagsIn(degreeTagIdsList);
 
         List<Event> result = new ArrayList<>();
-        for (Event e : degreeEventList) {
-            if (eventTypeEventList.contains(e)) {
-                result.add(e);
+        if (degreeEventList.size() == 0) {
+            result = eventTypeEventList;
+        } else if (eventTypeEventList.size() == 0) {
+            result = degreeEventList;
+        } else {
+            for (Event e : degreeEventList) {
+                if (eventTypeEventList.contains(e)) {
+                    result.add(e);
+                }
             }
         }
         result.sort((e1, e2) -> e2.getEventDate().compareTo(e1.getEventDate()));
 
-        int totalPages = result.size() % pageSize == 0 ? result.size() / pageSize : result.size() / pageSize + 1;
-        if (pageNumber < totalPages) {
-            int endIndex = pageNumber * pageSize + pageSize;
-            if (endIndex > result.size()) {
-                endIndex = result.size();
-            }
-            return new ResponseWrapper<>(result.subList(pageNumber * pageSize, endIndex));
+        int startIndex = Math.min(pageNumber * pageSize, result.size());
+        int endIndex = pageNumber * pageSize + pageSize;
+        if (endIndex > result.size()) {
+            endIndex = result.size();
         }
-        return new ResponseWrapper<>("failed");
+        Pageable aa = PageRequest.of(pageNumber, pageSize);
+
+        return new ResponseWrapper<>(
+                new PageImpl<>(result.subList(startIndex, endIndex), aa, result.size()));
     }
 
     @PostMapping("/saved/{eventId}")

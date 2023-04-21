@@ -2,6 +2,7 @@
 
 import 'package:GTEvents/createEvent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,21 +16,28 @@ class Filter extends StatefulWidget {
   State<Filter> createState() => _FilterState();
 }
 
-Future<void> doFilter(List<int> eventTypeTagSelectState,
-    List<int> degreeTagSelectState) async {
-  String str = "";
-  for (int i in eventTypeTagSelectState) {
-    print(i);
-    str += "$i,";
-  }
-  str = str.substring(0, str.length - 1);
+Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
+    List<int> degreeTagSelectState, int pageNumber, int pageSize) async {
+  String eventTypeStr = eventTypeTagSelectState.join(",");
+
+  // for (int i in eventTypeTagSelectState) {
+  //   eventTypeStr += "$i,";
+  // }
+  // eventTypeStr = eventTypeStr.substring(0, eventTypeStr.length - 1);
+  String degreeStr = degreeTagSelectState.join(",");
+  // for (int i in degreeTagSelectState) {
+  //   degreeStr += "$i,";
+  // }
+  // degreeStr = degreeStr.substring(0, degreeStr.length - 1);
   var response = await http.get(
-    Uri.parse('${Config.baseURL}/events/events/tag-ids?tagIds=$str'),
+    Uri.parse(
+        '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
+            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'),
     headers: {
       "Content-Type": "application/json",
     },
   );
-  print(response.body);
+  return response;
 }
 
 class _FilterState extends State<Filter> {
@@ -252,9 +260,9 @@ class _FilterState extends State<Filter> {
             ElevatedButton(
               // onPressed: () => context.pop(),
                 onPressed: () {
-                  // print(_eventTypeTagSelectState);
-                  // print(_degreeTagSelectState);
-                  doFilter();
+                  StoreProvider.of<AppState>(context).dispatch(
+                      SetTagSelectStateAction(_eventTypeTagSelectState, _degreeTagSelectState));
+                  context.replace("/events");
                 },
                 child: const Text("Apply", style: TextStyle(fontSize: 17),)
             ),

@@ -21,7 +21,8 @@ import 'event.dart';
 
 // run main.dart to start the program
 void main() {
-  final store = Store<AppState>(appReducer, initialState: const AppState());
+  final store = Store<AppState>(appReducer,
+      initialState: AppState(filterData: FilterData([], [])));
   runApp(
       MyApp(
         store: store,
@@ -163,6 +164,7 @@ final GoRouter _router = GoRouter(
             return const Filter();
           },
         ),
+        // TODO: add event preview
         // GoRoute(
         //   name: "eventPreview",
         //   path: 'preview',
