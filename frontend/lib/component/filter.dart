@@ -19,16 +19,7 @@ class Filter extends StatefulWidget {
 Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
     List<int> degreeTagSelectState, int pageNumber, int pageSize) async {
   String eventTypeStr = eventTypeTagSelectState.join(",");
-
-  // for (int i in eventTypeTagSelectState) {
-  //   eventTypeStr += "$i,";
-  // }
-  // eventTypeStr = eventTypeStr.substring(0, eventTypeStr.length - 1);
   String degreeStr = degreeTagSelectState.join(",");
-  // for (int i in degreeTagSelectState) {
-  //   degreeStr += "$i,";
-  // }
-  // degreeStr = degreeStr.substring(0, degreeStr.length - 1);
   var response = await http.get(
     Uri.parse(
         '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
@@ -59,6 +50,7 @@ class _FilterState extends State<Filter> {
   List<Widget> _getTagList(List<Tag> tagList, List<int> tagSelectState) {
     List<Widget> result = [];
     for (var i = 0; i < tagList.length; i++) {
+      // build filter
       result.add(FilterChip(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),
@@ -131,6 +123,10 @@ class _FilterState extends State<Filter> {
       setState(() {
         degreeTagList = value;
       });
+    });
+    Future.delayed(Duration.zero, () async {
+      _eventTypeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState;
+      _degreeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState;
     });
     dateRangeDropDownVal = dateRangeOptionList.first;
     startDate = "${mapMonth((curTime.month).toString())} ${curTime.day}, "
@@ -257,8 +253,8 @@ class _FilterState extends State<Filter> {
                 }
             ),
             _buildPanel(),
+            // TODO: add clear all option
             ElevatedButton(
-              // onPressed: () => context.pop(),
                 onPressed: () {
                   StoreProvider.of<AppState>(context).dispatch(
                       SetTagSelectStateAction(_eventTypeTagSelectState, _degreeTagSelectState));

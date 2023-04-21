@@ -50,14 +50,12 @@ class _EventsPage extends State<EventsPage> {
     Map newTagMap = <int, List<Tag>>{};
     var response;
     if (eventTypeTagSelectState.isEmpty && degreeTagSelectState.isEmpty) {
-      print('${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE');
       response = await http.get(
         Uri.parse(
             '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
         headers: {"Content-Type": "application/json"},
       );
     } else {
-      print("filter");
       response = await doFilter(eventTypeTagSelectState, degreeTagSelectState, pageNumber, _PAGE_SIZE);
     }
     if (response.statusCode == 200) {

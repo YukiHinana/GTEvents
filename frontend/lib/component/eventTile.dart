@@ -78,14 +78,6 @@ class _EventTileState extends State<EventTile> {
                 ),
                 subtitle: Column(
                   children: [
-                    // Align(
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Text(
-                    //     "hi",
-                    //     // "location: ${DateFormat('MM/dd/yyyy, HH:mm').parse(creationDate).toUtc().millisecondsSinceEpoch/1000}",
-                    //     style: const TextStyle(fontSize: 15),
-                    //   ),
-                    // ),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
