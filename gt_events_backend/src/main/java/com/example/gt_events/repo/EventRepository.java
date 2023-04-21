@@ -16,10 +16,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
      Page<Event> findByEventDateBetween(Date startDate, Date endDate, Pageable pageable);
 
+     List<Event> findAllByEventDateBetween(Date startDate, Date endDate);
+
      Page<Event> findByEventCreationDateBetween(Date startDate, Date endDate, Pageable pageable);
 
      Page<Event> findByTitleContainingOrAuthor_UsernameContaining(String keywordTitle, String keywordUsername, Pageable pageable);
 
-//     List<Event> findAllByTags(Set<Tag> tags);
      List<Event> findAllByTagsIn(List<Tag> tags);
+
+     List<Event> findAllByEventDateBetweenAndTagsIn(Date startDate, Date endDate, List<Tag> tags);
 }
