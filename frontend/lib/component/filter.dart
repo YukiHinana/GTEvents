@@ -17,13 +17,27 @@ class Filter extends StatefulWidget {
 }
 
 Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
-    List<int> degreeTagSelectState, int pageNumber, int pageSize) async {
+    List<int> degreeTagSelectState, DateTime? startDate, DateTime? endDate,
+    int pageNumber, int pageSize) async {
   String eventTypeStr = eventTypeTagSelectState.join(",");
   String degreeStr = degreeTagSelectState.join(",");
+  int startTimeStamp;
+  int endTimeStamp;
+  if (startDate == null) {
+    startTimeStamp = DateTime(2021, 1, 1, 0, 0, 0).toUtc().millisecondsSinceEpoch~/1000;
+  } else {
+    startTimeStamp = startDate.toUtc().millisecondsSinceEpoch~/1000;
+  }
+  if (endDate == null) {
+    endTimeStamp = DateTime(2050, 12, 31, 23, 59, 59).toUtc().millisecondsSinceEpoch~/1000;
+  } else {
+    endTimeStamp = endDate.toUtc().millisecondsSinceEpoch~/1000;
+  }
   var response = await http.get(
     Uri.parse(
         '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
-            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'),
+            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'
+            '&startDate=$startTimeStamp&endDate=$endTimeStamp'),
     headers: {
       "Content-Type": "application/json",
     },
@@ -36,11 +50,10 @@ class _FilterState extends State<Filter> {
     "Any time",
     "Choose the range..."
   ];
-  late String dateRangeDropDownVal;
+  late String dateRangeDropDownVal = "";
   DateTime curTime = DateTime.now();
-  String startDate = "";
-  String endDate = "choose a date";
-  late DateTime eventDateTime;
+  late DateTime? startDate;
+  late DateTime? endDate;
 
   List<int> _eventTypeTagSelectState = <int>[];
   List<int> _degreeTagSelectState = <int>[];
@@ -79,34 +92,49 @@ class _FilterState extends State<Filter> {
     return result;
   }
 
-  // TODO: duplicated code
-  Widget buildDatePicker() =>
-      ElevatedButton(
-        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime
-            .year}'),
-        onPressed: () async {
-          final date = await pickDate();
-          if (date == null) {
-            return;
+  Widget _buildDatePicker(StateSetter setState, int a) {
+    DateTime eventDate = endDate == null
+        ? DateTime(curTime.year, curTime.month, curTime.day + 1)
+        : endDate!;
+    if (a == 0) {
+      eventDate = startDate == null
+          ? DateTime(curTime.year, curTime.month, curTime.day)
+          : startDate!;
+    }
+    return ElevatedButton(
+      child: Text('${eventDate.month}/${eventDate.day}/${eventDate
+          .year}'),
+      onPressed: () async {
+        var date = await _pickDate(eventDate);
+        if (date == null) {
+          return;
+        }
+        if (a == 1) {
+          date = date.add(const Duration(hours: 23, minutes: 59, seconds: 59));
+        }
+        final newDateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          date.hour,
+          date.minute,
+          date.second,
+        );
+        setState(() {
+          if (a == 0) {
+            startDate = newDateTime;
+          } else {
+            endDate = newDateTime;
           }
-          final newDateTime = DateTime(
-            date.year,
-            date.month,
-            date.day,
-            eventDateTime.hour,
-            eventDateTime.minute,
-          );
-          setState(() {
-            eventDateTime = newDateTime;
-          });
-        },
-      );
+        });
+      },
+    );
+  }
 
-  // TODO: duplicated code
-  Future<DateTime?> pickDate() =>
+  Future<DateTime?> _pickDate(DateTime initialDate) =>
       showDatePicker(
         context: context,
-        initialDate: eventDateTime,
+        initialDate: initialDate,
         firstDate: DateTime(2021),
         lastDate: DateTime(2050),
       );
@@ -127,13 +155,22 @@ class _FilterState extends State<Filter> {
     Future.delayed(Duration.zero, () async {
       _eventTypeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState;
       _degreeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState;
+      DateTime? readStartDate = StoreProvider.of<AppState>(context).state.filterData.startDate;
+      DateTime? readEndDate = StoreProvider.of<AppState>(context).state.filterData.endDate;
+      if (readStartDate == null && readEndDate == null) {
+        dateRangeDropDownVal = dateRangeOptionList.first;
+        startDate = null;
+        endDate = null;
+      } else {
+        startDate = readStartDate;
+        endDate = readEndDate;
+        dateRangeDropDownVal = "from ${convertDateTimeToDate(startDate!)} "
+            "to ${convertDateTimeToDate(endDate!)}";
+      }
     });
-    dateRangeDropDownVal = dateRangeOptionList.first;
-    startDate = "${mapMonth((curTime.month).toString())} ${curTime.day}, "
-        "${curTime.year}";
-    eventDateTime = curTime;
   }
 
+  // build panel for options
   Widget _buildPanel() {
     return Column(
       children: [
@@ -146,8 +183,8 @@ class _FilterState extends State<Filter> {
             collapsedShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            backgroundColor: Color(0xFFCFE5C2),
-            collapsedBackgroundColor: Color(0xFFD3E5C9),
+            backgroundColor: const Color(0xFFCFE5C2),
+            collapsedBackgroundColor: const Color(0xFFD3E5C9),
             title: const Text("Event Type",
               style: TextStyle(color: Colors.black, fontSize: 18),),
             children: [
@@ -177,8 +214,8 @@ class _FilterState extends State<Filter> {
             collapsedShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
-            backgroundColor: Color(0xFFCFE5C2),
-            collapsedBackgroundColor: Color(0xFFD3E5C9),
+            backgroundColor: const Color(0xFFCFE5C2),
+            collapsedBackgroundColor: const Color(0xFFD3E5C9),
             title: const Text("Degree Restriction",
               style: TextStyle(color: Colors.black, fontSize: 18),),
             children: [
@@ -200,6 +237,11 @@ class _FilterState extends State<Filter> {
     );
   }
 
+  String convertDateTimeToDate(DateTime curTime) {
+    return "${mapMonth((curTime.month).toString())} ${curTime.day}, "
+        "${curTime.year}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,49 +250,59 @@ class _FilterState extends State<Filter> {
         ),
         body: Column(
           children: [
-            DropdownButton<String>(
-                isExpanded: true,
-                value: dateRangeDropDownVal,
-                items: dateRangeOptionList.map<DropdownMenuItem<String>>(
-                        (String val) {
-                      return DropdownMenuItem<String>(
-                          value: val,
-                          child: Text(val)
-                      );
-                    }).toList(),
-                onChanged: (String? selectedValue) {
-                  if (selectedValue == "Choose the range...") {
-                    showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            AlertDialog(
-                              title: const Text('Custom date range',
-                                style: TextStyle(fontSize: 20),),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // TODO: apply button on press, date range on change
-                                  Text("from"),
-                                  buildDatePicker(),
-                                  // Text(startDate),
-                                  Text("to"),
-                                  Text(endDate),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+              child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text(dateRangeDropDownVal),
+                  items: dateRangeOptionList.map<DropdownMenuItem<String>>(
+                          (String val) {
+                        return DropdownMenuItem<String>(
+                            value: val,
+                            child: Text(val)
+                        );
+                      }).toList(),
+                  onChanged: (String? selectedValue) {
+                    if (selectedValue == "Choose the range...") {
+                      showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              AlertDialog(
+                                content: StatefulBuilder(
+                                  builder: (BuildContext context, StateSetter setState) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text("from"),
+                                        _buildDatePicker(setState, 0),
+                                        const Text("to"),
+                                        _buildDatePicker(setState, 1),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                title: const Text('Custom date range',
+                                  style: TextStyle(fontSize: 20),),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'OK'),
+                                      child: const Text('OK'))
                                 ],
-                              ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'))
-                              ],
-                            )
-                    );
-                  } else {
-                    setState(() {
-                      dateRangeDropDownVal = selectedValue!;
-                    });
+                              )
+                      );
+                      setState(() {
+                        DateTime start = startDate == null ? DateTime(curTime.year, curTime.month, curTime.day) : startDate!;
+                        DateTime end = endDate == null ? DateTime(curTime.year, curTime.month, curTime.day + 1) : endDate!;
+                        dateRangeDropDownVal = "from ${convertDateTimeToDate(start)} to ${convertDateTimeToDate(end)}";
+                      });
+                    } else {
+                      setState(() {
+                        dateRangeDropDownVal = selectedValue!;
+                      });
+                    }
                   }
-                }
+              ),
             ),
             _buildPanel(),
             // TODO: add clear all option
@@ -258,6 +310,13 @@ class _FilterState extends State<Filter> {
                 onPressed: () {
                   StoreProvider.of<AppState>(context).dispatch(
                       SetTagSelectStateAction(_eventTypeTagSelectState, _degreeTagSelectState));
+                  if (dateRangeDropDownVal == dateRangeOptionList.first) {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetFilterDateRangeAction(null, null));
+                  } else {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetFilterDateRangeAction(startDate, endDate));
+                  }
                   context.replace("/events");
                 },
                 child: const Text("Apply", style: TextStyle(fontSize: 17),)

@@ -33,7 +33,6 @@ class PagedResult<T> {
 
 //Event Page
 class _EventsPage extends State<EventsPage> {
-  // States
   List<Event> eventList = [];
   Map tagMap = <int, List<Tag>>{};
   int totalPages = 0;
@@ -42,21 +41,25 @@ class _EventsPage extends State<EventsPage> {
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
 
-  /// Returns a future which resolves to List<Event>?.
   Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber,
       List<int> eventTypeTagSelectState,
-      List<int> degreeTagSelectState,) async {
+      List<int> degreeTagSelectState,
+      DateTime? startDate,
+      DateTime? endDate) async {
     List<Event> newEventList = [];
     Map newTagMap = <int, List<Tag>>{};
     var response;
-    if (eventTypeTagSelectState.isEmpty && degreeTagSelectState.isEmpty) {
+    if (eventTypeTagSelectState.isEmpty && degreeTagSelectState.isEmpty
+        && startDate == null
+        && endDate == null) {
       response = await http.get(
         Uri.parse(
             '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
         headers: {"Content-Type": "application/json"},
       );
     } else {
-      response = await doFilter(eventTypeTagSelectState, degreeTagSelectState, pageNumber, _PAGE_SIZE);
+      response = await doFilter(eventTypeTagSelectState, degreeTagSelectState,
+          startDate, endDate, pageNumber, _PAGE_SIZE);
     }
     if (response.statusCode == 200) {
       PagedResult<Event> result = PagedResult();
@@ -111,6 +114,8 @@ class _EventsPage extends State<EventsPage> {
             StoreProvider.of<AppState>(context).state.token, 0,
             StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
             StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.startDate,
+            StoreProvider.of<AppState>(context).state.filterData.endDate,
         );
         if (result != null) {
           // Fetch succeed, update state and trigger re-render
@@ -135,7 +140,9 @@ class _EventsPage extends State<EventsPage> {
               StoreProvider.of<AppState>(context).state.token,
               curScrollPage + 1,
               StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
-              StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,);
+              StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,
+              StoreProvider.of<AppState>(context).state.filterData.startDate,
+              StoreProvider.of<AppState>(context).state.filterData.endDate,);
           if (result != null) {
             setState(() {
               eventList = [...eventList, ...result.items];

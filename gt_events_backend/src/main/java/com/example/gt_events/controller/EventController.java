@@ -1,6 +1,5 @@
 package com.example.gt_events.controller;
 
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
 import com.example.gt_events.entity.Account;
@@ -8,7 +7,6 @@ import com.example.gt_events.entity.Event;
 import com.example.gt_events.entity.Tag;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
-import com.example.gt_events.model.SearchEventRequest;
 import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TagRepository;
@@ -17,18 +15,12 @@ import com.example.gt_events.service.EventService;
 import com.example.gt_events.service.FileService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.hibernate.Hibernate;
-import org.hibernate.Internal;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -206,6 +198,7 @@ public class EventController {
     @GetMapping("/events/tag-ids")
     public ResponseWrapper<?> getEventsByTagIds(@RequestParam(defaultValue = "") String[] eventTypeTagIds,
                                                 @RequestParam String[] degreeTagIds,
+                                                @RequestParam Date startDate, @RequestParam Date endDate,
                                                 @RequestParam int pageNumber,
                                                 @RequestParam int pageSize) {
         Set<Long> eventTypeTagIdSet = new HashSet<>();
@@ -213,17 +206,21 @@ public class EventController {
             eventTypeTagIdSet.add(Long.parseLong(tagId));
         }
         List<Tag> eventTypeTagList = tagRepository.findAllById(eventTypeTagIdSet);
-        List<Event> eventTypeEventList = eventRepository.findAllByTagsIn(eventTypeTagList);
+        List<Event> eventTypeEventList =
+                eventRepository.findAllByEventDateBetweenAndTagsIn(startDate, endDate, eventTypeTagList);
 
         Set<Long> degreeTagIdsIdSet = new HashSet<>();
         for (String tagId : degreeTagIds) {
             degreeTagIdsIdSet.add(Long.parseLong(tagId));
         }
         List<Tag> degreeTagIdsList = tagRepository.findAllById(degreeTagIdsIdSet);
-        List<Event> degreeEventList = eventRepository.findAllByTagsIn(degreeTagIdsList);
+        List<Event> degreeEventList =
+                eventRepository.findAllByEventDateBetweenAndTagsIn(startDate, endDate, degreeTagIdsList);
 
         List<Event> result = new ArrayList<>();
-        if (degreeEventList.size() == 0) {
+        if (degreeEventList.size() == 0 && eventTypeEventList.size() == 0) {
+            result = eventRepository.findAllByEventDateBetween(startDate, endDate);
+        } else if (degreeEventList.size() == 0) {
             result = eventTypeEventList;
         } else if (eventTypeEventList.size() == 0) {
             result = degreeEventList;

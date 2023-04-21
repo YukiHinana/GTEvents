@@ -15,7 +15,10 @@ class UserInfo {
 class FilterData {
   List<int> eventTypeTagSelectState;
   List<int> degreeTagSelectState;
-  FilterData(this.eventTypeTagSelectState, this.degreeTagSelectState);
+  DateTime? startDate;
+  DateTime? endDate;
+  FilterData(this.eventTypeTagSelectState, this.degreeTagSelectState,
+      this.startDate, this.endDate);
 }
 
 @immutable
@@ -39,7 +42,11 @@ final filterReducer = combineReducers<FilterData>([
   TypedReducer<FilterData, SetTagSelectStateAction>(
           (state, action) => FilterData(
               action.eventTypeTagSelectState,
-              action.degreeTagSelectState)),
+              action.degreeTagSelectState, state.startDate, state.endDate)),
+  TypedReducer<FilterData, SetFilterDateRangeAction>(
+          (state, action) => FilterData(
+          state.eventTypeTagSelectState,
+          state.degreeTagSelectState, action.startDate, action.endDate)),
 ]);
 
 
@@ -55,6 +62,12 @@ class SetTagSelectStateAction {
   List<int> eventTypeTagSelectState;
   List<int> degreeTagSelectState;
   SetTagSelectStateAction(this.eventTypeTagSelectState, this.degreeTagSelectState);
+}
+
+class SetFilterDateRangeAction {
+  DateTime? startDate;
+  DateTime? endDate;
+  SetFilterDateRangeAction(this.startDate, this.endDate);
 }
 
 class SetTokenAction {
