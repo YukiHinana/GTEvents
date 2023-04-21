@@ -17,13 +17,27 @@ class Filter extends StatefulWidget {
 }
 
 Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
-    List<int> degreeTagSelectState, int pageNumber, int pageSize) async {
+    List<int> degreeTagSelectState, DateTime? startDate, DateTime? endDate,
+    int pageNumber, int pageSize) async {
   String eventTypeStr = eventTypeTagSelectState.join(",");
   String degreeStr = degreeTagSelectState.join(",");
+  int startTimeStamp;
+  int endTimeStamp;
+  if (startDate == null) {
+    startTimeStamp = DateTime(2021, 1, 1, 0, 0, 0).toUtc().millisecondsSinceEpoch~/1000;
+  } else {
+    startTimeStamp = startDate.toUtc().millisecondsSinceEpoch~/1000;
+  }
+  if (endDate == null) {
+    endTimeStamp = DateTime(2050, 12, 31, 23, 59, 59).toUtc().millisecondsSinceEpoch~/1000;
+  } else {
+    endTimeStamp = endDate.toUtc().millisecondsSinceEpoch~/1000;
+  }
   var response = await http.get(
     Uri.parse(
         '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
-            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'),
+            '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'
+            '&startDate=$startTimeStamp&endDate=$endTimeStamp'),
     headers: {
       "Content-Type": "application/json",
     },
@@ -36,10 +50,10 @@ class _FilterState extends State<Filter> {
     "Any time",
     "Choose the range..."
   ];
-  late String dateRangeDropDownVal;
+  late String dateRangeDropDownVal = "";
   DateTime curTime = DateTime.now();
-  late DateTime startDate;
-  late DateTime endDate;
+  late DateTime? startDate;
+  late DateTime? endDate;
 
   List<int> _eventTypeTagSelectState = <int>[];
   List<int> _degreeTagSelectState = <int>[];
@@ -79,9 +93,13 @@ class _FilterState extends State<Filter> {
   }
 
   Widget _buildDatePicker(StateSetter setState, int a) {
-    DateTime eventDate = endDate;
+    DateTime eventDate = endDate == null
+        ? DateTime(curTime.year, curTime.month, curTime.day + 1)
+        : endDate!;
     if (a == 0) {
-      eventDate = startDate;
+      eventDate = startDate == null
+          ? DateTime(curTime.year, curTime.month, curTime.day)
+          : startDate!;
     }
     return ElevatedButton(
       child: Text('${eventDate.month}/${eventDate.day}/${eventDate
@@ -98,8 +116,9 @@ class _FilterState extends State<Filter> {
           date.year,
           date.month,
           date.day,
-          0,
-          0,
+          date.hour,
+          date.minute,
+          date.second,
         );
         setState(() {
           if (a == 0) {
@@ -136,10 +155,19 @@ class _FilterState extends State<Filter> {
     Future.delayed(Duration.zero, () async {
       _eventTypeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState;
       _degreeTagSelectState = StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState;
+      DateTime? readStartDate = StoreProvider.of<AppState>(context).state.filterData.startDate;
+      DateTime? readEndDate = StoreProvider.of<AppState>(context).state.filterData.endDate;
+      if (readStartDate == null && readEndDate == null) {
+        dateRangeDropDownVal = dateRangeOptionList.first;
+        startDate = null;
+        endDate = null;
+      } else {
+        startDate = readStartDate;
+        endDate = readEndDate;
+        dateRangeDropDownVal = "from ${convertDateTimeToDate(startDate!)} "
+            "to ${convertDateTimeToDate(endDate!)}";
+      }
     });
-    dateRangeDropDownVal = dateRangeOptionList.first;
-    startDate = DateTime(curTime.year, curTime.month, curTime.day);
-    endDate = DateTime(curTime.year, curTime.month, curTime.day + 1);
   }
 
   // build panel for options
@@ -264,8 +292,9 @@ class _FilterState extends State<Filter> {
                               )
                       );
                       setState(() {
-                        dateRangeDropDownVal = "from ${convertDateTimeToDate(startDate)} "
-                            "to ${convertDateTimeToDate(endDate)}";
+                        DateTime start = startDate == null ? DateTime(curTime.year, curTime.month, curTime.day) : startDate!;
+                        DateTime end = endDate == null ? DateTime(curTime.year, curTime.month, curTime.day + 1) : endDate!;
+                        dateRangeDropDownVal = "from ${convertDateTimeToDate(start)} to ${convertDateTimeToDate(end)}";
                       });
                     } else {
                       setState(() {
@@ -281,6 +310,13 @@ class _FilterState extends State<Filter> {
                 onPressed: () {
                   StoreProvider.of<AppState>(context).dispatch(
                       SetTagSelectStateAction(_eventTypeTagSelectState, _degreeTagSelectState));
+                  if (dateRangeDropDownVal == dateRangeOptionList.first) {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetFilterDateRangeAction(null, null));
+                  } else {
+                    StoreProvider.of<AppState>(context).dispatch(
+                        SetFilterDateRangeAction(startDate, endDate));
+                  }
                   context.replace("/events");
                 },
                 child: const Text("Apply", style: TextStyle(fontSize: 17),)

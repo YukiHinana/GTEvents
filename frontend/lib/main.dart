@@ -21,8 +21,13 @@ import 'event.dart';
 
 // run main.dart to start the program
 void main() {
+  DateTime curTime = DateTime.now();
   final store = Store<AppState>(appReducer,
-      initialState: AppState(filterData: FilterData([], [])));
+      initialState: AppState(filterData: FilterData([], [],
+          null, null
+          // DateTime(curTime.year, curTime.month, curTime.day),
+          // DateTime(curTime.year, curTime.month, curTime.day + 1),
+      )));
   runApp(
       MyApp(
         store: store,
@@ -72,11 +77,11 @@ class MyApp extends StatelessWidget {
                 routerConfig: _router,
                 theme: ThemeData(
                     colorScheme: ColorScheme.fromSwatch().copyWith(
-                      primary: Color(0xffADC178),
+                      primary: const Color(0xffADC178),
                       // secondary: Color(0xff606c38),
-                      secondary: Color(0xff432818),
+                      secondary: const Color(0xff432818),
                     ),
-                  scaffoldBackgroundColor: Color(0xfffffbf3),
+                  scaffoldBackgroundColor: const Color(0xfffffbf3),
                   fontFamily: 'San Francisco',
                   textTheme: const TextTheme(
                     displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
