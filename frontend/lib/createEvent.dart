@@ -7,7 +7,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
+import 'package:dio/dio.dart';
 import 'config.dart';
 import 'event.dart';
 
@@ -258,6 +258,11 @@ class _CreateEventState extends State<CreateEvent> {
     final imageTemp = File(image.path);
     setState(() {
       this._image1 = imageTemp;
+      var token = StoreProvider
+                .of<AppState>(context)
+                .state
+                .token;
+      sendPic(File(_image1.path), token);
     });
   }
 
@@ -269,6 +274,12 @@ class _CreateEventState extends State<CreateEvent> {
     final imageTemp = File(image.path);
     setState(() {
       this._image2 = imageTemp;
+      var token = StoreProvider
+                .of<AppState>(context)
+                .state
+                .token;
+      sendPic(File(_image2.path), token);
+      
     });
   }
 
@@ -280,9 +291,27 @@ class _CreateEventState extends State<CreateEvent> {
     final imageTemp = File(image.path);
     setState(() {
       this._image3 = imageTemp;
+      var token = StoreProvider
+                .of<AppState>(context)
+                .state
+                .token;
+      sendPic(File(_image3.path), token);
     });
   }
 
+  Future<void> sendPic(File img, String? token) async {
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(img.path),
+    });
+    Dio dio = new Dio();
+    var response = await dio.post(
+        '${Config.baseURL}/account/avatar',
+        data: formData,
+        options: Options(headers: {
+          "Authorization": token??"",
+        }),
+    );
+  }
   Widget buildDatePicker() =>
       ElevatedButton(
         child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime
