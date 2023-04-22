@@ -41,7 +41,7 @@ class _UserSideBar extends State<UserSideBar> {
         builder: (context, appState) {
           return Drawer(
             child: Container(
-              color: Color(0xffeaeecf),
+              color: const Color(0xffeaeecf),
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
@@ -64,15 +64,13 @@ class _UserSideBar extends State<UserSideBar> {
                   ListTile(
                     title: const Text('Created Events'),
                     onTap: () {
-                      context.pop();
-                      context.push('/events/created');
+                      context.pushReplacement('/events/created');
                     },
                   ),
                   ListTile(
                     title: const Text('Saved Events'),
                     onTap: () {
-                      context.pop();
-                      context.push('/events/saved');
+                      context.pushReplacement('/events/saved');
                     },
                   ),
                   if (StoreProvider.of<AppState>(context).state.token != null)

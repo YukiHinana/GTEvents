@@ -18,6 +18,7 @@ class CreateEvent extends StatefulWidget{
   State<CreateEvent> createState() => _CreateEventState();
 }
 
+// TODO: delete nullable
 Future<List<Tag>> getEventTags(String? groupName) async {
   var response;
   if (groupName == "") {
@@ -44,7 +45,9 @@ Future<List<Tag>> getEventTags(String? groupName) async {
 
 class _CreateEventState extends State<CreateEvent> {
   // tag value
-  int? tagValue;
+  List<Tag?> selectedTagList = [null, null, null];
+  List<Tag> providedTagList = [];
+
   late File _image1;
   late File _image2;
   late File _image3;
@@ -65,17 +68,28 @@ class _CreateEventState extends State<CreateEvent> {
     _eventCapacityController = TextEditingController();
     _eventFeeController = TextEditingController();
     eventDateTime = DateTime.now();
-    eventEndTime = DateTime.now();
+    Future.delayed(Duration.zero, () async {
+      providedTagList = await getEventTags("");
+    });
+    // eventEndTime = DateTime.now();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
+    List<int> tagIdList = [];
+    for (Tag? t in selectedTagList) {
+      if (t != null) {
+        tagIdList.add(t.tagId);
+      }
+    }
     var createEventRequest = json.encode(
         {
           'title': _eventTitleController.text,
           'location': _eventLocationController.text,
           'description': _eventDescriptionController.text,
-          'eventDate': eventDateTime.toUtc().millisecondsSinceEpoch/1000,
-          'tagIds': tagValue == null ? [] : [tagValue]
+          'eventDate': eventDateTime
+              .toUtc()
+              .millisecondsSinceEpoch / 1000,
+          'tagIds': tagIdList
         }
     );
     var response = await http.post(
@@ -103,7 +117,9 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 20),
           buildEventDescriptionField(),
           const SizedBox(height: 20),
-          buildCategoryPicker(),
+          buildTagPicker(0),
+          buildTagPicker(1),
+          buildTagPicker(2),
           const SizedBox(height: 20),
           const Text(
             'Pick event date, start time and end time',
@@ -114,7 +130,8 @@ class _CreateEventState extends State<CreateEvent> {
             children: [
               buildDatePicker(),
               buildTimePicker(),
-              buildEndTimePicker(),
+              // TODO: ignore this for now
+              // buildEndTimePicker(),
             ],
           ),
           ButtonBar(
@@ -130,7 +147,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 24),
           buildEventFeeField(),
           const SizedBox(height: 24),
-          previewCreatedEvent(),
+          // previewCreatedEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
         ],
@@ -142,8 +159,9 @@ class _CreateEventState extends State<CreateEvent> {
       Column(
         children: [
           const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("* Event Name: (required)", style: TextStyle(fontSize: 16),)
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "* Event Name: (required)", style: TextStyle(fontSize: 16),)
           ),
           const SizedBox(height: 5),
           TextField(
@@ -161,7 +179,8 @@ class _CreateEventState extends State<CreateEvent> {
         children: [
           const Align(
               alignment: Alignment.centerLeft,
-              child: Text("* Location: (required)", style: TextStyle(fontSize: 16),)
+              child: Text(
+                "* Location: (required)", style: TextStyle(fontSize: 16),)
           ),
           const SizedBox(height: 5),
           TextField(
@@ -174,32 +193,42 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-  Widget buildCategoryPicker() =>
-      FutureBuilder<List<Tag>>(
-          future: getEventTags(""),
-          builder: (context, snapshot) {
-            return DropdownButton<int>(
-                isExpanded: true,
-                hint: const Text('Pick Category'),
-                value: tagValue,
-                items: snapshot.data?.map((e) =>
-                    DropdownMenuItem<int>(
-                      value: e.tagId,
-                      child: Text(e.name),
-                    )).toList(),
-                onChanged: (selectedValue) {
-                  setState(() => tagValue = selectedValue);
-                }
-            );
-          }
-      );
+  String tagOrigHint = "Pick Category";
+
+  Widget buildTagPicker(int index) {
+    return FutureBuilder<List<Tag>>(
+        future: getEventTags(""),
+        builder: (context, snapshot) {
+          return DropdownButton<Tag>(
+              isExpanded: true,
+              hint: Text((selectedTagList[index] == null)
+                  ? "Pick Category"
+                  : selectedTagList[index]!.name),
+              // value: selectedTagList.length == 0 ? null : selectedTagList.first,
+              items: snapshot.data?.map((e) =>
+                  DropdownMenuItem<Tag>(
+                    value: e,
+                    child: Text(e.name),
+                  )).toList(),
+              onChanged: (selectedValue) {
+                setState(() {
+                  if (selectedValue != null) {
+                    selectedTagList[index] = selectedValue;
+                  }
+                });
+              }
+          );
+        }
+    );
+  }
 
   Widget buildEventDescriptionField() =>
       Column(
         children: [
           const Align(
               alignment: Alignment.centerLeft,
-              child: Text("* Description: (required)", style: TextStyle(fontSize: 16),)
+              child: Text(
+                "* Description: (required)", style: TextStyle(fontSize: 16),)
           ),
           const SizedBox(height: 5),
           TextField(
@@ -214,14 +243,11 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-
-  Widget buildImagePicker({
-    required VoidCallback onClick
-  }) {
+  Widget buildImagePicker({required VoidCallback onClick}) {
     return ElevatedButton(
-      onPressed: onClick, 
-      child: Text ('Pick an image')
-      );
+        onPressed: onClick,
+        child: Text('Pick an image')
+    );
   }
 
   Future getImage1() async {
@@ -234,6 +260,7 @@ class _CreateEventState extends State<CreateEvent> {
       this._image1 = imageTemp;
     });
   }
+
   Future getImage2() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) {
@@ -244,6 +271,7 @@ class _CreateEventState extends State<CreateEvent> {
       this._image2 = imageTemp;
     });
   }
+
   Future getImage3() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) {
@@ -257,7 +285,8 @@ class _CreateEventState extends State<CreateEvent> {
 
   Widget buildDatePicker() =>
       ElevatedButton(
-        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime.year}'),
+        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime
+            .year}'),
         onPressed: () async {
           final date = await pickDate();
           if (date == null) {
@@ -308,29 +337,31 @@ class _CreateEventState extends State<CreateEvent> {
   Future<TimeOfDay?> pickTime() =>
       showTimePicker(
         context: context,
-        initialTime: TimeOfDay(hour: eventDateTime.hour, minute: eventDateTime.minute),
+        initialTime: TimeOfDay(
+            hour: eventDateTime.hour, minute: eventDateTime.minute),
       );
-  Widget buildEndTimePicker() {
-    return ElevatedButton(
-      child: Text('${eventEndTime.hour}:${eventEndTime.minute}'),
-        onPressed: () async {
-          final time = await pickTime();
-          if (time == null) {
-            return;
-          }
-          final newDateTime = DateTime(
-            eventEndTime.year,
-            eventEndTime.month,
-            eventEndTime.day,
-            time.hour,
-            time.minute,
-          );
-          setState(() {
-            eventEndTime = newDateTime;
-          });
-        },
-      );
-  }
+  // Widget buildEndTimePicker() {
+  //   return ElevatedButton(
+  //     child: Text('${eventEndTime.hour}:${eventEndTime.minute}'),
+  //       onPressed: () async {
+  //         final time = await pickTime();
+  //         if (time == null) {
+  //           return;
+  //         }
+  //         final newDateTime = DateTime(
+  //           eventEndTime.year,
+  //           eventEndTime.month,
+  //           eventEndTime.day,
+  //           time.hour,
+  //           time.minute,
+  //         );
+  //         setState(() {
+  //           eventEndTime = newDateTime;
+  //         });
+  //       },
+  //     );
+  // }
+  
   Widget buildEventCapacityField() {
     return Column(
       children: [
@@ -370,23 +401,23 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-  Widget previewCreatedEvent() =>
-      FloatingActionButton.extended(
-          heroTag: "preview",
-          onPressed: () {
-            context.pushNamed("eventPreview",
-                queryParams: {
-                  "eventTitle": _eventTitleController.text,
-                  "eventLocation": _eventLocationController.text,
-                  "eventDescription": _eventDescriptionController.text,
-                  "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
-                  "tagName": tagValue == null ? [] : [tagValue],
-                  "isSaved": false.toString(),
-                }
-            );
-          },
-          label: const Text("Preview")
-      );
+  // Widget previewCreatedEvent() =>
+  //     FloatingActionButton.extended(
+  //         heroTag: "preview",
+  //         onPressed: () {
+  //           context.pushNamed("eventPreview",
+  //               queryParams: {
+  //                 "eventTitle": _eventTitleController.text,
+  //                 "eventLocation": _eventLocationController.text,
+  //                 "eventDescription": _eventDescriptionController.text,
+  //                 "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
+  //                 "tagName": tagValue == null ? [] : [tagValue],
+  //                 "isSaved": false.toString(),
+  //               }
+  //           );
+  //         },
+  //         label: const Text("Preview")
+  //     );
 
   Widget buildCreateEvent() =>
       FloatingActionButton.extended(
@@ -406,19 +437,34 @@ class _CreateEventState extends State<CreateEvent> {
                           actions: [
                             TextButton(
                                 onPressed: () {
-                                  var event = jsonDecode(value.body)['data'];
-                                  context.pushReplacementNamed("eventDetails",
-                                      params: {
-                                        "id": event['id'].toString(),
-                                      },
-                                      queryParams: {
-                                        "eventTitle": event["title"]!,
-                                        "eventLocation": event["location"]!,
-                                        "eventDescription": event["description"]!,
-                                        "tagName": event["tags"].length == 0 ? "" : event["tags"][0]["name"],
-                                        "isSaved": false.toString(),
-                                      }
-                                  );
+                                  Map<String, dynamic> map = Map<String,
+                                      dynamic>.from(jsonDecode(
+                                      value.body)['data']);
+
+                                  Map<String, dynamic> paramMap = <
+                                      String,
+                                      dynamic>{};
+
+                                  Event e = Event(
+                                      map['id'],
+                                      map['title'],
+                                      map['location'],
+                                      map['description'],
+                                      map['eventDate'] ?? 0,
+                                      map['capacity'],
+                                      map['fee'],
+                                      false,
+                                      map['eventCreationDate'] ?? 0,
+                                      map['author']['username']);
+                                  List<Tag> tList = [];
+                                  for (var i = 0; i < map['tags'].length; i++) {
+                                    tList.add(Tag(map['tags'][i]['id'],
+                                        map['tags'][i]['name']));
+                                  }
+                                  paramMap.putIfAbsent("event", () => e);
+                                  paramMap.putIfAbsent("tagList", () => tList);
+                                  context.pushReplacementNamed(
+                                      "eventDetails", extra: paramMap);
                                 },
                                 child: const Text('OK'))
                           ],
@@ -429,7 +475,8 @@ class _CreateEventState extends State<CreateEvent> {
                     context: context,
                     builder: (BuildContext context) =>
                         AlertDialog(
-                          content: const Text("Failed to create event, try again"),
+                          content: const Text(
+                              "Failed to create event, try again"),
                           actions: [
                             TextButton(
                                 onPressed: () {
