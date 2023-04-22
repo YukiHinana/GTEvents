@@ -43,7 +43,6 @@ class _EventTileState extends State<EventTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO:!!!!!!
         fetchEventDetails(eventId).then((value) {
           Event e = Event(
               value['id'],
@@ -53,7 +52,7 @@ class _EventTileState extends State<EventTile> {
               value['eventDate'] ?? 0,
               value['capacity'],
               value['fee'],
-              false,
+              true,
               value['eventCreationDate'] ?? 0,
               value['author']['username']);
           List<Tag> tList = [];
@@ -64,7 +63,7 @@ class _EventTileState extends State<EventTile> {
           Map<String, dynamic> paramMap = <String, dynamic>{};
           paramMap.putIfAbsent("event", () => e);
           paramMap.putIfAbsent("tagList", () => tList);
-          context.pushReplacementNamed(
+          context.pushNamed(
               "eventDetails", extra: paramMap);
         });
       },
