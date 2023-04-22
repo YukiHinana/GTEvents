@@ -45,22 +45,27 @@ class _EventTileState extends State<EventTile> {
       onTap: () {
         // TODO:!!!!!!
         fetchEventDetails(eventId).then((value) {
-          context.pushNamed("eventDetails",
-              params: {
-                "id": eventId.toString(),
-              },
-              queryParams: {
-                "eventTitle": value["title"]!,
-                "eventLocation": value["location"]!,
-                "eventDescription": value["description"]!,
-                "eventDate": (value["eventDate"] ?? 0).toString(),
-                "eventCreationDate": (value["eventCreationDate"] ?? 0)
-                    .toString(),
-                "tagName": value["tags"].length == 0
-                    ? ""
-                    : value["tags"][0]["name"],
-                "isSaved": eventIsSaved.toString(),
-              });
+          Event e = Event(
+              value['id'],
+              value['title'],
+              value['location'],
+              value['description'],
+              value['eventDate'] ?? 0,
+              value['capacity'],
+              value['fee'],
+              false,
+              value['eventCreationDate'] ?? 0,
+              value['author']['username']);
+          List<Tag> tList = [];
+          for (var i = 0; i < value['tags'].length; i++) {
+            tList.add(Tag(value['tags'][i]['id'],
+                value['tags'][i]['name']));
+          }
+          Map<String, dynamic> paramMap = <String, dynamic>{};
+          paramMap.putIfAbsent("event", () => e);
+          paramMap.putIfAbsent("tagList", () => tList);
+          context.pushReplacementNamed(
+              "eventDetails", extra: paramMap);
         });
       },
       child: Card(
