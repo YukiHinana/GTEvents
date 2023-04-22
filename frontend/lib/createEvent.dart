@@ -1,10 +1,12 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'config.dart';
 import 'event.dart';
@@ -43,7 +45,9 @@ Future<List<Tag>> getEventTags(String? groupName) async {
 class _CreateEventState extends State<CreateEvent> {
   // tag value
   int? tagValue;
-
+  late File _image1;
+  late File _image2;
+  late File _image3;
   late DateTime eventDateTime;
   late DateTime eventEndTime;
   late TextEditingController _eventTitleController;
@@ -111,6 +115,14 @@ class _CreateEventState extends State<CreateEvent> {
               buildDatePicker(),
               buildTimePicker(),
               buildEndTimePicker(),
+            ],
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildImagePicker(onClick: getImage1),
+              buildImagePicker(onClick: getImage2),
+              buildImagePicker(onClick: getImage3),
             ],
           ),
           const SizedBox(height: 24),
@@ -201,6 +213,47 @@ class _CreateEventState extends State<CreateEvent> {
           ),
         ],
       );
+
+
+  Widget buildImagePicker({
+    required VoidCallback onClick
+  }) {
+    return ElevatedButton(
+      onPressed: onClick, 
+      child: Text ('Pick an image')
+      );
+  }
+
+  Future getImage1() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image1 = imageTemp;
+    });
+  }
+  Future getImage2() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image2 = imageTemp;
+    });
+  }
+  Future getImage3() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image3 = imageTemp;
+    });
+  }
 
   Widget buildDatePicker() =>
       ElevatedButton(
