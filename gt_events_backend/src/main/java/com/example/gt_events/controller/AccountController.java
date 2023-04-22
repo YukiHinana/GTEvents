@@ -13,12 +13,15 @@ import com.example.gt_events.model.CreateAccountRequest;
 import com.example.gt_events.repo.AccountRepository;
 import com.example.gt_events.repo.EventRepository;
 import com.example.gt_events.repo.TokenRepository;
+import com.example.gt_events.service.FileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +33,17 @@ public class AccountController {
     private final AccountRepository accountRepository;
     private final TokenRepository tokenRepository;
     private final EventRepository eventRepository;
+    private final FileService fileService;
 
     @Autowired
     public AccountController(AccountRepository accountRepository,
                              TokenRepository tokenRepository,
-                             EventRepository eventRepository) {
+                             EventRepository eventRepository,
+                             FileService fileService) {
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
         this.eventRepository = eventRepository;
+        this.fileService = fileService;
     }
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -84,7 +90,7 @@ public class AccountController {
         // TODO: change isOrganizer later
         Account newAccount = new Account(request.getUsername(),
                 bCryptPasswordEncoder.encode(request.getPassword()),
-                request.getIsOrganizer());
+                request.getIsOrganizer(), "");
         accountRepository.save(newAccount);
         return new ResponseWrapper<>("Sign up success");
     }
@@ -129,27 +135,15 @@ public class AccountController {
         return new ResponseWrapper<>("Account logged out");
     }
 
-//    @PostMapping("/save/events/{eventId}")
-//    @RequireAuth
-//    public ResponseWrapper<?> saveEvent(@PathVariable Long eventId, Account a) {
-//        Event event = eventRepository.findById(eventId)
-//                .orElseThrow(() -> new InvalidRequestException("can't find this event"));
-//        a.getSavedEvents().add(event);
-//        accountRepository.save(a);
-//        return new ResponseWrapper<>("success");
-//    }
-
-//    @DeleteMapping("")
-
-//    @GetMapping("/view/events/saved")
-//    @RequireAuth
-//    public ResponseWrapper<?> getSavedEvents(Account a) {
-//        return new ResponseWrapper<>(a.getSavedEvents());
-//    }
-//
-//    @GetMapping("/view/events/created")
-//    @RequireAuth
-//    public ResponseWrapper<?> getCreatedEvents(Account a) {
-//        return new ResponseWrapper<>(a.getCreatedEvents());
-//    }
+    @PostMapping("/avatar")
+    @RequireAuth
+    public ResponseWrapper<?> handleAvatarUpload(@RequestParam("file") MultipartFile file,
+                                               Account a) throws IOException {
+        String key = UUID.randomUUID().toString();
+        Account account = accountRepository.findById(a.getId()).get();
+        account.setAvatarKey(key);
+        accountRepository.save(account);
+        fileService.uploadStream(key, file.getInputStream());
+        return new ResponseWrapper<>(key);
+    }
 }

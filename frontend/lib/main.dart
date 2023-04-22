@@ -2,7 +2,10 @@
 import 'package:GTEvents/eventDetailPage.dart';
 import 'package:GTEvents/createEvent.dart';
 import 'package:GTEvents/createdEventsPage.dart';
+import 'package:GTEvents/eventPreview.dart';
+import 'package:GTEvents/component/filter.dart';
 import 'package:GTEvents/homeScreen.dart';
+import 'package:GTEvents/profilePage.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:GTEvents/searchPage.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +17,17 @@ import './login.dart';
 import 'config.dart';
 import 'package:redux/redux.dart';
 
+import 'event.dart';
+
 // run main.dart to start the program
 void main() {
-  final store = Store<AppState>(appReducer, initialState: const AppState());
+  DateTime curTime = DateTime.now();
+  final store = Store<AppState>(appReducer,
+      initialState: AppState(filterData: FilterData([], [],
+          null, null
+          // DateTime(curTime.year, curTime.month, curTime.day),
+          // DateTime(curTime.year, curTime.month, curTime.day + 1),
+      )));
   runApp(
       MyApp(
         store: store,
@@ -54,18 +65,32 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: FutureBuilder(
-        future: appInit(store),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          future: appInit(store),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return MaterialApp.router(
+                title: 'hello',
+                routerConfig: _router,
+                theme: ThemeData(
+                    colorScheme: ColorScheme.fromSwatch().copyWith(
+                      primary: const Color(0xffADC178),
+                      // secondary: Color(0xff606c38),
+                      secondary: const Color(0xff432818),
+                    ),
+                  scaffoldBackgroundColor: const Color(0xfffffbf3),
+                  fontFamily: 'San Francisco',
+                  textTheme: const TextTheme(
+                    displayLarge: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
+                    titleLarge: TextStyle(fontSize: 30.0, fontStyle: FontStyle.italic, fontFamily: 'Georgia'),
+                    bodyMedium: TextStyle(fontSize: 14.0, fontFamily: 'San Francisco'),
+                  ),
+                )
             );
           }
-          return MaterialApp.router(
-            title: 'hello',
-            routerConfig: _router,
-          );
-        }
       ),
     );
   }
@@ -87,6 +112,13 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const MySignupPage();
       }
+    ),
+    GoRoute(
+        name: "userProfile",
+        path: '/user/profile',
+        builder: (BuildContext context, GoRouterState state) {
+          return const ProfilePage();
+        }
     ),
     GoRoute(
         name: "search",
@@ -124,19 +156,34 @@ final GoRouter _router = GoRouter(
         ),
         GoRoute(
           name: "eventDetails",
-          path: ':id',
+          path: 'view',
           builder: (context, state) {
-            return EventDetailPage(
-              eventTitle: state.queryParams["eventTitle"]??"",
-              eventLocation: state.queryParams["eventLocation"]??"",
-              eventDescription: state.queryParams["eventDescription"]??"",
-              eventDate: state.queryParams["eventDate"]??"0",
-              eventCreationDate: state.queryParams["eventCreationDate"]??"0",
-              tagName: state.queryParams["tagName"]??"",
-              isSaved: state.queryParams["isSaved"] == "true" ? true : false,
-            );
-          } ,
+            Map<String, dynamic> map = state.extra as Map<String, dynamic>;
+            return EventDetailPage(event: map["event"], tagList: map["tagList"]);
+          },
         ),
+        GoRoute(
+          name: "filter",
+          path: 'filter',
+          builder: (context, state) {
+            return const Filter();
+          },
+        ),
+        // TODO: add event preview
+        // GoRoute(
+        //   name: "eventPreview",
+        //   path: 'preview',
+        //   builder: (context, state) {
+        //     return EventPreview(
+        //       eventTitle: state.queryParams["eventTitle"]??"",
+        //       eventLocation: state.queryParams["eventLocation"]??"",
+        //       eventDescription: state.queryParams["eventDescription"]??"",
+        //       eventDate: state.queryParams["eventDate"]??"0",
+        //       eventCreationDate: state.queryParams["eventCreationDate"]??"0",
+        //       tagName: state.queryParams["tagName"]??"",
+        //     );
+        //   } ,
+        // ),
       ],
     ),
   ],

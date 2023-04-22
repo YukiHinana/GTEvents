@@ -3,46 +3,78 @@ import 'package:redux/redux.dart';
 
 //change URL to your local ip to run
 class Config {
-  // static const baseURL = "http://3.145.83.83:8080";
-  static const baseURL = "http://localhost:8080";
+  static const baseURL = "http://3.145.83.83:8080";
+  //static const baseURL = "http://localhost:8080";
 }
-//User infor entity
+
 class UserInfo {
   final String? username;
   UserInfo(this.username);
 }
-//AppState entity
+
+class FilterData {
+  List<int> eventTypeTagSelectState;
+  List<int> degreeTagSelectState;
+  DateTime? startDate;
+  DateTime? endDate;
+  FilterData(this.eventTypeTagSelectState, this.degreeTagSelectState,
+      this.startDate, this.endDate);
+}
+
 @immutable
 class AppState {
   final String? token;
   final UserInfo? userInfo;
+  final FilterData filterData;
 
-  const AppState({this.token, this.userInfo});
+  const AppState({this.token, this.userInfo, required this.filterData});
 }
 
-//Token Reducer
 final tokenReducer = combineReducers<String?>([
   TypedReducer<String?, SetTokenAction>((state, action) => action.token),
 ]);
-//User Info Reducer
+
 final userInfoReducer = combineReducers<UserInfo?>([
   TypedReducer<UserInfo?, SetUsernameAction>((state, action) => UserInfo(action.username)),
 ]);
 
+final filterReducer = combineReducers<FilterData>([
+  TypedReducer<FilterData, SetTagSelectStateAction>(
+          (state, action) => FilterData(
+              action.eventTypeTagSelectState,
+              action.degreeTagSelectState, state.startDate, state.endDate)),
+  TypedReducer<FilterData, SetFilterDateRangeAction>(
+          (state, action) => FilterData(
+          state.eventTypeTagSelectState,
+          state.degreeTagSelectState, action.startDate, action.endDate)),
+]);
 
-// app state reducer
+
 AppState appReducer(AppState state, dynamic action) {
   return AppState(
     token: tokenReducer(state.token, action),
     userInfo: userInfoReducer(state.userInfo, action),
+    filterData: filterReducer(state.filterData, action),
   );
 }
-//SetTokenAction
+
+class SetTagSelectStateAction {
+  List<int> eventTypeTagSelectState;
+  List<int> degreeTagSelectState;
+  SetTagSelectStateAction(this.eventTypeTagSelectState, this.degreeTagSelectState);
+}
+
+class SetFilterDateRangeAction {
+  DateTime? startDate;
+  DateTime? endDate;
+  SetFilterDateRangeAction(this.startDate, this.endDate);
+}
+
 class SetTokenAction {
   final String? token;
   SetTokenAction(this.token);
 }
-//SetUsernameAction
+
 class SetUsernameAction {
   final String? username;
   SetUsernameAction(this.username);

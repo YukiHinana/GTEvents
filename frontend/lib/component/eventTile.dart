@@ -1,12 +1,8 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../config.dart';
 import '../event.dart';
 import 'eventCard.dart';
 
@@ -24,7 +20,7 @@ class _EventTileState extends State<EventTile> {
   late String title;
   late String location;
   late String creationDate;
-  late double reverse;
+  late String eventDate;
 
   IconData iconBtnState = Icons.star_border;
   Color iconColorState = Colors.black;
@@ -35,9 +31,12 @@ class _EventTileState extends State<EventTile> {
     eventId = widget.event.eventId;
     title = widget.event.title;
     location = widget.event.location;
-    creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(DateTime.fromMillisecondsSinceEpoch(widget.event.eventCreationTimestamp * 1000));
-    // reverse = DateTime.parse(creationDate).toUtc().millisecondsSinceEpoch / 1000;
-    reverse = 0;
+    creationDate = DateFormat('MM/dd/yyyy, HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(
+            widget.event.eventCreationTimestamp * 1000));
+    eventDate = DateFormat('MM/dd/yyyy, HH:mm').format(
+        DateTime.fromMillisecondsSinceEpoch(
+            widget.event.eventDateTimestamp * 1000));
   }
 
   @override
@@ -53,9 +52,12 @@ class _EventTileState extends State<EventTile> {
                 "eventTitle": value["title"]!,
                 "eventLocation": value["location"]!,
                 "eventDescription": value["description"]!,
-                "eventDate": value["eventDate"].toString(),
-                "eventCreationDate": value["eventCreationDate"].toString(),
-                "tagName": value["tags"].length == 0 ? "" : value["tags"][0]["name"],
+                "eventDate": (value["eventDate"] ?? 0).toString(),
+                "eventCreationDate": (value["eventCreationDate"] ?? 0)
+                    .toString(),
+                "tagName": value["tags"].length == 0
+                    ? ""
+                    : value["tags"][0]["name"],
                 "isSaved": eventIsSaved.toString(),
               });
         });
@@ -67,32 +69,25 @@ class _EventTileState extends State<EventTile> {
         child: Stack(
           children: [
             ListTile(
-              title: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Text(
-                  title,
-                  style: const TextStyle(fontSize: 25),
+                title: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 25),
+                  ),
                 ),
-              ),
-              subtitle: Column(
-                children: [
-                  // Align(
-                  //   alignment: Alignment.centerLeft,
-                  //   child: Text(
-                  //     "hi",
-                  //     // "location: ${DateFormat('MM/dd/yyyy, HH:mm').parse(creationDate).toUtc().millisecondsSinceEpoch/1000}",
-                  //     style: const TextStyle(fontSize: 15),
-                  //   ),
-                  // ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "created on $creationDate"
-                    ),
-                  )
-                ],
-              )
+                subtitle: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          "event date: $eventDate"
+                      ),
+                    )
+                  ],
+                )
             ),
+
             Row(
               children: [
                 const Spacer(),
@@ -100,7 +95,8 @@ class _EventTileState extends State<EventTile> {
                   shaderCallback: (rect) {
                     return const LinearGradient(
                         colors: [Colors.transparent, Colors.black,]
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    ).createShader(
+                        Rect.fromLTRB(0, 0, rect.width, rect.height));
                   },
                   blendMode: BlendMode.dstIn,
                   child: Container(

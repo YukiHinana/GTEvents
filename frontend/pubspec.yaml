@@ -32,7 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   camera:
-  path_provider:
+  path_provider: ^2.0.14
   path:
 
 
@@ -44,11 +44,13 @@ dependencies:
   http: ^0.13.5
   flutter_flushbar: ^0.0.2
   go_router: ^6.0.1
-  image_picker: ^0.8.6+1
+  image_picker: ^0.8.7+4
   localstorage: ^4.0.1+2
   flutter_redux: ^0.10.0
   pull_to_refresh: ^2.0.0
   intl: ^0.18.0
+  image_cropper: ^3.0.2
+  dio: ^5.1.1
 
 dev_dependencies:
   flutter_test:

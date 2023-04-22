@@ -1,10 +1,12 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'config.dart';
 import 'event.dart';
@@ -16,15 +18,38 @@ class CreateEvent extends StatefulWidget{
   State<CreateEvent> createState() => _CreateEventState();
 }
 
+Future<List<Tag>> getEventTags(String? groupName) async {
+  var response;
+  if (groupName == "") {
+    response = await http.get(
+      Uri.parse('${Config.baseURL}/tags/'),
+      headers: {"Content-Type": "application/json"},
+    );
+  } else {
+    response = await http.get(
+      Uri.parse('${Config.baseURL}/tags/group?groupName=$groupName'),
+      headers: {"Content-Type": "application/json"},
+    );
+  }
+
+  List<Tag> eventTagList = [];
+  if (response.statusCode == 200) {
+    for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
+      Map<String, dynamic> map = Map<String, dynamic>.from(i);
+      eventTagList.add(Tag(map['id'], map['name']));
+    }
+  }
+  return eventTagList;
+}
+
 class _CreateEventState extends State<CreateEvent> {
   // tag value
-  int? value;
-
-  late DateTime dateTime;
-  //DateTime currentDate = DateTime.now();
-  // final hours = dateTime.hour.toString().padLeft(2, '0');
-  // final minutes = dateTime.minute.toString().padLeft(2, '0');
-
+  int? tagValue;
+  late File _image1;
+  late File _image2;
+  late File _image3;
+  late DateTime eventDateTime;
+  late DateTime eventEndTime;
   late TextEditingController _eventTitleController;
   late TextEditingController _eventLocationController;
   late TextEditingController _eventDescriptionController;
@@ -39,7 +64,8 @@ class _CreateEventState extends State<CreateEvent> {
     _eventDescriptionController = TextEditingController();
     _eventCapacityController = TextEditingController();
     _eventFeeController = TextEditingController();
-    dateTime = DateTime.now();
+    eventDateTime = DateTime.now();
+    eventEndTime = DateTime.now();
   }
 
   Future<http.Response> submitCreateEventRequest(String? token) async {
@@ -48,11 +74,10 @@ class _CreateEventState extends State<CreateEvent> {
           'title': _eventTitleController.text,
           'location': _eventLocationController.text,
           'description': _eventDescriptionController.text,
-          'eventDate': dateTime.toUtc().millisecondsSinceEpoch/1000,
-          'tagIds': value == null ? [] : [value]
+          'eventDate': eventDateTime.toUtc().millisecondsSinceEpoch/1000,
+          'tagIds': tagValue == null ? [] : [tagValue]
         }
     );
-    print(dateTime.toUtc().millisecondsSinceEpoch/1000);
     var response = await http.post(
         Uri.parse('${Config.baseURL}/events/events'),
         headers: {
@@ -66,6 +91,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   @override
   Widget build(BuildContext context) {
+    // can't save draft
     return Scaffold(
       appBar: AppBar(title: const Text('Create Event')),
       body: ListView(
@@ -80,7 +106,7 @@ class _CreateEventState extends State<CreateEvent> {
           buildCategoryPicker(),
           const SizedBox(height: 20),
           const Text(
-            'Pick event date and time',
+            'Pick event date, start time and end time',
             style: TextStyle(fontSize: 16),
           ),
           ButtonBar(
@@ -88,6 +114,15 @@ class _CreateEventState extends State<CreateEvent> {
             children: [
               buildDatePicker(),
               buildTimePicker(),
+              buildEndTimePicker(),
+            ],
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildImagePicker(onClick: getImage1),
+              buildImagePicker(onClick: getImage2),
+              buildImagePicker(onClick: getImage3),
             ],
           ),
           const SizedBox(height: 24),
@@ -95,7 +130,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 24),
           buildEventFeeField(),
           const SizedBox(height: 24),
-          previewCreateEvent(),
+          previewCreatedEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
         ],
@@ -139,36 +174,21 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-  Future<List<Tag>> _getEventTags() async {
-    var response = await http.get(
-      Uri.parse('${Config.baseURL}/tags/'),
-      headers: {"Content-Type": "application/json"},
-    );
-    List<Tag> eventTagList = [];
-    if (response.statusCode == 200) {
-      for (var i in jsonDecode(utf8.decode(response.bodyBytes))['data']) {
-        Map<String, dynamic> map = Map<String, dynamic>.from(i);
-        eventTagList.add(Tag(map['id'], map['name']));
-      }
-    }
-    return eventTagList;
-  }
-
   Widget buildCategoryPicker() =>
       FutureBuilder<List<Tag>>(
-          future: _getEventTags(),
+          future: getEventTags(""),
           builder: (context, snapshot) {
             return DropdownButton<int>(
                 isExpanded: true,
                 hint: const Text('Pick Category'),
-                value: value,
+                value: tagValue,
                 items: snapshot.data?.map((e) =>
                     DropdownMenuItem<int>(
                       value: e.tagId,
                       child: Text(e.name),
                     )).toList(),
                 onChanged: (selectedValue) {
-                  setState(() => value = selectedValue);
+                  setState(() => tagValue = selectedValue);
                 }
             );
           }
@@ -184,7 +204,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 5),
           TextField(
             decoration: const InputDecoration(
-              labelText: 'Enter Event Description',
+              labelText: 'Enter Event Details',
               border: OutlineInputBorder(),
             ),
             controller: _eventDescriptionController,
@@ -194,9 +214,50 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
+
+  Widget buildImagePicker({
+    required VoidCallback onClick
+  }) {
+    return ElevatedButton(
+      onPressed: onClick, 
+      child: Text ('Pick an image')
+      );
+  }
+
+  Future getImage1() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image1 = imageTemp;
+    });
+  }
+  Future getImage2() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image2 = imageTemp;
+    });
+  }
+  Future getImage3() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return null;
+    }
+    final imageTemp = File(image.path);
+    setState(() {
+      this._image3 = imageTemp;
+    });
+  }
+
   Widget buildDatePicker() =>
       ElevatedButton(
-        child: Text('${dateTime.month}/${dateTime.day}/${dateTime.year}'),
+        child: Text('${eventDateTime.month}/${eventDateTime.day}/${eventDateTime.year}'),
         onPressed: () async {
           final date = await pickDate();
           if (date == null) {
@@ -206,11 +267,11 @@ class _CreateEventState extends State<CreateEvent> {
             date.year,
             date.month,
             date.day,
-            dateTime.hour,
-            dateTime.minute,
+            eventDateTime.hour,
+            eventDateTime.minute,
           );
           setState(() {
-            dateTime = newDateTime;
+            eventDateTime = newDateTime;
           });
         },
       );
@@ -218,28 +279,28 @@ class _CreateEventState extends State<CreateEvent> {
   Future<DateTime?> pickDate() =>
       showDatePicker(
         context: context,
-        initialDate: dateTime,
+        initialDate: eventDateTime,
         firstDate: DateTime(2021),
         lastDate: DateTime(2100),
       );
 
   Widget buildTimePicker() =>
       ElevatedButton(
-        child: Text('${dateTime.hour}:${dateTime.minute}'),
+        child: Text('${eventDateTime.hour}:${eventDateTime.minute}'),
         onPressed: () async {
           final time = await pickTime();
           if (time == null) {
             return;
           }
           final newDateTime = DateTime(
-            dateTime.year,
-            dateTime.month,
-            dateTime.day,
+            eventDateTime.year,
+            eventDateTime.month,
+            eventDateTime.day,
             time.hour,
             time.minute,
           );
           setState(() {
-            dateTime = newDateTime;
+            eventDateTime = newDateTime;
           });
         },
       );
@@ -247,31 +308,83 @@ class _CreateEventState extends State<CreateEvent> {
   Future<TimeOfDay?> pickTime() =>
       showTimePicker(
         context: context,
-        initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+        initialTime: TimeOfDay(hour: eventDateTime.hour, minute: eventDateTime.minute),
       );
-
-  Widget buildEventCapacityField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Capacity',
-          border: OutlineInputBorder(),
+  Widget buildEndTimePicker() {
+    return ElevatedButton(
+      child: Text('${eventEndTime.hour}:${eventEndTime.minute}'),
+        onPressed: () async {
+          final time = await pickTime();
+          if (time == null) {
+            return;
+          }
+          final newDateTime = DateTime(
+            eventEndTime.year,
+            eventEndTime.month,
+            eventEndTime.day,
+            time.hour,
+            time.minute,
+          );
+          setState(() {
+            eventEndTime = newDateTime;
+          });
+        },
+      );
+  }
+  Widget buildEventCapacityField() {
+    return Column(
+      children: [
+        const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Capacity: (optional)", style: TextStyle(fontSize: 16),)
         ),
-        controller: _eventCapacityController,
-      );
+        const SizedBox(height: 5),
+        TextField(
+          decoration: const InputDecoration(
+            labelText: 'Enter Capacity',
+            border: OutlineInputBorder(),
+          ),
+          controller: _eventCapacityController,
+        ),
+      ],
+    );
+  }
 
   Widget buildEventFeeField() =>
-      TextField(
-        decoration: const InputDecoration(
-          labelText: 'Enter Event Fees',
-          border: OutlineInputBorder(),
-        ),
-        controller: _eventFeeController,
+      Column(
+        children: [
+          const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Fee: (optional)", style: TextStyle(fontSize: 16),)
+          ),
+          const SizedBox(height: 5),
+          TextField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Event Fees',
+              border: OutlineInputBorder(),
+            ),
+            controller: _eventFeeController,
+          ),
+        ],
       );
 
-  Widget previewCreateEvent() =>
+  Widget previewCreatedEvent() =>
       FloatingActionButton.extended(
           heroTag: "preview",
-          onPressed: () {},
+          onPressed: () {
+            context.pushNamed("eventPreview",
+                queryParams: {
+                  "eventTitle": _eventTitleController.text,
+                  "eventLocation": _eventLocationController.text,
+                  "eventDescription": _eventDescriptionController.text,
+                  "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
+                  "tagName": tagValue == null ? [] : [tagValue],
+                  "isSaved": false.toString(),
+                }
+            );
+          },
           label: const Text("Preview")
       );
 
@@ -306,6 +419,21 @@ class _CreateEventState extends State<CreateEvent> {
                                         "isSaved": false.toString(),
                                       }
                                   );
+                                },
+                                child: const Text('OK'))
+                          ],
+                        )
+                );
+              } else {
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        AlertDialog(
+                          content: const Text("Failed to create event, try again"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  context.pop();
                                 },
                                 child: const Text('OK'))
                           ],

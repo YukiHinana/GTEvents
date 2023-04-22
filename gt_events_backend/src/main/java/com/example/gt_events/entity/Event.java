@@ -47,6 +47,20 @@ public class Event {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account author;
 
+    @Override
+    public int hashCode() {
+        return (int)((long) this.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Event) {
+            Event e = (Event) obj;
+            return Objects.equals(e.getId(), this.getId());
+        }
+        return false;
+    }
+
     public Event() {}
 
     public Event(String title, String location, String description, Date eventDate,

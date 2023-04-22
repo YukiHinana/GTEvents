@@ -1,14 +1,15 @@
 
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:GTEvents/component/eventMenu.dart';
 import 'package:GTEvents/component/eventTile.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
-import 'component/eventCard.dart';
+import 'package:intl/intl.dart';
 import 'config.dart';
-import 'createEvent.dart';
 import 'package:http/http.dart' as http;
 
 import 'component/sidebar.dart';
@@ -22,12 +23,6 @@ class CreatedEventsPage extends StatefulWidget {
 }
 
 class _CreatedEventsPage extends State<CreatedEventsPage> {
-  void navigateEventCreation(BuildContext ctx) {
-    Navigator.of(ctx).push(MaterialPageRoute(builder: (_){
-      return const CreateEvent();
-    }));
-  }
-
   Future<List<Event>> fetchCreatedEvents(String? token) async {
     List<Event> eventList = [];
     if (token == null) {
@@ -51,8 +46,8 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
           }
         }
         eventList.add(Event(map['id'], map['title'], map['location'],
-                  map['description'], map['eventDate'], map['capacity'], map['fee'], isSaved,
-                  map['eventCreationDate']));
+                  map['description'], map['eventDate']??0, map['capacity'],
+                  map['fee'], isSaved, map['eventCreationDate']??0, map['author']['username']));
       }
     }
     return eventList;
@@ -83,15 +78,55 @@ class _CreatedEventsPage extends State<CreatedEventsPage> {
               );
             }
             return ListView.builder(
-                itemCount: snapshot.data?.length??0,
+                itemCount: snapshot.data?.length ?? 0,
                 itemBuilder: (context, index) {
                   var curItem = snapshot.data![index];
-                  Event e = Event(curItem.eventId, curItem.title,
-                      curItem.location, curItem.description,
-                      curItem.eventDateTimestamp, 0, 0, curItem.isSaved,
-                      curItem.eventCreationTimestamp);
-                  return EventTile(event: e);
-                  // return EventCard(event: e,);
+                  Event e = Event(
+                      curItem.eventId,
+                      curItem.title,
+                      curItem.location,
+                      curItem.description,
+                      curItem.eventDateTimestamp,
+                      0,
+                      0,
+                      curItem.isSaved,
+                      curItem.eventCreationTimestamp,
+                  curItem.organizer);
+                  return Column(
+                    children: [
+                      const Divider(
+                        indent: 1,
+                        endIndent: 1,
+                        thickness: 1,
+                        color: Colors.black54,
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        5, 0, 0, 0),
+                                    child: Text(
+                                        "event created on ${
+                                          DateFormat('MM/dd/yyyy, HH:mm').format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                          curItem.eventCreationTimestamp * 1000))}"
+                                    ),
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    0, 0, 10, 0),
+                                child: EventMenu(eventId: curItem.eventId,),
+                              ),
+                            ],
+                          )
+                      ),
+                      EventTile(event: e),
+                    ],
+                  );
                 }
             );
           }

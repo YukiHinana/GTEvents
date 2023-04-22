@@ -26,14 +26,12 @@ class MyLoginPage extends StatefulWidget {
   State<MyLoginPage> createState() => _MyLoginPageState();
 }
 
-//Login Page State controllers
 class _MyLoginPageState extends State<MyLoginPage> {
   late FocusNode focusNode;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  //login request variables
   Future<http.Response> sendLoginRequest() async {
     var loginData = json.encode(
         {
@@ -147,16 +145,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                   onPressed: () => context.push('/signup'),
                 ),
               ),
-              // SizedBox(height: 30),
-              // Container(
-              //   height: 400,
-              //   width: double.infinity,
-              //   decoration: const BoxDecoration(
-              //     image: DecorationImage(
-              //         image: AssetImage("assets/background.jpg"),
-              //         fit: BoxFit.cover),
-              //   ),
-              // ),
             ]
         ),
       ),

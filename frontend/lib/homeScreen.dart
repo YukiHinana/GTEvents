@@ -21,6 +21,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int filterLen = 0;
+
+  int calculateSelectedFilterNum(List<int> eventTypeTagSelectState,
+      List<int> degreeTagSelectState) {
+    return eventTypeTagSelectState.length + degreeTagSelectState.length;
+  }
 
   @override
   void initState() {
@@ -42,6 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               icon: const Icon(Icons.search))
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: calculateSelectedFilterNum(
+            StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState)
+            == 0 ? Colors.brown : const Color(0xff432818),
+        onPressed: () {
+          context.push("/events/filter");
+        },
+        label: calculateSelectedFilterNum(
+            StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState) == 0
+            ? const Text("filter", style: TextStyle(color: Color(0xfffcf3ea)),)
+            : Text("filter (${calculateSelectedFilterNum(
+            StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState)})",
+          style: const TextStyle(color: Color(0xfffcf3ea)),),
+        icon: const Icon(Icons.filter_list_alt, color: Color(0xfffcf3ea),),
       ),
       body: StoreConnector<AppState, AppState>(
         converter: (store) {

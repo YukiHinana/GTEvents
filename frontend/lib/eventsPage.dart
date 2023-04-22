@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:GTEvents/component/eventCard.dart';
+import 'package:GTEvents/component/filter.dart';
 import 'package:GTEvents/savedEventsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -24,6 +25,7 @@ class PagedResult<T> {
   int totalPages;
   int totalElements;
   List<T> items = [];
+  Map tagItems = <int, List<Tag>>{};
 
   PagedResult(
       {this.pageNumber = 0, this.totalPages = 0, this.totalElements = 0});
@@ -31,22 +33,34 @@ class PagedResult<T> {
 
 //Event Page
 class _EventsPage extends State<EventsPage> {
-  // States
   List<Event> eventList = [];
+  Map tagMap = <int, List<Tag>>{};
   int totalPages = 0;
   int curScrollPage = 0;
 
   final RefreshController refreshController =
       RefreshController(initialRefresh: true);
 
-  /// Returns a future which resolves to List<Event>?.
-  Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber) async {
+  Future<PagedResult<Event>?> fetchEvents(String? token, int pageNumber,
+      List<int> eventTypeTagSelectState,
+      List<int> degreeTagSelectState,
+      DateTime? startDate,
+      DateTime? endDate) async {
     List<Event> newEventList = [];
-    var response = await http.get(
-      Uri.parse(
-          '${Config.baseURL}/events/events?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
-      headers: {"Content-Type": "application/json"},
-    );
+    Map newTagMap = <int, List<Tag>>{};
+    var response;
+    if (eventTypeTagSelectState.isEmpty && degreeTagSelectState.isEmpty
+        && startDate == null
+        && endDate == null) {
+      response = await http.get(
+        Uri.parse(
+            '${Config.baseURL}/events/events/sort/event-date?pageNumber=$pageNumber&pageSize=$_PAGE_SIZE'),
+        headers: {"Content-Type": "application/json"},
+      );
+    } else {
+      response = await doFilter(eventTypeTagSelectState, degreeTagSelectState,
+          startDate, endDate, pageNumber, _PAGE_SIZE);
+    }
     if (response.statusCode == 200) {
       PagedResult<Event> result = PagedResult();
       Map<String, dynamic> map =
@@ -64,11 +78,20 @@ class _EventsPage extends State<EventsPage> {
             isSaved = true;
           }
         }
+        for (var i = 0; i < info['tags'].length; i++) {
+          if (newTagMap[info['id']] != null) {
+            List<Tag> curTagList = newTagMap[info['id']];
+            curTagList.add(Tag(info['tags'][i]['id'], info['tags'][i]['name']));
+          } else {
+            newTagMap[info['id']] = [Tag(info['tags'][i]['id'], info['tags'][i]['name'])];
+          }
+        }
         newEventList.add(Event(info['id'], info['title'], info['location'],
-            info['description'], info['eventDate'], info['capacity'],
+            info['description'], info['eventDate']??0, info['capacity'],
             info['fee'], isSaved,
-            info['eventCreationDate']));
+            info['eventCreationDate']??0, info['author']['username']));
       }
+      result.tagItems = newTagMap;
       result.items = newEventList;
       return result;
     }
@@ -88,11 +111,17 @@ class _EventsPage extends State<EventsPage> {
       onRefresh: () async {
         // Call fetchEvents with 0, to get the initial page
         var result = await fetchEvents(
-            StoreProvider.of<AppState>(context).state.token, 0);
+            StoreProvider.of<AppState>(context).state.token, 0,
+            StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,
+            StoreProvider.of<AppState>(context).state.filterData.startDate,
+            StoreProvider.of<AppState>(context).state.filterData.endDate,
+        );
         if (result != null) {
           // Fetch succeed, update state and trigger re-render
           setState(() {
             eventList = result.items;
+            tagMap = result.tagItems;
             totalPages = result.totalPages;
             curScrollPage = result.pageNumber;
 
@@ -109,10 +138,15 @@ class _EventsPage extends State<EventsPage> {
           // Has next page
           var result = await fetchEvents(
               StoreProvider.of<AppState>(context).state.token,
-              curScrollPage + 1);
+              curScrollPage + 1,
+              StoreProvider.of<AppState>(context).state.filterData.eventTypeTagSelectState,
+              StoreProvider.of<AppState>(context).state.filterData.degreeTagSelectState,
+              StoreProvider.of<AppState>(context).state.filterData.startDate,
+              StoreProvider.of<AppState>(context).state.filterData.endDate,);
           if (result != null) {
             setState(() {
               eventList = [...eventList, ...result.items];
+              tagMap = {...tagMap, ...result.tagItems};
               totalPages = result.totalPages;
               curScrollPage = result.pageNumber;
 
@@ -130,9 +164,10 @@ class _EventsPage extends State<EventsPage> {
           itemBuilder: (context, index) {
             return Container(
               key: Key("${eventList[index].eventId}"),
-              padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+              padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
               child: EventCard(
                 event: eventList[index],
+                tagList: tagMap[eventList[index].eventId]??[],
               ),
             );
           }),
