@@ -44,7 +44,8 @@ Future<List<Tag>> getEventTags(String? groupName) async {
 }
 
 class _CreateEventState extends State<CreateEvent> {
-  // tag value
+  // allow to select up to 3 tags
+  // TODO: remember to set the limit on backend
   List<Tag?> selectedTagList = [null, null, null];
   List<Tag> providedTagList = [];
 
@@ -147,7 +148,7 @@ class _CreateEventState extends State<CreateEvent> {
           const SizedBox(height: 24),
           buildEventFeeField(),
           const SizedBox(height: 24),
-          // previewCreatedEvent(),
+          previewCreatedEvent(),
           const SizedBox(height: 24),
           buildCreateEvent(),
         ],
@@ -204,7 +205,6 @@ class _CreateEventState extends State<CreateEvent> {
               hint: Text((selectedTagList[index] == null)
                   ? "Pick Category"
                   : selectedTagList[index]!.name),
-              // value: selectedTagList.length == 0 ? null : selectedTagList.first,
               items: snapshot.data?.map((e) =>
                   DropdownMenuItem<Tag>(
                     value: e,
@@ -361,7 +361,7 @@ class _CreateEventState extends State<CreateEvent> {
   //       },
   //     );
   // }
-  
+
   Widget buildEventCapacityField() {
     return Column(
       children: [
@@ -401,23 +401,38 @@ class _CreateEventState extends State<CreateEvent> {
         ],
       );
 
-  // Widget previewCreatedEvent() =>
-  //     FloatingActionButton.extended(
-  //         heroTag: "preview",
-  //         onPressed: () {
-  //           context.pushNamed("eventPreview",
-  //               queryParams: {
-  //                 "eventTitle": _eventTitleController.text,
-  //                 "eventLocation": _eventLocationController.text,
-  //                 "eventDescription": _eventDescriptionController.text,
-  //                 "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
-  //                 "tagName": tagValue == null ? [] : [tagValue],
-  //                 "isSaved": false.toString(),
-  //               }
-  //           );
-  //         },
-  //         label: const Text("Preview")
-  //     );
+  Widget previewCreatedEvent() {
+    Map<String, dynamic> paramMap = <String, dynamic>{};
+    List<Tag> tList = [];
+    for (var i = 0; i < selectedTagList.length; i++) {
+      if (selectedTagList[i] != null) {
+        tList.add(Tag(selectedTagList[i]!.tagId,
+            selectedTagList[i]!.name));
+      }
+    }
+    paramMap.putIfAbsent("tagList", () => tList);
+
+    return FloatingActionButton.extended(
+        heroTag: "preview",
+        onPressed: () {
+          context.pushNamed("eventPreview",
+              queryParams: {
+                "eventTitle": _eventTitleController.text,
+                "eventLocation": _eventLocationController.text,
+                "eventDescription": _eventDescriptionController.text,
+                "eventDate": (eventDateTime.toUtc().millisecondsSinceEpoch/1000).toString(),
+                "capacity": _eventCapacityController.text == ""
+                    ? "0" : _eventCapacityController.text,
+                "fee": _eventFeeController.text == ""
+                    ? "0" : _eventFeeController.text,
+                "isSaved": false.toString(),
+              },
+              extra: paramMap
+          );
+        },
+        label: const Text("Preview")
+    );
+  }
 
   Widget buildCreateEvent() =>
       FloatingActionButton.extended(
