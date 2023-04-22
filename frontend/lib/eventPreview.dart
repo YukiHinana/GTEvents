@@ -11,12 +11,16 @@ class EventPreview extends StatefulWidget {
   final String eventDescription;
   final String eventDate;
   final String eventCreationDate;
+  final String capacity;
+  final String fee;
+  final String author;
   final List<Tag> tagNameList;
 
   const EventPreview({super.key, required this.eventTitle,
     required this.eventLocation, required this.eventDescription,
     required this.eventDate, required this.eventCreationDate,
-    required this.tagNameList});
+    required this.capacity, required this.fee,
+    required this.author, required this.tagNameList});
 
   @override
   State<EventPreview> createState() => _EventPreviewState();

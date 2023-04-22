@@ -163,6 +163,24 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
+          name: "eventPreview",
+          path: 'preview',
+          builder: (context, state) {
+            Map<String, dynamic> map = state.extra as Map<String, dynamic>;
+            return EventPreview(
+                eventTitle: state.queryParams["eventTitle"]??"",
+                eventLocation: state.queryParams["eventLocation"]??"",
+                eventDescription: state.queryParams["eventDescription"]??"",
+                eventDate: state.queryParams["eventDate"]??"0",
+                eventCreationDate: state.queryParams["eventCreationDate"]??"0",
+                capacity: state.queryParams["capacity"]??"0",
+                fee: state.queryParams["fee"]??"0",
+                author: state.queryParams["author"]??"",
+                tagNameList: map["tagList"]
+            );
+          },
+        ),
+        GoRoute(
           name: "filter",
           path: 'filter',
           builder: (context, state) {
