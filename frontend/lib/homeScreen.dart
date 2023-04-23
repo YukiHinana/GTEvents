@@ -9,6 +9,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_mobile_ads/google_mobile_ads.dart' as ads;
+
 
 import 'event.dart';
 import 'eventsPage.dart';
@@ -18,9 +20,20 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+
+  Future<ads.InitializationStatus> _initGoogleMobileAds() {
+    return
+      ads.MobileAds.instance.initialize();
+  }
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  //banner ads
+  late ads.BannerAd _bannerAd;
+  bool isBannerAdReady = false;
+
   int filterLen = 0;
 
   int calculateSelectedFilterNum(List<int> eventTypeTagSelectState,
@@ -31,6 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _bannerAd = ads.BannerAd(size: ads.AdSize.banner , adUnitId:'ca-app-pub-3257656342161902/320266917',
+        listener: ads.BannerAdListener(onAdLoaded: (_){setState(() { isBannerAdReady = true;
+
+    });}, onAdFailedToLoad: (ad,error){print("Fail to load a banner ad${error.message}"); isBannerAdReady = false; ad.dispose();} ),
+        request:  ads.AdRequest())..load();
   }
 
   @override
@@ -67,7 +85,19 @@ class _HomeScreenState extends State<HomeScreen> {
           style: const TextStyle(color: Color(0xfffcf3ea)),),
         icon: const Icon(Icons.filter_list_alt, color: Color(0xfffcf3ea),),
       ),
-      body: StoreConnector<AppState, AppState>(
+      body:
+          Column(
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          if(isBannerAdReady)
+
+        SizedBox(
+          height: _bannerAd.size.height.toDouble(),
+          width: _bannerAd.size.width.toDouble(),
+          child: ads.AdWidget(ad: _bannerAd),
+    ),
+
+       StoreConnector<AppState, AppState>(
         converter: (store) {
           return store.state;
         },
@@ -75,7 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
           return const EventsPage();
         },
       ),
+],
+    ),
       drawer: const UserSideBar(),
+
     );
   }
 }

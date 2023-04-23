@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:go_router/go_router.dart';
 import 'package:GTEvents/signup.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart' as ads;
 import 'package:shared_preferences/shared_preferences.dart';
 import './login.dart';
 import 'config.dart';
@@ -21,6 +22,10 @@ import 'event.dart';
 
 // run main.dart to start the program
 void main() {
+  //ads initialize
+  // WidgetsFlutterBinding.ensureInitialized();
+  // ads.MobileAds.instance.initialize();
+
   DateTime curTime = DateTime.now();
   final store = Store<AppState>(appReducer,
       initialState: AppState(filterData: FilterData([], [],
@@ -36,9 +41,10 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+
   final Store<AppState> store;
 
-  const MyApp({super.key, required this.store});
+  MyApp({super.key, required this.store});
 
   Future<void> appInit(Store<AppState> store) async {
     SharedPreferences.getInstance().then((value) {
@@ -58,6 +64,7 @@ class MyApp extends StatelessWidget {
       }
     });
   }
+
 
   //Main interface
   @override
@@ -206,3 +213,5 @@ final GoRouter _router = GoRouter(
     ),
   ],
 );
+
+
