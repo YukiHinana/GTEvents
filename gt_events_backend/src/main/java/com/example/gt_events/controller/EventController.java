@@ -4,13 +4,11 @@ import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
 import com.example.gt_events.entity.Account;
 import com.example.gt_events.entity.Event;
+import com.example.gt_events.entity.EventClick;
 import com.example.gt_events.entity.Tag;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
-import com.example.gt_events.repo.AccountRepository;
-import com.example.gt_events.repo.EventRepository;
-import com.example.gt_events.repo.TagRepository;
-import com.example.gt_events.repo.TokenRepository;
+import com.example.gt_events.repo.*;
 import com.example.gt_events.service.EventService;
 import com.example.gt_events.service.FileService;
 import jakarta.persistence.EntityManager;
@@ -38,17 +36,19 @@ public class EventController {
     private final TagRepository tagRepository;
     private final FileService fileService;
     private final EventService eventService;
+    private final EventClickRepository eventClickRepository;
 
     @Autowired
     public EventController(EventRepository eventRepository, AccountRepository accountRepository,
                            TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService,
-                           EventService eventService) {
+                           EventService eventService, EventClickRepository eventClickRepository) {
         this.eventRepository = eventRepository;
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
         this.tagRepository = tagRepository;
         this.fileService = fileService;
         this.eventService = eventService;
+        this.eventClickRepository = eventClickRepository;
     }
 
     @GetMapping("/events")
@@ -125,7 +125,10 @@ public class EventController {
         }
         Event event = new Event(request.getTitle(), request.getLocation(), request.getDescription(),
                 request.getEventDate(), request.getCapacity(), request.getFee(), tagList, a);
-        return new ResponseWrapper<>(eventRepository.save(event));
+        event = eventRepository.save(event);
+        EventClick newEventClick = new EventClick(event, 0);
+        eventClickRepository.save(newEventClick);
+        return new ResponseWrapper<>(event);
     }
 
     @GetMapping("/events/{eventId}")
@@ -134,12 +137,17 @@ public class EventController {
         if (event.isEmpty()) {
             throw new InvalidRequestException("Event does not exist");
         }
+        EventClick eventClick = eventClickRepository.findByEventId(event.get())
+                .orElseThrow(() -> new InvalidRequestException("can't find the corresponding event click"));
+        eventClick.setNumClick(eventClick.getNumClick() + 1);
+        eventClickRepository.save(eventClick);
         return new ResponseWrapper<>(event.get());
     }
 
     @PutMapping("/events/{eventId}")
     @RequireAuth(requireOrganizer = true)
-    public ResponseWrapper<?> editEvent(@PathVariable Long eventId, @RequestBody @Valid CreateEventRequest request, Account a) {
+    public ResponseWrapper<?> editEvent(@PathVariable Long eventId,
+                                        @RequestBody @Valid CreateEventRequest request, Account a) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new InvalidRequestException("can't find the event");
