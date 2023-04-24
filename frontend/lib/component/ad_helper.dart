@@ -1,5 +1,7 @@
 import 'dart:io';
 
+
+// ADS IMPLEMENTED IN HOMESCREEN.DART AND MAIN.DART
 class AdHelper {
 
   static String get bannerAdUnitId {
