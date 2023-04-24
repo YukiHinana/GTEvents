@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import Chart from "./Chart";
+import Chart from "./chart";
 import axios from "axios";
 
-function App() {
+function EventInfoPage() {
   const [data, setData] = useState();
   useEffect(() => {
     const fetchData = async() => {
-      axios.get('http://localhost:8080/clicks/view-events-top-10')
+      axios.get('http://localhost:8080/clicks/view-events-top-10', {params: {
+            startDate: 1682262088,
+              endDate: 1682965688
+          }})
           .then(response => {
               // console.log(response.data);
               setData(response.data.data);
@@ -28,4 +31,4 @@ function App() {
   );
 }
 
-export default App;
+export default EventInfoPage;

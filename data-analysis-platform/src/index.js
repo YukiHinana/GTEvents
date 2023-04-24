@@ -1,29 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import EventInfoPage from './EventInfoPage';
+import {createBrowserRouter, Link, Outlet, redirect, RouterProvider, useLocation} from 'react-router-dom';
+import Home from "./home";
+import Sidebar from "./component/sidebar";
+
+// const AppLayout = () => {
+//     <div>
+//         <Sidebar></Sidebar>
+//         <Outlet/>
+//     </div>
+// };
+
+function AppLayout() {
+    return (
+        <div>
+            <Sidebar></Sidebar>
+            <Outlet/>
+        </div>
+    );
+}
+
+const router = createBrowserRouter([
+    {
+        element: <AppLayout/>,
+        children: [
+            {
+                path: "/",
+                element: <Home></Home>,
+            },
+            {
+                path: "/chart",
+                element: <EventInfoPage></EventInfoPage>,
+            }
+        ]
+    }
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+      <RouterProvider router={router} />
   </React.StrictMode>
 );
-
-// import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-// const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400}, ...];
-//
-// const renderLineChart = (
-//     <LineChart width={600} height={300} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-//         <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-//         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-//         <XAxis dataKey="name" />
-//         <YAxis />
-//         <Tooltip />
-//     </LineChart>
-// );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

@@ -47,9 +47,6 @@ public class Event {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account author;
 
-    @OneToOne(mappedBy = "eventId")
-    private EventClick click;
-
     @Override
     public int hashCode() {
         return (int)((long) this.getId());

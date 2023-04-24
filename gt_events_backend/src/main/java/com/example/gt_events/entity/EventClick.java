@@ -2,6 +2,8 @@ package com.example.gt_events.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 public class EventClick {
     @Id
@@ -9,31 +11,33 @@ public class EventClick {
     private Long id;
 
     @OneToOne
-    private Event eventId;
+    private Event event;
 
-    private long numClick;
+//    private long numClick;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date clickDate;
 
     public EventClick() {
     }
 
-    public EventClick(Event eventId, long numClick) {
-        this.eventId = eventId;
-        this.numClick = numClick;
+    public EventClick(Event event, Date clickDate) {
+        this.event = event;
+        this.clickDate = clickDate;
     }
 
-    public Event getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(Event eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event eventId) {
+        this.event = eventId;
     }
 
-    public long getNumClick() {
-        return numClick;
+    public Date getClickDate() {
+        return clickDate;
     }
 
-    public void setNumClick(long numClick) {
-        this.numClick = numClick;
+    public void setClickDate(Date clickDate) {
+        this.clickDate = clickDate;
     }
 }

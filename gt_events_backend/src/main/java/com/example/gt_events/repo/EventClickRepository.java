@@ -16,5 +16,8 @@ import java.util.Optional;
 public interface EventClickRepository extends JpaRepository<EventClick, Long> {
     Optional<EventClick> findByEventId(Event e);
 
-    List<EventClick> findTop3ByOrderByNumClickDesc();
+//    List<EventClick> findTop3ByOrderByNumClickDesc();
+//    long countByEventIdAndByEventDateBetween(Event e, Date startDate, Date endDate);
+    List<EventClick> findByClickDateBetween(Date startDate, Date endDate);
+
 }

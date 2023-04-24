@@ -126,8 +126,6 @@ public class EventController {
         Event event = new Event(request.getTitle(), request.getLocation(), request.getDescription(),
                 request.getEventDate(), request.getCapacity(), request.getFee(), tagList, a);
         event = eventRepository.save(event);
-        EventClick newEventClick = new EventClick(event, 0);
-        eventClickRepository.save(newEventClick);
         return new ResponseWrapper<>(event);
     }
 
@@ -137,10 +135,7 @@ public class EventController {
         if (event.isEmpty()) {
             throw new InvalidRequestException("Event does not exist");
         }
-        EventClick eventClick = eventClickRepository.findByEventId(event.get())
-                .orElseThrow(() -> new InvalidRequestException("can't find the corresponding event click"));
-        eventClick.setNumClick(eventClick.getNumClick() + 1);
-        eventClickRepository.save(eventClick);
+        eventClickRepository.save(new EventClick(event.get(), new Date()));
         return new ResponseWrapper<>(event.get());
     }
 
