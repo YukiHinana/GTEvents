@@ -1,0 +1,537 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FF4EBE0329F6162000997504 /* GTEventsWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE0229F6162000997504 /* GTEventsWatchOSApp.swift */; };
+		FF4EBE0529F6162000997504 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE0429F6162000997504 /* ContentView.swift */; };
+		FF4EBE0729F6162200997504 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF4EBE0629F6162200997504 /* Assets.xcassets */; };
+		FF4EBE0A29F6162200997504 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF4EBE0929F6162200997504 /* Preview Assets.xcassets */; };
+		FF4EBE1029F6162200997504 /* GTEventsWatchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = FF4EBE0F29F6162200997504 /* GTEventsWatchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FF4EBE1529F6162200997504 /* GTEventsWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE1429F6162200997504 /* GTEventsWatchOSApp.swift */; };
+		FF4EBE1729F6162200997504 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE1629F6162200997504 /* ContentView.swift */; };
+		FF4EBE1929F6162300997504 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF4EBE1829F6162300997504 /* Assets.xcassets */; };
+		FF4EBE1C29F6162300997504 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF4EBE1B29F6162300997504 /* Preview Assets.xcassets */; };
+		FF4EBE2729F62C4100997504 /* AddItemLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE2629F62C4100997504 /* AddItemLink.swift */; };
+		FF4EBE2929F62F7D00997504 /* ItemDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EBE2829F62F7D00997504 /* ItemDetail.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FF4EBE1129F6162200997504 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF4EBDF729F6162000997504 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FF4EBE0E29F6162200997504;
+			remoteInfo = "GTEventsWatchOS Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FF4EBE2229F6162300997504 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				FF4EBE1029F6162200997504 /* GTEventsWatchOS Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FF4EBDFF29F6162000997504 /* GTEventsWatchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GTEventsWatchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF4EBE0229F6162000997504 /* GTEventsWatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTEventsWatchOSApp.swift; sourceTree = "<group>"; };
+		FF4EBE0429F6162000997504 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FF4EBE0629F6162200997504 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FF4EBE0929F6162200997504 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FF4EBE0F29F6162200997504 /* GTEventsWatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GTEventsWatchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF4EBE1429F6162200997504 /* GTEventsWatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTEventsWatchOSApp.swift; sourceTree = "<group>"; };
+		FF4EBE1629F6162200997504 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FF4EBE1829F6162300997504 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FF4EBE1B29F6162300997504 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FF4EBE2629F62C4100997504 /* AddItemLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemLink.swift; sourceTree = "<group>"; };
+		FF4EBE2829F62F7D00997504 /* ItemDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetail.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FF4EBDFC29F6162000997504 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF4EBE0C29F6162200997504 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FF4EBDF629F6162000997504 = {
+			isa = PBXGroup;
+			children = (
+				FF4EBE0129F6162000997504 /* GTEventsWatchOS */,
+				FF4EBE1329F6162200997504 /* GTEventsWatchOS Watch App */,
+				FF4EBE0029F6162000997504 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FF4EBE0029F6162000997504 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FF4EBDFF29F6162000997504 /* GTEventsWatchOS.app */,
+				FF4EBE0F29F6162200997504 /* GTEventsWatchOS Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FF4EBE0129F6162000997504 /* GTEventsWatchOS */ = {
+			isa = PBXGroup;
+			children = (
+				FF4EBE0229F6162000997504 /* GTEventsWatchOSApp.swift */,
+				FF4EBE0429F6162000997504 /* ContentView.swift */,
+				FF4EBE0629F6162200997504 /* Assets.xcassets */,
+				FF4EBE0829F6162200997504 /* Preview Content */,
+			);
+			path = GTEventsWatchOS;
+			sourceTree = "<group>";
+		};
+		FF4EBE0829F6162200997504 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				FF4EBE0929F6162200997504 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		FF4EBE1329F6162200997504 /* GTEventsWatchOS Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				FF4EBE1429F6162200997504 /* GTEventsWatchOSApp.swift */,
+				FF4EBE1629F6162200997504 /* ContentView.swift */,
+				FF4EBE2629F62C4100997504 /* AddItemLink.swift */,
+				FF4EBE2829F62F7D00997504 /* ItemDetail.swift */,
+				FF4EBE1829F6162300997504 /* Assets.xcassets */,
+				FF4EBE1A29F6162300997504 /* Preview Content */,
+			);
+			path = "GTEventsWatchOS Watch App";
+			sourceTree = "<group>";
+		};
+		FF4EBE1A29F6162300997504 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				FF4EBE1B29F6162300997504 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FF4EBDFE29F6162000997504 /* GTEventsWatchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF4EBE2329F6162300997504 /* Build configuration list for PBXNativeTarget "GTEventsWatchOS" */;
+			buildPhases = (
+				FF4EBDFB29F6162000997504 /* Sources */,
+				FF4EBDFC29F6162000997504 /* Frameworks */,
+				FF4EBDFD29F6162000997504 /* Resources */,
+				FF4EBE2229F6162300997504 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FF4EBE1229F6162200997504 /* PBXTargetDependency */,
+			);
+			name = GTEventsWatchOS;
+			productName = GTEventsWatchOS;
+			productReference = FF4EBDFF29F6162000997504 /* GTEventsWatchOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FF4EBE0E29F6162200997504 /* GTEventsWatchOS Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF4EBE1F29F6162300997504 /* Build configuration list for PBXNativeTarget "GTEventsWatchOS Watch App" */;
+			buildPhases = (
+				FF4EBE0B29F6162200997504 /* Sources */,
+				FF4EBE0C29F6162200997504 /* Frameworks */,
+				FF4EBE0D29F6162200997504 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "GTEventsWatchOS Watch App";
+			productName = "GTEventsWatchOS Watch App";
+			productReference = FF4EBE0F29F6162200997504 /* GTEventsWatchOS Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FF4EBDF729F6162000997504 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					FF4EBDFE29F6162000997504 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					FF4EBE0E29F6162200997504 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = FF4EBDFA29F6162000997504 /* Build configuration list for PBXProject "GTEventsWatchOS" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FF4EBDF629F6162000997504;
+			productRefGroup = FF4EBE0029F6162000997504 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FF4EBDFE29F6162000997504 /* GTEventsWatchOS */,
+				FF4EBE0E29F6162200997504 /* GTEventsWatchOS Watch App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FF4EBDFD29F6162000997504 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF4EBE0A29F6162200997504 /* Preview Assets.xcassets in Resources */,
+				FF4EBE0729F6162200997504 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF4EBE0D29F6162200997504 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF4EBE1C29F6162300997504 /* Preview Assets.xcassets in Resources */,
+				FF4EBE1929F6162300997504 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FF4EBDFB29F6162000997504 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF4EBE0529F6162000997504 /* ContentView.swift in Sources */,
+				FF4EBE0329F6162000997504 /* GTEventsWatchOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF4EBE0B29F6162200997504 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF4EBE1729F6162200997504 /* ContentView.swift in Sources */,
+				FF4EBE2929F62F7D00997504 /* ItemDetail.swift in Sources */,
+				FF4EBE1529F6162200997504 /* GTEventsWatchOSApp.swift in Sources */,
+				FF4EBE2729F62C4100997504 /* AddItemLink.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FF4EBE1229F6162200997504 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FF4EBE0E29F6162200997504 /* GTEventsWatchOS Watch App */;
+			targetProxy = FF4EBE1129F6162200997504 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FF4EBE1D29F6162300997504 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FF4EBE1E29F6162300997504 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		FF4EBE2029F6162300997504 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GTEventsWatchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 9BL45XFPWL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GTEventsWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = girwhoshfsj.GTEventsWatchOS;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = girwhoshfsj.GTEventsWatchOS.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+			};
+			name = Debug;
+		};
+		FF4EBE2129F6162300997504 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GTEventsWatchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 9BL45XFPWL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GTEventsWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = girwhoshfsj.GTEventsWatchOS;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = girwhoshfsj.GTEventsWatchOS.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+			};
+			name = Release;
+		};
+		FF4EBE2429F6162300997504 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GTEventsWatchOS/Preview Content\"";
+				DEVELOPMENT_TEAM = 9BL45XFPWL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GTEventsWatchOS;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = girwhoshfsj.GTEventsWatchOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FF4EBE2529F6162300997504 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GTEventsWatchOS/Preview Content\"";
+				DEVELOPMENT_TEAM = 9BL45XFPWL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GTEventsWatchOS;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = girwhoshfsj.GTEventsWatchOS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FF4EBDFA29F6162000997504 /* Build configuration list for PBXProject "GTEventsWatchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF4EBE1D29F6162300997504 /* Debug */,
+				FF4EBE1E29F6162300997504 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF4EBE1F29F6162300997504 /* Build configuration list for PBXNativeTarget "GTEventsWatchOS Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF4EBE2029F6162300997504 /* Debug */,
+				FF4EBE2129F6162300997504 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF4EBE2329F6162300997504 /* Build configuration list for PBXNativeTarget "GTEventsWatchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF4EBE2429F6162300997504 /* Debug */,
+				FF4EBE2529F6162300997504 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FF4EBDF729F6162000997504 /* Project object */;
+}

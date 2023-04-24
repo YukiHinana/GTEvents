@@ -21,10 +21,10 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 
-  Future<ads.InitializationStatus> _initGoogleMobileAds() {
-    return
-      ads.MobileAds.instance.initialize();
-  }
+  // Future<ads.InitializationStatus> _initGoogleMobileAds() {
+  //   return
+  //     ads.MobileAds.instance.initialize();
+  // }
 
 }
 
@@ -86,16 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: const Icon(Icons.filter_list_alt, color: Color(0xfffcf3ea),),
       ),
       body:
-          Column(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-          if(isBannerAdReady)
-
-        SizedBox(
-          height: _bannerAd.size.height.toDouble(),
-          width: _bannerAd.size.width.toDouble(),
-          child: ads.AdWidget(ad: _bannerAd),
-    ),
+    //       Column(
+    //         // crossAxisAlignment: CrossAxisAlignment.stretch,
+    //       children: [
+    //       if(isBannerAdReady)
+    //
+    //     SizedBox(
+    //       height: _bannerAd.size.height.toDouble(),
+    //       width: _bannerAd.size.width.toDouble(),
+    //       child: ads.AdWidget(ad: _bannerAd),
+    // ),
 
        StoreConnector<AppState, AppState>(
         converter: (store) {
@@ -105,8 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return const EventsPage();
         },
       ),
-],
-    ),
+// ],
+//     ),
       drawer: const UserSideBar(),
 
     );
