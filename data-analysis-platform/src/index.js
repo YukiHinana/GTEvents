@@ -5,13 +5,7 @@ import EventInfoPage from './EventInfoPage';
 import {createBrowserRouter, Link, Outlet, redirect, RouterProvider, useLocation} from 'react-router-dom';
 import Home from "./home";
 import Sidebar from "./component/sidebar";
-
-// const AppLayout = () => {
-//     <div>
-//         <Sidebar></Sidebar>
-//         <Outlet/>
-//     </div>
-// };
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function AppLayout() {
     return (
@@ -31,7 +25,7 @@ const router = createBrowserRouter([
                 element: <Home></Home>,
             },
             {
-                path: "/chart",
+                path: "/event-info",
                 element: <EventInfoPage></EventInfoPage>,
             }
         ]

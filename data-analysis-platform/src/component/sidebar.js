@@ -2,16 +2,16 @@ import {useState} from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
-import "../chart.css"
+import "./chart.css"
 import "./sidebar.css"
 
 function Sidebar() {
     const [sidebarCollapse, setSidebarCollapse] = useState(false);
     return (
         <div>
-            <div className="sidebar-menu-container-style">
-                <div className="sidebar-menu-style">
-                    <FaIcons.FaBars size={30} onClick={() => setSidebarCollapse(!sidebarCollapse)}></FaIcons.FaBars>
+            <div className="navbar-container-style">
+                <div className="navbar-style">
+                     <FaIcons.FaBars size={25} onClick={() => setSidebarCollapse(!sidebarCollapse)}></FaIcons.FaBars>
                 </div>
             </div>
             <nav className={sidebarCollapse ? "nav-menu active" : "nav-menu"}>
@@ -28,7 +28,7 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="sidebar-item-container-style">
-                        <Link to="/chart" className="sidebar-item-style">
+                        <Link to="/event-info" className="sidebar-item-style">
                             <AiIcons.AiOutlineBarChart size={25}></AiIcons.AiOutlineBarChart>
                             <div className="sidebar-item-text-style">
                                 Events Info

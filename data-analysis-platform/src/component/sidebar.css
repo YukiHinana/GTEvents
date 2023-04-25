@@ -1,9 +1,9 @@
-.sidebar-menu-style {
-    margin: 10px;
+.navbar-style {
+    padding: 10px;
 }
 
-.sidebar-menu-container-style {
-    border-bottom: 2px solid black;
+.navbar-container-style {
+    box-shadow: 0px 0px 3px 0px darkgray;
 }
 
 .sidebar-menu-close-icon-style {
@@ -12,6 +12,7 @@
 
 ul {
     list-style-type: none;
+    padding-left: 0 !important;
 }
 
 * {
@@ -23,6 +24,7 @@ ul {
 
 .home {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
 }
 

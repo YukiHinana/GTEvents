@@ -1,7 +1,7 @@
 .event-num-clicks-chart-container {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 500px;
     border: solid 1px black;
     border-radius: 10px;
     margin: 8px;

@@ -1,11 +1,13 @@
-import {Link} from "react-router-dom";
 
 function Home() {
     return(
         <div className="home">
             <h1>
-                Home
+                Welcome to GTEvents Dashboard
             </h1>
+            <h3>
+                for GTEvents
+            </h3>
         </div>
     )
 }
