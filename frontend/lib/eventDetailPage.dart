@@ -17,12 +17,12 @@ class EventDetailPage extends StatefulWidget {
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
-BannerAd myBanner = BannerAd(
+/*BannerAd myBanner = BannerAd(
     size: AdSize.banner, 
     adUnitId: "ca-app-pub-3940256099942544/2934735716", 
     listener: BannerAdListener(), 
     request: AdRequest()
-    );
+    );*/
 Widget showEventDetails(String eventTitle, String eventDate,
     String eventLocation, String eventDescription, List<Tag> tagList) {
   String month = "";
@@ -32,12 +32,12 @@ Widget showEventDetails(String eventTitle, String eventDate,
     month = mapMonth(eventTimeList[0]);
     date = eventTimeList[1];
   }
-  final AdWidget adWidget = AdWidget(ad: myBanner);
+  /*final AdWidget adWidget = AdWidget(ad: myBanner);
   final Container adContainer = Container(
     child: adWidget,
     width: myBanner.size.width.toDouble(),
     height: myBanner.size.height.toDouble(),
-  );
+  );*/
   Widget content(Widget ads) {
     return Container(
       child: Container(
@@ -154,7 +154,7 @@ Widget showEventDetails(String eventTitle, String eventDate,
           children: [...getTagCards(tagList)],
         )
       ),
-      content(adContainer),
+      //content(adContainer),
     ],
   );
 }
@@ -201,7 +201,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     listener: BannerAdListener(), 
     request: AdRequest());
     myBanner.load();*/
-    myBanner.load();
+    //myBanner.load();
     super.initState();
     event = widget.event;
     tagList = widget.tagList;

@@ -135,14 +135,14 @@ class _CreateEventState extends State<CreateEvent> {
               // buildEndTimePicker(),
             ],
           ),
-          ButtonBar(
+          /*ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
               buildImagePicker(onClick: getImage1),
               buildImagePicker(onClick: getImage2),
               buildImagePicker(onClick: getImage3),
             ],
-          ),
+          ),*/
           const SizedBox(height: 24),
           buildEventCapacityField(),
           const SizedBox(height: 24),
