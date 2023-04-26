@@ -22,6 +22,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
      Page<Event> findByEventCreationDateBetween(Date startDate, Date endDate, Pageable pageable);
 
+     long countByEventCreationDateBetween(Date startDate, Date endDate);
+
      Page<Event> findByTitleContainingOrAuthor_UsernameContaining(String keywordTitle, String keywordUsername, Pageable pageable);
 
      List<Event> findAllByTagsIn(List<Tag> tags);

@@ -6,6 +6,7 @@ import "./chart.css";
 
 function Chart(props) {
     if (props.data !== undefined && props.data !== null) {
+        console.log(props.data)
         return (
             <div className="event-num-clicks-chart-container">
                 <div className="event-num-clicks-chart-title-style">

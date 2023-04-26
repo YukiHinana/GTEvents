@@ -22,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -298,4 +301,38 @@ public class EventController {
 //        Set<Event> createdEvents = a.getCreatedEvents();
 //        return new ResponseWrapper<>(new PageImpl<>(Arrays.asList(a.getCreatedEvents().toArray()), aa, createdEvents.size()));
 //    }
+
+    @GetMapping("/created-events-between")
+    public ResponseWrapper<?> viewNumCreatedEventBetweenDateRange(@RequestParam Date startDate, @RequestParam int days) throws ParseException {
+        Calendar startDateCalendar = Calendar.getInstance();
+        startDateCalendar.setTime(startDate);
+        startDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        startDateCalendar.set(Calendar.MINUTE, 0);
+        startDateCalendar.set(Calendar.SECOND, 0);
+
+//        List<Long> eventsCreatedList = new ArrayList<>();
+        Map<String, List<String>> eventsCreatedList = new LinkedHashMap<>();
+        for (int i = 0; i < days; i++) {
+            Calendar endDateCalendar = Calendar.getInstance();
+            endDateCalendar.setTime(startDateCalendar.getTime());
+            endDateCalendar.set(Calendar.DATE, startDateCalendar.get(Calendar.DAY_OF_MONTH) + 1);
+            long count = eventRepository.countByEventCreationDateBetween(startDateCalendar.getTime(), endDateCalendar.getTime());
+            String mapKeyDay1 = "0" + startDateCalendar.get(Calendar.DAY_OF_MONTH);
+            String mapKeyDay = mapKeyDay1.substring(mapKeyDay1.length() - 2);
+            String mapKeyMonth1 = "0" + (startDateCalendar.get(Calendar.MONTH) + 1);
+            String mapKeyMonth = mapKeyMonth1.substring(mapKeyMonth1.length() - 2);
+            if (!eventsCreatedList.containsKey("date")) {
+                eventsCreatedList.put("date", new ArrayList<>());
+            }
+            if (!eventsCreatedList.containsKey("numEvents")) {
+                eventsCreatedList.put("numEvents", new ArrayList<>());
+            }
+            eventsCreatedList.get("date").add(mapKeyMonth + "/" + mapKeyDay);
+            eventsCreatedList.get("numEvents").add(String.valueOf(count));
+//            eventsCreatedList.put(mapKeyMonth + "/" + mapKeyDay, count);
+            startDateCalendar.set(Calendar.DATE, startDateCalendar.get(Calendar.DAY_OF_MONTH) - 1);
+        }
+
+        return new ResponseWrapper<>(eventsCreatedList);
+    }
 }
