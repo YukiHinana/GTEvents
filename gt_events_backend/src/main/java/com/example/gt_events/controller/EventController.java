@@ -2,10 +2,7 @@ package com.example.gt_events.controller;
 
 import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
-import com.example.gt_events.entity.Account;
-import com.example.gt_events.entity.Event;
-import com.example.gt_events.entity.EventClick;
-import com.example.gt_events.entity.Tag;
+import com.example.gt_events.entity.*;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
 import com.example.gt_events.repo.*;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 
@@ -40,11 +35,13 @@ public class EventController {
     private final FileService fileService;
     private final EventService eventService;
     private final EventClickRepository eventClickRepository;
+    private final TagClickRepository tagClickRepository;
 
     @Autowired
     public EventController(EventRepository eventRepository, AccountRepository accountRepository,
                            TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService,
-                           EventService eventService, EventClickRepository eventClickRepository) {
+                           EventService eventService, EventClickRepository eventClickRepository,
+                           TagClickRepository tagClickRepository) {
         this.eventRepository = eventRepository;
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
@@ -52,6 +49,7 @@ public class EventController {
         this.fileService = fileService;
         this.eventService = eventService;
         this.eventClickRepository = eventClickRepository;
+        this.tagClickRepository = tagClickRepository;
     }
 
     @GetMapping("/events")
@@ -188,6 +186,10 @@ public class EventController {
             account.getSavedEvents().remove(result.get());
             accountRepository.save(account);
         }
+        List<EventClick> eventClickList = eventClickRepository.findAllByEvent(result.get());
+        for (EventClick e : eventClickList) {
+            eventClickRepository.delete(e);
+        }
         eventRepository.delete(result.get());
         return new ResponseWrapper<>("successfully delete the event");
     }
@@ -212,6 +214,9 @@ public class EventController {
             eventTypeTagIdSet.add(Long.parseLong(tagId));
         }
         List<Tag> eventTypeTagList = tagRepository.findAllById(eventTypeTagIdSet);
+        for (Tag t : eventTypeTagList) {
+            tagClickRepository.save(new TagClick(t, new Date()));
+        }
         List<Event> eventTypeEventList =
                 eventRepository.findAllByEventDateBetweenAndTagsIn(startDate, endDate, eventTypeTagList);
 
@@ -220,6 +225,9 @@ public class EventController {
             degreeTagIdsIdSet.add(Long.parseLong(tagId));
         }
         List<Tag> degreeTagIdsList = tagRepository.findAllById(degreeTagIdsIdSet);
+        for (Tag t : degreeTagIdsList) {
+            tagClickRepository.save(new TagClick(t, new Date()));
+        }
         List<Event> degreeEventList =
                 eventRepository.findAllByEventDateBetweenAndTagsIn(startDate, endDate, degreeTagIdsList);
 

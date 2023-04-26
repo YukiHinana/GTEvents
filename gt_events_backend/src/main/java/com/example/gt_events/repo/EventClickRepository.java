@@ -20,4 +20,7 @@ public interface EventClickRepository extends JpaRepository<EventClick, Long> {
 //    long countByEventIdAndByEventDateBetween(Event e, Date startDate, Date endDate);
     List<EventClick> findByClickDateBetween(Date startDate, Date endDate);
 
+    void deleteAllByEvent(Event e);
+    List<EventClick> findAllByEvent(Event e);
+
 }

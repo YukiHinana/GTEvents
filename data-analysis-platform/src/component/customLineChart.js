@@ -6,7 +6,6 @@ import "./chart.css";
 
 function CustomLineChart(props) {
     if (props.data !== undefined && props.data !== null) {
-        console.log(props.data)
         return (
             <div >
                 <div>

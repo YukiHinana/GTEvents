@@ -19,12 +19,11 @@ function CustomTable() {
     const [maxPages, setMaxPages] = useState(0);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/events/events', {params: {
+        axios.get('http://3.145.83.83:8080/events/events', {params: {
                 pageNumber: curPage,
                 pageSize: 5
             }})
             .then(response => {
-                console.log(response.data.data)
                 setData(response.data.data);
                 if (curPage === 0) {
                     setMaxPages(response.data.data.totalPages);

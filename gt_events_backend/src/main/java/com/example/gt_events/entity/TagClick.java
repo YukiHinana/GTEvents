@@ -1,38 +1,35 @@
 package com.example.gt_events.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 
 @Entity
-public class EventClick {
+public class TagClick {
     @Id
     @GeneratedValue
     private Long id;
 
     @OneToOne
-    private Event event;
+    private Tag tag;
 
-//    private long numClick;
     @Temporal(TemporalType.TIMESTAMP)
     private Date clickDate;
 
-    public EventClick() {
+    public TagClick() {
     }
 
-    public EventClick(Event event, Date clickDate) {
-        this.event = event;
+    public TagClick(Tag tag, Date clickDate) {
+        this.tag = tag;
         this.clickDate = clickDate;
     }
 
-    public Event getEvent() {
-        return event;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setEvent(Event eventId) {
-        this.event = eventId;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 
     public Date getClickDate() {
