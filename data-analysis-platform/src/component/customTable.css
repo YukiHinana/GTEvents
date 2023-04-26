@@ -1,0 +1,42 @@
+.info-table-container-style {
+    margin: 10px 5px 10px 10px;
+}
+
+.info-table-style {
+    border: 2px solid green;
+    width: 800px;
+}
+
+.info-table-caption-style {
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    width: 400px;
+}
+
+.info-table-cell-style {
+    text-align: center;
+    border-right: solid 1px green;
+    font-size: 18px;
+}
+
+.info-table-thead-style {
+    border-bottom: 1px solid green;
+    text-align: center;
+    font-size: 19px;
+    border-right: 1px solid green;
+    background-color: #ccfacc;
+}
+
+.info-table-row-style:hover {
+    background-color: #c0bfbf;
+}
+
+.page-button-style {
+    border-radius: 8px;
+    padding: 5px 8px 5px 8px;
+    text-align: center;
+    border: 2px solid green;
+    font-size: 17px;
+    margin: 3px;
+}

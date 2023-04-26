@@ -4,13 +4,11 @@ import com.example.gt_events.ResponseWrapper;
 import com.example.gt_events.annotation.RequireAuth;
 import com.example.gt_events.entity.Account;
 import com.example.gt_events.entity.Event;
+import com.example.gt_events.entity.EventClick;
 import com.example.gt_events.entity.Tag;
 import com.example.gt_events.exception.InvalidRequestException;
 import com.example.gt_events.model.CreateEventRequest;
-import com.example.gt_events.repo.AccountRepository;
-import com.example.gt_events.repo.EventRepository;
-import com.example.gt_events.repo.TagRepository;
-import com.example.gt_events.repo.TokenRepository;
+import com.example.gt_events.repo.*;
 import com.example.gt_events.service.EventService;
 import com.example.gt_events.service.FileService;
 import jakarta.persistence.EntityManager;
@@ -24,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -38,17 +39,19 @@ public class EventController {
     private final TagRepository tagRepository;
     private final FileService fileService;
     private final EventService eventService;
+    private final EventClickRepository eventClickRepository;
 
     @Autowired
     public EventController(EventRepository eventRepository, AccountRepository accountRepository,
                            TokenRepository tokenRepository, TagRepository tagRepository, FileService fileService,
-                           EventService eventService) {
+                           EventService eventService, EventClickRepository eventClickRepository) {
         this.eventRepository = eventRepository;
         this.accountRepository = accountRepository;
         this.tokenRepository = tokenRepository;
         this.tagRepository = tagRepository;
         this.fileService = fileService;
         this.eventService = eventService;
+        this.eventClickRepository = eventClickRepository;
     }
 
     @GetMapping("/events")
@@ -125,7 +128,8 @@ public class EventController {
         }
         Event event = new Event(request.getTitle(), request.getLocation(), request.getDescription(),
                 request.getEventDate(), request.getCapacity(), request.getFee(), tagList, a);
-        return new ResponseWrapper<>(eventRepository.save(event));
+        event = eventRepository.save(event);
+        return new ResponseWrapper<>(event);
     }
 
     @GetMapping("/events/{eventId}")
@@ -134,12 +138,14 @@ public class EventController {
         if (event.isEmpty()) {
             throw new InvalidRequestException("Event does not exist");
         }
+        eventClickRepository.save(new EventClick(event.get(), new Date()));
         return new ResponseWrapper<>(event.get());
     }
 
     @PutMapping("/events/{eventId}")
     @RequireAuth(requireOrganizer = true)
-    public ResponseWrapper<?> editEvent(@PathVariable Long eventId, @RequestBody @Valid CreateEventRequest request, Account a) {
+    public ResponseWrapper<?> editEvent(@PathVariable Long eventId,
+                                        @RequestBody @Valid CreateEventRequest request, Account a) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new InvalidRequestException("can't find the event");
@@ -295,4 +301,38 @@ public class EventController {
 //        Set<Event> createdEvents = a.getCreatedEvents();
 //        return new ResponseWrapper<>(new PageImpl<>(Arrays.asList(a.getCreatedEvents().toArray()), aa, createdEvents.size()));
 //    }
+
+    @GetMapping("/created-events-between")
+    public ResponseWrapper<?> viewNumCreatedEventBetweenDateRange(@RequestParam Date startDate, @RequestParam int days) throws ParseException {
+        Calendar startDateCalendar = Calendar.getInstance();
+        startDateCalendar.setTime(startDate);
+        startDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        startDateCalendar.set(Calendar.MINUTE, 0);
+        startDateCalendar.set(Calendar.SECOND, 0);
+
+//        List<Long> eventsCreatedList = new ArrayList<>();
+        Map<String, List<String>> eventsCreatedList = new LinkedHashMap<>();
+        for (int i = 0; i < days; i++) {
+            Calendar endDateCalendar = Calendar.getInstance();
+            endDateCalendar.setTime(startDateCalendar.getTime());
+            endDateCalendar.set(Calendar.DATE, startDateCalendar.get(Calendar.DAY_OF_MONTH) + 1);
+            long count = eventRepository.countByEventCreationDateBetween(startDateCalendar.getTime(), endDateCalendar.getTime());
+            String mapKeyDay1 = "0" + startDateCalendar.get(Calendar.DAY_OF_MONTH);
+            String mapKeyDay = mapKeyDay1.substring(mapKeyDay1.length() - 2);
+            String mapKeyMonth1 = "0" + (startDateCalendar.get(Calendar.MONTH) + 1);
+            String mapKeyMonth = mapKeyMonth1.substring(mapKeyMonth1.length() - 2);
+            if (!eventsCreatedList.containsKey("date")) {
+                eventsCreatedList.put("date", new ArrayList<>());
+            }
+            if (!eventsCreatedList.containsKey("numEvents")) {
+                eventsCreatedList.put("numEvents", new ArrayList<>());
+            }
+            eventsCreatedList.get("date").add(mapKeyMonth + "/" + mapKeyDay);
+            eventsCreatedList.get("numEvents").add(String.valueOf(count));
+//            eventsCreatedList.put(mapKeyMonth + "/" + mapKeyDay, count);
+            startDateCalendar.set(Calendar.DATE, startDateCalendar.get(Calendar.DAY_OF_MONTH) - 1);
+        }
+
+        return new ResponseWrapper<>(eventsCreatedList);
+    }
 }

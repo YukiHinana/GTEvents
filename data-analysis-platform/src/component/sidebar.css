@@ -1,0 +1,88 @@
+.navbar-style {
+    padding: 10px;
+}
+
+.navbar-container-style {
+    box-shadow: 0px 0px 3px 0px darkgray;
+}
+
+.sidebar-menu-close-icon-style {
+    margin: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0 !important;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Lato", sans-serif;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.nav-menu {
+    z-index: 10;
+    background-color: #fff8f3;
+    width: 250px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    transition: 850ms;
+}
+
+.nav-menu.active {
+    left: 0;
+    transition: 450ms;
+}
+
+.sidebar-item-list-container-style {
+    width: 100%;
+}
+
+.sidebar-item-container-style {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    height: 50px;
+}
+
+.sidebar-item-style {
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    border-radius: 5px;
+    align-items: center;
+    width: 96%;
+    height: 100%;
+    color: black;
+    padding: 0px 10px 0px 10px;
+}
+
+.sidebar-item-style:hover {
+    background-color: dimgray;
+    color: white;
+}
+
+.sidebar-item-text-style {
+    font-size: 18px;
+    margin: 0px 0px 0px 8px;
+}
+
+.nav-text a:hover {
+    background-color: #000000;
+    color: #fff;
+}
+
+
