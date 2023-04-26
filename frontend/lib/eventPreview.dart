@@ -36,7 +36,8 @@ class _EventPreviewState extends State<EventPreview> {
         title: const Text("Event Preview"),
       ),
       body: showEventDetails(widget.eventTitle, widget.eventDate,
-          widget.eventLocation, widget.eventDescription, widget.tagNameList),
+          widget.eventLocation, widget.eventDescription, int.parse(widget.capacity),
+          int.parse(widget.fee), widget.tagNameList),
     );
   }
 }

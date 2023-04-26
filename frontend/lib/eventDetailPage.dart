@@ -17,35 +17,31 @@ class EventDetailPage extends StatefulWidget {
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
-/*BannerAd myBanner = BannerAd(
-    size: AdSize.banner, 
-    adUnitId: "ca-app-pub-3940256099942544/2934735716", 
-    listener: BannerAdListener(), 
+
+BannerAd myBanner = BannerAd(
+    size: AdSize.banner,
+    adUnitId: "ca-app-pub-3940256099942544/2934735716",
+    listener: BannerAdListener(),
     request: AdRequest()
-    );*/
+    );
+
+final AdWidget adWidget = AdWidget(ad: myBanner);
+final Container adContainer = Container(
+  child: adWidget,
+  width: myBanner.size.width.toDouble(),
+  height: myBanner.size.height.toDouble(),
+);
+
+
 Widget showEventDetails(String eventTitle, String eventDate,
-    String eventLocation, String eventDescription, List<Tag> tagList) {
+    String eventLocation, String eventDescription, int capacity, int fee,
+    List<Tag> tagList) {
   String month = "";
   String date = "";
   if (eventDate != "0") {
     List<String> eventTimeList = convertTimestampToDate(eventDate).split('/');
     month = mapMonth(eventTimeList[0]);
     date = eventTimeList[1];
-  }
-  /*final AdWidget adWidget = AdWidget(ad: myBanner);
-  final Container adContainer = Container(
-    child: adWidget,
-    width: myBanner.size.width.toDouble(),
-    height: myBanner.size.height.toDouble(),
-  );*/
-  Widget content(Widget ads) {
-    return Container(
-      child: Container(
-        height: 50,
-        width: 200,
-        child: ads,
-      ),
-    );
   }
   return ListView(
     children: [
@@ -108,11 +104,9 @@ Widget showEventDetails(String eventTitle, String eventDate,
                 ),
               ],
             ),
-
           ),
         ],
       ),
-
       Container(
         padding: const EdgeInsets.all(8.0),
         child: const Text(
@@ -142,23 +136,52 @@ Widget showEventDetails(String eventTitle, String eventDate,
         ),
       ),
       Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 3),
         child: const Text(
           'Category',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
         child: Row(
           children: [...getTagCards(tagList)],
         )
       ),
-      //content(adContainer),
+      Container(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 3),
+        child: const Text(
+          'Capacity',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      Container(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+          child: Text(
+            capacity.toString(),
+            style: const TextStyle(fontSize: 16),
+          )
+      ),
+      Container(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 3),
+        child: const Text(
+          'Fee',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      Container(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+          child: Text(
+            fee.toString(),
+            style: const TextStyle(fontSize: 16),
+          )
+      ),
     ],
   );
 }
+
 DateTime date = DateTime.now();
+
 class _EventDetailPageState extends State<EventDetailPage> {
   late Event event;
   List<Tag> tagList = [];
@@ -169,7 +192,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
         title: const Text("Event Content"),
         actions: <Widget>[
           IconButton(
-              //TODO
               onPressed: () {
                 var token = StoreProvider
                     .of<temptemp.AppState>(context)
@@ -189,19 +211,25 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   : const Icon(Icons.star_border)),
         ],),
       body: showEventDetails(event.title, event.eventDateTimestamp.toString(),
-          event.location, event.description, tagList)
+          event.location, event.description, event.capacity,
+          event.fee, tagList),
+      bottomNavigationBar: Container(
+            height: 50,
+            width: 200,
+            child: adContainer,
+      ),
     );
   }
 
   @override
   void initState() {
-    /*myBanner = BannerAd(
-    size: AdSize.banner, 
-    adUnitId: "ca-app-pub-3940256099942544/2934735716", 
-    listener: BannerAdListener(), 
-    request: AdRequest());
-    myBanner.load();*/
-    //myBanner.load();
+    // myBanner = BannerAd(
+    // size: AdSize.banner,
+    // adUnitId: "ca-app-pub-3940256099942544/2934735716",
+    // listener: BannerAdListener(),
+    // request: AdRequest());
+    // myBanner.load();
+    myBanner.load();
     super.initState();
     event = widget.event;
     tagList = widget.tagList;
