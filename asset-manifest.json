@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/YukiHinana/GTEvents.git/static/css/main.c3a2400d.css",
+    "main.js": "/YukiHinana/GTEvents.git/static/js/main.d4ed5ebe.js",
+    "index.html": "/YukiHinana/GTEvents.git/index.html",
+    "main.c3a2400d.css.map": "/YukiHinana/GTEvents.git/static/css/main.c3a2400d.css.map",
+    "main.d4ed5ebe.js.map": "/YukiHinana/GTEvents.git/static/js/main.d4ed5ebe.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c3a2400d.css",
+    "static/js/main.d4ed5ebe.js"
+  ]
+}
