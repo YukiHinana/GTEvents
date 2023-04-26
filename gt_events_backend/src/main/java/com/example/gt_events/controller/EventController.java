@@ -203,7 +203,7 @@ public class EventController {
 
     @GetMapping("/events/tag-ids")
     public ResponseWrapper<?> getEventsByTagIds(@RequestParam(defaultValue = "") String[] eventTypeTagIds,
-                                                @RequestParam String[] degreeTagIds,
+                                                @RequestParam(defaultValue = "") String[] degreeTagIds,
                                                 @RequestParam Date startDate, @RequestParam Date endDate,
                                                 @RequestParam int pageNumber,
                                                 @RequestParam int pageSize) {

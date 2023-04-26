@@ -29,10 +29,13 @@ Future<http.Response> doFilter(List<int> eventTypeTagSelectState,
     startTimeStamp = startDate.toUtc().millisecondsSinceEpoch~/1000;
   }
   if (endDate == null) {
-    endTimeStamp = DateTime(2050, 12, 31, 23, 59, 59).toUtc().millisecondsSinceEpoch~/1000;
+    endTimeStamp = DateTime(2030, 12, 31, 23, 59, 59).toUtc().millisecondsSinceEpoch~/1000;
   } else {
     endTimeStamp = endDate.toUtc().millisecondsSinceEpoch~/1000;
   }
+  print('${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
+      '&degreeTagIds=$degreeStr&pageNumber=$pageNumber&pageSize=$pageSize'
+      '&startDate=$startTimeStamp&endDate=$endTimeStamp');
   var response = await http.get(
     Uri.parse(
         '${Config.baseURL}/events/events/tag-ids?eventTypeTagIds=$eventTypeStr'
@@ -136,7 +139,7 @@ class _FilterState extends State<Filter> {
         context: context,
         initialDate: initialDate,
         firstDate: DateTime(2021),
-        lastDate: DateTime(2050),
+        lastDate: DateTime(2030),
       );
 
   @override

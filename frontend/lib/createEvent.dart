@@ -339,7 +339,7 @@ class _CreateEventState extends State<CreateEvent> {
         context: context,
         initialDate: eventDateTime,
         firstDate: DateTime(2021),
-        lastDate: DateTime(2100),
+        lastDate: DateTime(2030),
       );
 
   Widget buildTimePicker() =>
