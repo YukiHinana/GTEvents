@@ -1,8 +1,11 @@
+//import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'component/eventCard.dart';
-import 'config.dart';
+import 'config.dart' as temptemp;
 import 'event.dart';
 
 //Event details page
@@ -14,7 +17,12 @@ class EventDetailPage extends StatefulWidget {
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
 }
-
+BannerAd myBanner = BannerAd(
+    size: AdSize.banner, 
+    adUnitId: "ca-app-pub-3940256099942544/2934735716", 
+    listener: BannerAdListener(), 
+    request: AdRequest()
+    );
 Widget showEventDetails(String eventTitle, String eventDate,
     String eventLocation, String eventDescription, List<Tag> tagList) {
   String month = "";
@@ -24,7 +32,21 @@ Widget showEventDetails(String eventTitle, String eventDate,
     month = mapMonth(eventTimeList[0]);
     date = eventTimeList[1];
   }
-
+  final AdWidget adWidget = AdWidget(ad: myBanner);
+  final Container adContainer = Container(
+    child: adWidget,
+    width: myBanner.size.width.toDouble(),
+    height: myBanner.size.height.toDouble(),
+  );
+  Widget content(Widget ads) {
+    return Container(
+      child: Container(
+        height: 50,
+        width: 200,
+        child: ads,
+      ),
+    );
+  }
   return ListView(
     children: [
       Container(
@@ -132,15 +154,14 @@ Widget showEventDetails(String eventTitle, String eventDate,
           children: [...getTagCards(tagList)],
         )
       ),
+      content(adContainer),
     ],
   );
 }
-
 DateTime date = DateTime.now();
 class _EventDetailPageState extends State<EventDetailPage> {
   late Event event;
   List<Tag> tagList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +172,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               //TODO
               onPressed: () {
                 var token = StoreProvider
-                    .of<AppState>(context)
+                    .of<temptemp.AppState>(context)
                     .state
                     .token;
                 setState(() {
@@ -168,12 +189,19 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   : const Icon(Icons.star_border)),
         ],),
       body: showEventDetails(event.title, event.eventDateTimestamp.toString(),
-          event.location, event.description, tagList),
+          event.location, event.description, tagList)
     );
   }
 
   @override
   void initState() {
+    /*myBanner = BannerAd(
+    size: AdSize.banner, 
+    adUnitId: "ca-app-pub-3940256099942544/2934735716", 
+    listener: BannerAdListener(), 
+    request: AdRequest());
+    myBanner.load();*/
+    myBanner.load();
     super.initState();
     event = widget.event;
     tagList = widget.tagList;
